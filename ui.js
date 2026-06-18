@@ -71,7 +71,6 @@ var defaults = {
       var resizeCornerHitarea = document.getElementById("resizeCornerHitarea");
       var mainColorNameInput = document.getElementById("mainColorName");
       var mainColorValueInput = document.getElementById("mainColorValue");
-      var tonePreview = document.getElementById("tonePreview");
       var saveSessionButton = document.getElementById("saveSession");
       var loadSessionButton = document.getElementById("loadSession");
       var setDefaultButton = document.getElementById("setDefault");
@@ -218,14 +217,8 @@ var defaults = {
         updateMainColorReferences(currentMainColorName, colorName);
         currentMainColorName = colorName;
         containers.foundationColors.innerHTML = "";
-        tonePreview.innerHTML = "";
         toneSteps.forEach(function (step) {
           addPair(containers.foundationColors, "cols-2", colorName + "." + step, scale[step], "color");
-          var chip = document.createElement("div");
-          chip.className = "tone-chip";
-          chip.style.background = scale[step];
-          chip.textContent = colorName + "." + step + " " + scale[step];
-          tonePreview.appendChild(chip);
         });
         Object.keys(neutralScale).forEach(function (step) {
           addPair(containers.foundationColors, "cols-2", "neutral." + step, neutralScale[step], "color");

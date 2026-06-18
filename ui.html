@@ -7,6 +7,7 @@
         color-scheme: dark;
         font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         font-size: 12px;
+        --header-bar-height: 108px;
 
         /* Surface Layers — native charcoal palette */
         --bg-app: #121212;
@@ -62,13 +63,13 @@
       * { box-sizing: border-box; }
       body {
         margin: 0;
-        padding: 16px 16px 18px;
+        padding: 0 16px 18px;
         overflow-y: scroll;
         scrollbar-gutter: stable;
         color: var(--text-primary);
         background: var(--bg-app);
       }
-      h1 { margin: 0; font-size: 15px; line-height: 1.3; font-weight: 600; letter-spacing: -0.01em; }
+      h1 { margin: 0; font-size: 18px; line-height: 1.15; font-weight: 700; letter-spacing: -0.02em; }
       h2, h3 { margin: 0; }
       p { margin: 0; color: var(--text-secondary); line-height: 1.5; }
       label { display: grid; gap: 6px; color: var(--text-primary); font-weight: 500; }
@@ -138,23 +139,25 @@
       }
 
       .header-copy h1 {
-        font-size: 14px;
-        line-height: 1.3;
-        font-weight: 600;
-        letter-spacing: -0.01em;
+        font-size: 18px;
+        line-height: 1.15;
+        font-weight: 700;
+        letter-spacing: -0.02em;
       }
 
       .header-copy p {
         max-width: 560px;
         font-size: 11px;
         color: var(--text-muted);
+        line-height: 1.45;
       }
 
       main.panel {
         display: flex;
         flex-direction: column;
         gap: 16px;
-        min-height: calc(100vh - 16px);
+        min-height: calc(100vh - 18px);
+        padding-top: calc(var(--header-bar-height) + 20px);
       }
       .panel { padding-bottom: 0; }
       .grid {
@@ -225,18 +228,57 @@
         transition: background-color 120ms cubic-bezier(0.4, 0, 0.2, 1), border-color 120ms cubic-bezier(0.4, 0, 0.2, 1), color 120ms cubic-bezier(0.4, 0, 0.2, 1), opacity 120ms;
       }
 
-      /* Primary Generate button — elevated but still monochromatic */
+      /* Primary Generate button — brand red */
       #generate.primary {
-        border-color: var(--border-strong);
-        background: var(--bg-elevated);
-        color: var(--text-primary);
+        border-color: #E8341C;
+        background: #E8341C;
+        color: #ffffff;
         font-weight: 600;
       }
 
       #generate.primary:hover:not(:disabled) {
-        border-color: var(--accent-border);
-        background: var(--bg-active);
+        border-color: #c92b17;
+        background: #c92b17;
+        color: #ffffff;
+      }
+
+      .button-secondary {
+        border-color: var(--border-subtle);
+        background: #ffffff;
+        color: #000000;
+        font-weight: 600;
+      }
+
+      .button-secondary:hover:not(:disabled) {
+        border-color: var(--border-subtle);
+        background: #f0f0f0;
+        color: #000000;
+      }
+
+      .button-tertiary {
+        border-color: var(--border-subtle);
+        background: transparent;
         color: var(--text-primary);
+      }
+
+      .button-tertiary:hover:not(:disabled) {
+        border-color: var(--border-strong);
+        background: var(--bg-hover);
+        color: #ffffff;
+      }
+
+      .button-with-icon {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .button-with-icon .button-icon {
+        display: inline-grid;
+        place-items: center;
+        width: 14px;
+        height: 14px;
+        flex: 0 0 auto;
       }
 
       button.icon {
@@ -268,18 +310,18 @@
         border-color: var(--border-subtle);
       }
 
-      /* Header action buttons (Reset, Close) — default dark style */
+      /* Header action buttons (Reset, Close) — white secondary style */
       .header-action-row button:not(.primary),
       #saveSession {
         border-color: var(--border-subtle);
-        background: var(--bg-panel-2);
-        color: var(--text-secondary);
+        background: #ffffff;
+        color: #000000;
       }
 
       .header-action-row button:not(.primary):hover:not(:disabled),
       #saveSession:hover:not(:disabled) {
-        background: var(--bg-hover);
-        color: var(--text-primary);
+        background: #f0f0f0;
+        color: #000000;
         border-color: var(--border-subtle);
       }
 
@@ -336,6 +378,7 @@
       .table {
         display: grid;
         gap: 6px;
+        width: 100%;
         min-width: 0;
         max-width: 100%;
       }
@@ -371,6 +414,19 @@
         max-width: 100%;
       }
 
+      /* Foundation columns: fully remove min-width so token field can collapse */
+      [data-token-panel^="foundation"] .field-token,
+      [data-token-panel^="foundation"] .field-token input,
+      [data-token-panel^="foundation"] .field {
+        min-width: 0;
+      }
+      [data-token-panel^="foundation"] .cols-2 {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 34px;
+      }
+      [data-token-panel^="foundation"] .cols-3 {
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) 34px;
+      }
+
       .field-value input {
         border-color: var(--border-subtle);
         background: var(--bg-panel);
@@ -388,11 +444,12 @@
         position: relative;
       }
 
-      .field-ref.suggestion-active {
+      .field.suggestion-active {
+        position: relative;
         z-index: 121;
       }
 
-      .field-ref.suggestion-active input {
+      .field.suggestion-active input {
         position: relative;
         border-color: var(--border-strong);
         background: var(--bg-elevated);
@@ -403,7 +460,7 @@
       .cols-2 { grid-template-columns: minmax(80px, 1fr) minmax(80px, 1fr) 34px; }
       .cols-3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(80px, 1fr) 34px; }
       [data-token-panel="foundation-color"] .cols-2 {
-        grid-template-columns: minmax(100px, 1fr) 38px 34px;
+        grid-template-columns: minmax(0, 1fr) 38px 34px;
         width: 100%;
         max-width: 100%;
       }
@@ -499,180 +556,169 @@
         width: 100%;
       }
 
+      /* ── Brand Pack Tabs ─────────────────────────────────────── */
       .brand-pack-tabs {
         display: flex;
-        align-items: flex-start;
+        align-items: center;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 6px;
         width: 100%;
         min-width: 0;
-        overflow: visible;
+        padding: 6px 0;
       }
 
-      .brand-pack-add {
+      /* Add button — matches chip height exactly */
+      .brand-pack-tabs > .brand-pack-add {
         display: inline-grid;
         place-items: center;
-        width: 42px;
-        min-width: 42px;
-        max-width: 42px;
-        height: 42px;
-        min-height: 42px;
-        max-height: 42px;
-        aspect-ratio: 1 / 1;
-        padding: 0;
-        border-color: var(--border-subtle);
-        background: var(--bg-panel-2);
-        color: var(--text-primary);
         flex: 0 0 auto;
-        order: -1;
-      }
-
-      .brand-pack-add:hover:not(:disabled) {
-        border-color: var(--border-strong);
-        background: var(--bg-hover);
-        color: var(--text-primary);
-      }
-
-      .brand-pack-item {
-        display: inline-grid;
-        grid-template-columns: minmax(0, 1fr) 28px;
-        align-items: center;
-        gap: 2px;
-        min-width: 100px;
-        min-height: 36px;
+        width: 36px;
         height: 36px;
-        max-width: 200px;
+        padding: 0;
+        border: 1px solid var(--border-subtle) !important;
+        border-radius: var(--radius-md);
+        background: #ffffff !important;
+        color: #000000 !important;
+        order: 999; /* always last */
+        transition: border-color 0.15s, background 0.15s, color 0.15s;
+      }
+
+      .brand-pack-tabs > .brand-pack-add:hover:not(:disabled) {
+        border-color: var(--border-subtle) !important;
+        background: #f0f0f0 !important;
+        color: #000000 !important;
+      }
+
+      /* Chip wrapper — uniform 36px height for ALL states */
+      .brand-pack-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 0;
+        height: 36px;
+        max-width: 220px;
         border: 1px solid transparent;
         border-radius: var(--radius-md);
         background: var(--bg-hover);
         overflow: hidden;
+        transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
       }
 
+      /* Active chip — clearly in editing mode */
       .brand-pack-item.active {
-        border-color: var(--border-subtle);
-        background: var(--bg-selected);
-        grid-template-columns: minmax(0, 1fr) 32px 28px;
-        min-width: 160px;
-        max-width: 260px;
-        min-height: 0;
-        height: auto;
-        max-height: none;
-        padding: 3px;
-        gap: 3px;
+        border-color: var(--accent-border);
+        background: var(--bg-active);
+        max-width: 300px;
+        box-shadow:
+          0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+          0 2px 8px rgba(0, 0, 0, 0.35);
       }
 
+      /* Inactive tab button fills the chip */
       .brand-pack-tab {
         display: inline-flex;
         align-items: center;
-        justify-content: flex-start;
-        gap: 6px;
-        min-width: 0;
-        min-height: 34px;
+        gap: 7px;
         height: 100%;
-        padding: 0 8px 0 10px;
+        padding: 0 6px 0 10px;
+        min-width: 0;
         border-color: transparent;
         background: transparent;
         color: var(--text-secondary);
+        font-size: 12px;
+        font-weight: 500;
+        white-space: nowrap;
         text-align: left;
+        transition: color 0.12s;
       }
 
-      .brand-pack-tab.active {
+      .brand-pack-tab:hover:not(:disabled) {
         color: var(--text-primary);
       }
 
+      /* Active name input — full height, flush inside chip */
       input.brand-pack-editor-name {
+        flex: 1 1 auto;
+        min-width: 72px;
         width: 100%;
-        min-width: 0;
-        min-height: 30px;
-        height: 30px;
-        max-height: 30px;
-        padding: 0 8px;
+        height: 100%;
+        padding: 0 6px 0 10px;
         border: 0;
-        border-radius: var(--radius-sm);
-        background: transparent;
+        border-radius: 0;
+        background: rgba(255, 255, 255, 0.05);
         color: var(--text-primary);
         font: inherit;
+        font-size: 12px;
         font-weight: 600;
-        line-height: 30px;
+        line-height: 36px;
         box-shadow: none;
-        align-self: center;
-      }
-
-      .brand-pack-item.active .brand-pack-editor-name {
-        margin: 0;
-        background: rgba(0, 0, 0, 0.22);
+        outline: none;
+        transition: background 0.12s;
       }
 
       .brand-pack-editor-name:focus {
-        outline: none;
-        background: rgba(0, 0, 0, 0.3);
+        background: rgba(255, 255, 255, 0.08);
       }
 
-      .brand-pack-editor-color {
-        width: 34px;
-        height: 34px;
-        min-width: 34px;
-        padding: 3px;
-        border: 1px solid var(--border-subtle);
-        border-radius: calc(var(--radius-md) - 4px);
-        background: transparent;
-        cursor: pointer;
-      }
-
+      /* Color swatch circle (inactive chips) */
       .brand-pack-swatch {
-        width: 14px;
-        height: 14px;
         flex: 0 0 auto;
-        border: 1px solid rgba(255, 255, 255, 0.24);
+        width: 10px;
+        height: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.20);
         border-radius: 999px;
+        box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
       }
 
       .brand-pack-name {
         min-width: 0;
-        max-width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
+      /* Color picker square — flush inside active chip */
+      .brand-pack-editor-color {
+        flex: 0 0 auto;
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        padding: 3px;
+        border: 1px solid var(--border-strong);
+        border-radius: calc(var(--radius-md) - 2px);
+        background: transparent;
+        cursor: pointer;
+        margin: 0 3px;
+      }
+
+      /* Delete (×) button — flush right, fills chip height */
       .brand-pack-delete {
         display: inline-grid;
         place-items: center;
+        flex: 0 0 auto;
         width: 28px;
-        min-height: 40px;
         height: 100%;
         padding: 0;
         border-color: transparent;
         background: transparent;
         color: var(--text-muted);
+        opacity: 0.4;
+        transition: background 0.12s, color 0.12s, opacity 0.12s;
       }
 
+      .brand-pack-item:hover .brand-pack-delete {
+        opacity: 0.7;
+      }
+
+      /* Always fully visible on the active editing chip */
       .brand-pack-item.active .brand-pack-delete {
-        min-height: 34px;
-        height: 34px;
-        border-radius: calc(var(--radius-md) - 4px);
+        opacity: 1;
+        color: var(--text-secondary);
       }
 
       .brand-pack-delete:hover:not(:disabled) {
-        background: var(--bg-hover);
+        background: rgba(255, 255, 255, 0.07);
         color: var(--text-primary);
-      }
-
-      .tone-preview {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 8px;
-      }
-
-      .tone-chip {
-        display: grid;
-        min-height: 64px;
-        align-content: end;
-        padding: 8px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        border-radius: var(--radius-md);
-        color: #ffffff;
-        font: 10px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.32);
+        opacity: 1;
       }
 
       .header-row {
@@ -680,10 +726,29 @@
         grid-template-columns: minmax(180px, 1fr) minmax(0, auto);
         gap: 12px;
         align-items: center;
-        padding: 12px 4px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 80;
+        min-height: var(--header-bar-height);
+        padding: 16px 20px 14px;
         border: 0;
         border-radius: 0;
-        background: transparent;
+        background:
+          linear-gradient(180deg, rgba(24, 24, 24, 0.98) 0%, rgba(24, 24, 24, 0.96) 100%);
+      }
+
+      .header-row::after {
+        content: "";
+        position: absolute;
+        left: 50%;
+        bottom: -18px;
+        width: min(720px, calc(100vw - 64px));
+        height: 26px;
+        transform: translateX(-50%);
+        background: radial-gradient(ellipse at center, rgba(0, 0, 0, 0.30) 0%, rgba(0, 0, 0, 0.16) 40%, rgba(0, 0, 0, 0) 78%);
+        pointer-events: none;
       }
 
       .header-controls {
@@ -721,6 +786,19 @@
         min-width: 0;
       }
 
+      .generation-mode-controls {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
+      }
+
+      .generation-mode-label {
+        color: var(--text-muted);
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
       .token-workspace {
         display: grid;
         grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
@@ -734,11 +812,15 @@
         display: grid;
         gap: 4px;
         position: sticky;
-        top: 16px;
+        top: calc(var(--header-bar-height) + 16px);
         padding: 12px;
         border: 1px solid var(--border-subtle);
         border-radius: var(--radius-lg);
         background: var(--bg-panel);
+      }
+
+      .token-tabs > .column-header {
+        margin-bottom: 12px;
       }
 
       .token-tabs-label {
@@ -781,8 +863,23 @@
         background: var(--bg-panel);
       }
 
+      .token-column > * {
+        min-width: 0;
+        max-width: 100%;
+      }
+
       .token-column.active {
         display: grid;
+      }
+
+      .column-header {
+        display: grid;
+        gap: 8px;
+        align-content: start;
+      }
+
+      .token-column > .column-header {
+        margin-bottom: 4px;
       }
 
       .column-title {
@@ -792,12 +889,14 @@
         font-weight: 600;
         letter-spacing: -0.005em;
       }
+
       .column-head {
         display: flex;
+        height: 32px;
+        min-height: 32px;
         align-items: center;
         justify-content: space-between;
         gap: 8px;
-        margin-bottom: 4px;
       }
 
       .column-title-group {
@@ -805,6 +904,19 @@
         align-items: center;
         gap: 4px;
         min-width: 0;
+      }
+
+      .column-title-stack {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .column-header .hint {
+        max-width: 560px;
+        font-size: 11px;
+        color: var(--text-muted);
+        line-height: 1.45;
       }
 
       .semantic-mode-toggle {
@@ -888,19 +1000,19 @@
         flex-wrap: wrap;
       }
 
-      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete) {
+      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete):not(.button-secondary):not(.button-tertiary) {
         border: 1px solid var(--border-subtle);
         background: var(--bg-panel-2);
         color: var(--text-secondary);
       }
 
-      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete):hover:not(:disabled) {
+      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete):not(.button-secondary):not(.button-tertiary):hover:not(:disabled) {
         border-color: var(--border-subtle);
         background: var(--bg-hover);
         color: var(--text-primary);
       }
 
-      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete):focus {
+      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete):not(.button-secondary):not(.button-tertiary):focus {
         border-color: var(--border-strong);
       }
 
@@ -981,23 +1093,6 @@
         margin-top: 3px;
         color: var(--text-muted);
         font-size: 11px;
-      }
-
-      .session-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-      }
-
-      .session-actions button {
-        border-color: var(--border-subtle);
-        background: var(--bg-panel-2);
-      }
-
-      .session-actions button:hover:not(:disabled) {
-        border-color: var(--border-subtle);
-        background: var(--bg-hover);
-        color: var(--text-primary);
       }
 
       .empty-state {
@@ -1122,7 +1217,7 @@
 
       .session-select-row {
         display: grid;
-        grid-template-columns: minmax(220px, 1fr) auto;
+        grid-template-columns: minmax(220px, 1fr) auto auto auto;
         gap: 8px;
         align-items: end;
       }
@@ -1138,6 +1233,14 @@
       }
 
       .session-select-wrap {
+        position: relative;
+      }
+
+      .session-import-wrap {
+        position: relative;
+      }
+
+      .session-save-wrap {
         position: relative;
       }
 
@@ -1192,17 +1295,46 @@
         display: none;
       }
 
-      .session-menu-toolbar {
+      .session-import-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        z-index: 75;
         display: grid;
-        grid-template-columns: minmax(0, 1fr) auto;
-        gap: 8px;
-        align-items: center;
+        gap: 6px;
+        min-width: 156px;
+        padding: 6px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-lg);
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow-elevated);
       }
 
-      .session-menu-actions-row {
-        display: flex;
-        gap: 8px;
-        justify-content: flex-end;
+      .session-import-menu[hidden] {
+        display: none;
+      }
+
+      .session-save-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        right: 0;
+        z-index: 75;
+        display: grid;
+        gap: 6px;
+        min-width: 156px;
+        padding: 6px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-lg);
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow-elevated);
+      }
+
+      .session-save-menu[hidden] {
+        display: none;
+      }
+
+      .session-menu-toolbar {
+        display: block;
       }
 
       .session-menu-search {
@@ -1270,19 +1402,39 @@
       }
 
       .session-menu-actions button {
-        display: inline-grid;
-        width: 30px;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        width: auto;
         min-height: 30px;
-        padding: 0;
+        padding: 0 8px;
         border-color: transparent;
         background: transparent;
-        place-items: center;
+        justify-content: center;
+      }
+
+      .session-menu-actions button svg {
+        width: 12px;
+        height: 12px;
+        flex: 0 0 auto;
+      }
+
+      .session-menu-action-label {
+        font-size: 10px;
+        font-weight: 600;
+        line-height: 1;
+        letter-spacing: 0.01em;
       }
 
       .session-menu-actions button:hover:not(:disabled) {
         border-color: var(--border-subtle);
         background: var(--bg-hover);
         color: var(--text-primary);
+      }
+
+      .session-menu-actions button.session-menu-icon-only {
+        width: 30px;
+        padding: 0;
       }
 
       .session-menu-command {
@@ -1382,6 +1534,11 @@
             <div class="generation-controls">
               <label class="checkbox"><input id="variables" type="checkbox" checked /> Variables</label>
               <label class="checkbox"><input id="styles" type="checkbox" checked /> Styles</label>
+              <div class="generation-mode-controls" role="group" aria-label="Semantic modes to generate">
+                <span class="generation-mode-label">Generate semantic modes</span>
+                <label class="checkbox"><input id="generateLightMode" type="checkbox" checked /> Light</label>
+                <label class="checkbox"><input id="generateDarkMode" type="checkbox" checked /> Dark</label>
+              </div>
               <label class="checkbox"><input id="overwrite" type="checkbox" checked /> Overwrite old generated tokens/styles</label>
             </div>
           </div>
@@ -1402,20 +1559,35 @@
                 <span id="sessionSelectMenu" class="session-select-menu" role="listbox" hidden></span>
               </span>
             </div>
-            <button id="saveSession" type="button">Save session</button>
-          </div>
-          <div class="session-actions">
-            <button id="loadSession" type="button">Import .md</button>
-            <button id="setDefault" type="button">Set as default</button>
+            <span class="session-save-wrap">
+              <button id="saveSession" type="button" aria-label="Choose save option" aria-haspopup="menu" aria-expanded="false">Save session</button>
+              <span id="saveMenu" class="session-save-menu" role="menu" hidden>
+                <button id="saveAsNewSession" class="session-menu-command" type="button" role="menuitem">Save as new</button>
+                <button id="saveCurrentSession" class="session-menu-command" type="button" role="menuitem">Save current</button>
+              </span>
+            </span>
+            <span class="session-import-wrap">
+              <button id="loadSession" class="button-tertiary button-with-icon" type="button" aria-label="Choose import file type" aria-haspopup="menu" aria-expanded="false">
+                <span class="button-icon" aria-hidden="true"></span>
+                <span>Import</span>
+              </button>
+              <span id="importMenu" class="session-import-menu" role="menu" hidden>
+                <button id="importSessionMarkdown" class="session-menu-command" type="button" role="menuitem">Import .md</button>
+                <button id="importSessionJson" class="session-menu-command" type="button" role="menuitem">Import .json</button>
+              </span>
+            </span>
+            <button id="setDefault" class="button-tertiary" type="button">Set as default</button>
           </div>
         </div>
       </div>
 
       <section class="token-workspace">
         <nav class="token-tabs" aria-label="Token categories">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title token-tabs-label">Token Type</h2>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title token-tabs-label">Token Type</h2>
+              </div>
             </div>
           </div>
           <button class="token-tab active" type="button" data-token-tab="color">Color</button>
@@ -1428,8 +1600,13 @@
         </nav>
 
         <section class="token-column active" data-token-panel="foundation-color">
-          <h2 class="column-title">Foundation</h2>
-          <p class="hint">Brand colors use tabs. Neutral and status colors stay in grouped foundation rows.</p>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Foundation</h2>
+              </div>
+            </div>
+          </div>
           <div class="brand-pack-toolbar">
             <div id="brandPackTabs" class="brand-pack-tabs" role="tablist" aria-label="Brand colors">
               <button id="addBrandPack" class="brand-pack-add" type="button" aria-label="Add brand" title="Add brand"></button>
@@ -1446,15 +1623,15 @@
           <h3 class="subsection-title">Status Scale</h3>
           <div id="statusColors" class="table"></div>
           <div id="foundationColors" class="table" hidden></div>
-          <div id="tonePreview" class="tone-preview"></div>
         </section>
 
         <section class="token-column active" data-token-panel="semantic-color">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title">Semantic</h2>
-              <span class="hint-tip" tabindex="0" aria-label="Semantic color naming guide">
-                <span class="hint-tip-popover">Use intent names:
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Semantic</h2>
+                <span class="hint-tip" tabindex="0" aria-label="Semantic color naming guide">
+                  <span class="hint-tip-popover">Use intent names:
 text.*    readable text
 bg.*      surfaces/backgrounds
 border.*  strokes/dividers
@@ -1462,49 +1639,55 @@ action.*  interactive states
 focus.*   focus visuals
 
 Keep refs to `color.*` foundation tokens.</span>
-              </span>
-            </div>
-            <div class="mode-toggle semantic-mode-toggle" role="tablist" aria-label="Mode">
-              <button class="mode-option active" type="button" data-mode-option="Light">Light</button>
-              <button class="mode-option" type="button" data-mode-option="Dark">Dark</button>
+                </span>
+              </div>
+              <div class="mode-toggle semantic-mode-toggle" role="tablist" aria-label="Mode">
+                <button class="mode-option active" type="button" data-mode-option="Light">Light</button>
+                <button class="mode-option" type="button" data-mode-option="Dark">Dark</button>
+              </div>
             </div>
           </div>
-          <p class="hint">Intent-based color names; refs target `color.*` foundation tokens.</p>
           <div id="semanticColors" class="table"></div>
-          <button id="addSemanticColor">Add semantic color</button>
+          <button id="addSemanticColor" class="button-secondary">Add semantic color</button>
         </section>
 
         <section class="token-column" data-token-panel="foundation-text">
-          <h2 class="column-title">Foundation</h2>
-          <p class="hint">Text foundation tokens use `font.*` primitive names; semantic text styles carry the usage names.</p>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Foundation</h2>
+              </div>
+            </div>
+          </div>
           <div id="foundationTextBody">
             <h3 class="subsection-title">Family</h3>
             <div id="fontFamily" class="table"></div>
-            <button data-add-text="family">Add font family</button>
+            <button class="button-secondary" data-add-text="family">Add font family</button>
             <h3 class="subsection-title">Size</h3>
             <div id="fontSize" class="table"></div>
-            <button data-add-text="size">Add font size</button>
+            <button class="button-secondary" data-add-text="size">Add font size</button>
             <h3 class="subsection-title">Weight</h3>
             <div id="fontWeight" class="table"></div>
-            <button data-add-text="weight">Add font weight</button>
+            <button class="button-secondary" data-add-text="weight">Add font weight</button>
             <h3 class="subsection-title">Line height</h3>
             <div id="fontLineHeight" class="table"></div>
-            <button data-add-text="lineHeight">Add line height</button>
+            <button class="button-secondary" data-add-text="lineHeight">Add line height</button>
             <h3 class="subsection-title">Letter spacing</h3>
             <div id="fontLetterSpacing" class="table"></div>
-            <button data-add-text="letterSpacing">Add letter spacing</button>
+            <button class="button-secondary" data-add-text="letterSpacing">Add letter spacing</button>
             <h3 class="subsection-title">Text transform</h3>
             <div id="fontTextTransform" class="table"></div>
-            <button data-add-text="textTransform">Add text transform</button>
+            <button class="button-secondary" data-add-text="textTransform">Add text transform</button>
           </div>
         </section>
 
         <section class="token-column" data-token-panel="semantic-text">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title">Semantic</h2>
-              <span class="hint-tip" tabindex="0" aria-label="Semantic text naming guide">
-                <span class="hint-tip-popover">Use role + size names:
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Semantic</h2>
+                <span class="hint-tip" tabindex="0" aria-label="Semantic text naming guide">
+                  <span class="hint-tip-popover">Use role + size names:
 display.*
 headline.*
 title.*
@@ -1513,10 +1696,10 @@ label.*
 caption.*
 
 Each row maps to semantic color + foundation font refs.</span>
-              </span>
+                </span>
+              </div>
             </div>
           </div>
-          <p class="hint">Role-based text names; map to color and font references.</p>
           <div class="token-tools">
             <button id="sortSemanticText" type="button">Sort Font Size (Desc)</button>
             <button id="toggleSemanticMapping" type="button">Collapse Mapping</button>
@@ -1524,26 +1707,32 @@ Each row maps to semantic color + foundation font refs.</span>
           <div class="scroll">
             <div id="semanticText" class="table"></div>
           </div>
-          <button id="addSemanticText">Add semantic text style</button>
+          <button id="addSemanticText" class="button-secondary">Add semantic text style</button>
         </section>
 
         <section class="token-column" data-token-panel="foundation-spacing">
-          <h2 class="column-title">Foundation</h2>
-          <p class="hint">Spacing foundation names use numeric scale IDs; semantic spacing carries the usage names.</p>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Foundation</h2>
+              </div>
+            </div>
+          </div>
           <div id="foundationSpacing" class="table"></div>
-          <button id="addFoundationSpacing">Add foundation spacing</button>
+          <button id="addFoundationSpacing" class="button-secondary">Add foundation spacing</button>
         </section>
 
         <section class="token-column" data-token-panel="semantic-spacing">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title">Semantic</h2>
-              <span
-                class="hint-tip"
-                tabindex="0"
-                aria-label="Semantic spacing naming guide"
-              >
-                <span class="hint-tip-popover">Use intent names:
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Semantic</h2>
+                <span
+                  class="hint-tip"
+                  tabindex="0"
+                  aria-label="Semantic spacing naming guide"
+                >
+                  <span class="hint-tip-popover">Use intent names:
 inline.*  horizontal gaps
 stack.*   vertical gaps
 inset.*   padding
@@ -1551,27 +1740,33 @@ layout.*  section/page spacing
 control.* component internals
 
 Keep refs to `space.*` foundation tokens.</span>
-              </span>
+                </span>
+              </div>
             </div>
           </div>
-          <p class="hint">Intent-based spacing names; refs target `space.*` foundation tokens.</p>
           <div id="semanticSpacing" class="table"></div>
-          <button id="addSemanticSpacing">Add semantic spacing</button>
+          <button id="addSemanticSpacing" class="button-secondary">Add semantic spacing</button>
         </section>
 
         <section class="token-column" data-token-panel="foundation-size">
-          <h2 class="column-title">Foundation</h2>
-          <p class="hint">Size foundation tokens define primitive dimensions for controls, icons, and touch targets.</p>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Foundation</h2>
+              </div>
+            </div>
+          </div>
           <div id="foundationSize" class="table"></div>
-          <button id="addFoundationSize">Add foundation size</button>
+          <button id="addFoundationSize" class="button-secondary">Add foundation size</button>
         </section>
 
         <section class="token-column" data-token-panel="semantic-size">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title">Semantic</h2>
-              <span class="hint-tip" tabindex="0" aria-label="Semantic size naming guide">
-                <span class="hint-tip-popover">Use by fixed dimension:
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Semantic</h2>
+                <span class="hint-tip" tabindex="0" aria-label="Semantic size naming guide">
+                  <span class="hint-tip-popover">Use by fixed dimension:
 control.* = component height
 icon.* = icon box size
 touch.* = minimum hit area
@@ -1580,53 +1775,65 @@ avatar.* = avatar width/height
 Do not use size for gaps or padding; use `space.*` for layout distance.
 
 Keep refs to `size.*` foundation tokens.</span>
-              </span>
+                </span>
+              </div>
             </div>
           </div>
-          <p class="hint">Usage-based size names; refs target `size.*` foundation tokens.</p>
           <div id="semanticSize" class="table"></div>
-          <button id="addSemanticSize">Add semantic size</button>
+          <button id="addSemanticSize" class="button-secondary">Add semantic size</button>
         </section>
 
         <section class="token-column" data-token-panel="foundation-radius">
-          <h2 class="column-title">Foundation</h2>
-          <p class="hint">Radius foundation tokens define primitive corner values used by semantic aliases.</p>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Foundation</h2>
+              </div>
+            </div>
+          </div>
           <div id="foundationRadius" class="table"></div>
-          <button id="addFoundationRadius" hidden>Add foundation radius</button>
+          <button id="addFoundationRadius" class="button-secondary" hidden>Add foundation radius</button>
         </section>
 
         <section class="token-column" data-token-panel="semantic-radius">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title">Semantic</h2>
-              <span class="hint-tip" tabindex="0" aria-label="Semantic radius naming guide">
-                <span class="hint-tip-popover">Use three usage names:
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Semantic</h2>
+                <span class="hint-tip" tabindex="0" aria-label="Semantic radius naming guide">
+                  <span class="hint-tip-popover">Use three usage names:
 sm
 md
 lg
 
 Keep refs to `radius.*` foundation tokens.</span>
-              </span>
+                </span>
+              </div>
             </div>
           </div>
-          <p class="hint">Usage-based radius names; refs target `radius.*` foundation tokens.</p>
           <div id="semanticRadius" class="table"></div>
-          <button id="addSemanticRadius" hidden>Add semantic radius</button>
+          <button id="addSemanticRadius" class="button-secondary" hidden>Add semantic radius</button>
         </section>
 
         <section class="token-column" data-token-panel="foundation-opacity">
-          <h2 class="column-title">Foundation</h2>
-          <p class="hint">Opacity foundation tokens define primitive alpha values used by semantic aliases.</p>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Foundation</h2>
+              </div>
+            </div>
+          </div>
           <div id="foundationOpacity" class="table"></div>
-          <button id="addFoundationOpacity">Add foundation opacity</button>
+          <button id="addFoundationOpacity" class="button-secondary">Add foundation opacity</button>
         </section>
 
         <section class="token-column" data-token-panel="semantic-opacity">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title">Semantic</h2>
-              <span class="hint-tip" tabindex="0" aria-label="Semantic opacity naming guide">
-                <span class="hint-tip-popover">Use state/intent names:
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Semantic</h2>
+                <span class="hint-tip" tabindex="0" aria-label="Semantic opacity naming guide">
+                  <span class="hint-tip-popover">Use state/intent names:
 state.hover
 state.focus
 state.pressed
@@ -1636,36 +1843,42 @@ overlay.*
 content.*
 
 Keep refs to `opacity.*` foundation tokens.</span>
-              </span>
+                </span>
+              </div>
             </div>
           </div>
-          <p class="hint">State-based opacity names; refs target `opacity.*` foundation tokens.</p>
           <div id="semanticOpacity" class="table"></div>
-          <button id="addSemanticOpacity">Add semantic opacity</button>
+          <button id="addSemanticOpacity" class="button-secondary">Add semantic opacity</button>
         </section>
 
         <section class="token-column" data-token-panel="foundation-shadow">
-          <h2 class="column-title">Foundation</h2>
-          <p class="hint">Shadow tokens are semantic Theme tokens because they represent component elevation usage.</p>
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Foundation</h2>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section class="token-column" data-token-panel="semantic-shadow">
-          <div class="column-head">
-            <div class="column-title-group">
-              <h2 class="column-title">Semantic</h2>
-              <span class="hint-tip" tabindex="0" aria-label="Semantic shadow naming guide">
-                <span class="hint-tip-popover">Use three elevation names:
+          <div class="column-header">
+            <div class="column-head">
+              <div class="column-title-group">
+                <h2 class="column-title">Semantic</h2>
+                <span class="hint-tip" tabindex="0" aria-label="Semantic shadow naming guide">
+                  <span class="hint-tip-popover">Use three elevation names:
 sm
 md
 lg
 
 Values use CSS shadow syntax and generate Figma effect styles.</span>
-              </span>
+                </span>
+              </div>
             </div>
           </div>
-          <p class="hint">Elevation shadows for cards, popovers, modals, and menus. Values use CSS shadow syntax.</p>
           <div id="semanticShadow" class="table"></div>
-          <button id="addSemanticShadow">Add semantic shadow</button>
+          <button id="addSemanticShadow" class="button-secondary">Add semantic shadow</button>
         </section>
       </section>
 
@@ -1679,6 +1892,7 @@ Values use CSS shadow syntax and generate Figma effect styles.</span>
       <datalist id="radiusRefs"></datalist>
       <datalist id="opacityRefs"></datalist>
       <datalist id="shadowRefs"></datalist>
+      <datalist id="fontFamilyNames"></datalist>
       <datalist id="fontFamilyRefs"></datalist>
       <datalist id="fontSizeRefs"></datalist>
       <datalist id="fontWeightRefs"></datalist>
@@ -1820,13 +2034,18 @@ var defaults = {
       var addBrandPackButton = document.getElementById("addBrandPack");
       var mainColorNameInput = document.getElementById("mainColorName");
       var mainColorValueInput = document.getElementById("mainColorValue");
-      var tonePreview = document.getElementById("tonePreview");
       var toggleBrandColorsButton = document.getElementById("toggleBrandColors");
       var sessionSelect = document.getElementById("sessionSelect");
       var sessionSelectButton = document.getElementById("sessionSelectButton");
       var sessionSelectMenu = document.getElementById("sessionSelectMenu");
       var saveSessionButton = document.getElementById("saveSession");
+      var saveMenu = document.getElementById("saveMenu");
+      var saveAsNewSessionButton = document.getElementById("saveAsNewSession");
+      var saveCurrentSessionButton = document.getElementById("saveCurrentSession");
       var loadSessionButton = document.getElementById("loadSession");
+      var importMenu = document.getElementById("importMenu");
+      var importSessionMarkdownButton = document.getElementById("importSessionMarkdown");
+      var importSessionJsonButton = document.getElementById("importSessionJson");
       var setDefaultButton = document.getElementById("setDefault");
       var sortSemanticTextButton = document.getElementById("sortSemanticText");
       var toggleSemanticMappingButton = document.getElementById("toggleSemanticMapping");
@@ -1850,6 +2069,8 @@ var defaults = {
       var savedSessions = [];
       var selectedSavedSessionId = "";
       var pendingDefaultLoadTimer = null;
+      var availableFontFamilies = [];
+      var availableFontStylesByFamily = {};
       var toneSteps = [100, 300, 500, 700, 900];
       var defaultFoundationColorPacks = [
         ["brand", "#E8341C"]
@@ -1863,6 +2084,7 @@ var defaults = {
       var activeSuggestionInput = null;
       var activeSuggestionItems = [];
       var activeSuggestionIndex = -1;
+      var semanticColorModes = { Light: {}, Dark: {} };
       var semanticColorModePacks = {
         Light: {
           "text.primary": "color.neutral.900",
@@ -1960,26 +2182,169 @@ var defaults = {
       }
 
       function setMode(mode, applyPack) {
+        storeCurrentSemanticColorMode();
         var nextMode = mode === "Dark" ? "Dark" : "Light";
         var modeInput = document.getElementById("modeName");
         if (modeInput) modeInput.value = nextMode;
         Array.prototype.forEach.call(document.querySelectorAll("[data-mode-option]"), function (button) {
           button.classList.toggle("active", button.getAttribute("data-mode-option") === nextMode);
         });
-        if (applyPack) applySemanticColorPack(nextMode);
+        if (applyPack) {
+          applySemanticColorPack(nextMode);
+          return;
+        }
+        renderSemanticColorMode(nextMode);
+      }
+
+      function getSelectedGenerationModes() {
+        var modes = [];
+        var lightCheckbox = document.getElementById("generateLightMode");
+        var darkCheckbox = document.getElementById("generateDarkMode");
+        if (lightCheckbox && lightCheckbox.checked) modes.push("Light");
+        if (darkCheckbox && darkCheckbox.checked) modes.push("Dark");
+        return modes.length ? modes : ["Light"];
+      }
+
+      function setSelectedGenerationModes(modeNames) {
+        var nextModes = Array.isArray(modeNames) && modeNames.length
+          ? modeNames
+          : ["Light", "Dark"];
+        var allowed = {};
+        nextModes.forEach(function (modeName) {
+          if (modeName === "Light" || modeName === "Dark") allowed[modeName] = true;
+        });
+        var lightCheckbox = document.getElementById("generateLightMode");
+        var darkCheckbox = document.getElementById("generateDarkMode");
+        if (lightCheckbox) lightCheckbox.checked = !!allowed.Light;
+        if (darkCheckbox) darkCheckbox.checked = !!allowed.Dark;
+        if ((!lightCheckbox || !lightCheckbox.checked) && (!darkCheckbox || !darkCheckbox.checked) && lightCheckbox) {
+          lightCheckbox.checked = true;
+        }
+      }
+
+      function bindGenerationModeCheckboxes() {
+        ["generateLightMode", "generateDarkMode"].forEach(function (id) {
+          var input = document.getElementById(id);
+          if (!input) return;
+          input.addEventListener("change", function () {
+            var lightCheckbox = document.getElementById("generateLightMode");
+            var darkCheckbox = document.getElementById("generateDarkMode");
+            if ((lightCheckbox && lightCheckbox.checked) || (darkCheckbox && darkCheckbox.checked)) return;
+            input.checked = true;
+          });
+        });
       }
 
       function applySemanticColorPack(mode) {
         var pack = semanticColorModePacks[mode];
         if (!pack) return;
+        var nextValues = {};
+        Object.keys(readSemanticColorNames()).forEach(function (semanticName) {
+          nextValues[semanticName] = pack[semanticName] || "";
+        });
+        semanticColorModes[mode] = nextValues;
+        syncOtherSemanticColorMode(mode);
+        if (getCurrentMode() === mode) renderSemanticColorMode(mode);
+        refreshLists();
+      }
+
+      function getCurrentMode() {
+        var modeInput = document.getElementById("modeName");
+        return modeInput && modeInput.value === "Dark" ? "Dark" : "Light";
+      }
+
+      function readSemanticColorNames() {
+        var names = {};
         Array.prototype.forEach.call(containers.semanticColors.children, function (row) {
           var fields = row.querySelectorAll("input");
-          if (!fields.length) return;
-          var semanticName = (fields[0].value || "").trim();
-          if (!semanticName || !pack[semanticName]) return;
-          if (fields[1]) fields[1].value = pack[semanticName];
+          var name = fields[0] && fields[0].value ? fields[0].value.trim() : "";
+          if (!name) return;
+          names[name] = true;
         });
-        refreshLists();
+        return names;
+      }
+
+      function readSemanticColorPairs() {
+        return readPairs(containers.semanticColors, false);
+      }
+
+      function orderedSemanticColorKeys(values) {
+        var order = [];
+        var seen = {};
+        defaults.semanticColor.forEach(function (row) {
+          if (!values || values[row[0]] === undefined || seen[row[0]]) return;
+          seen[row[0]] = true;
+          order.push(row[0]);
+        });
+        Object.keys(values || {}).forEach(function (key) {
+          if (seen[key]) return;
+          seen[key] = true;
+          order.push(key);
+        });
+        return order;
+      }
+
+      function renderSemanticColorMode(mode) {
+        var values = semanticColorModes[mode] || {};
+        containers.semanticColors.innerHTML = "";
+        orderedSemanticColorKeys(values).forEach(function (key) {
+          addPair(containers.semanticColors, "cols-2", key, values[key], "text", "colorRefs");
+        });
+      }
+
+      function syncOtherSemanticColorMode(sourceMode) {
+        var targetMode = sourceMode === "Dark" ? "Light" : "Dark";
+        var sourceValues = semanticColorModes[sourceMode] || {};
+        var targetValues = semanticColorModes[targetMode] || {};
+        var pack = semanticColorModePacks[targetMode] || {};
+        var nextTargetValues = {};
+
+        Object.keys(sourceValues).forEach(function (name) {
+          if (targetValues[name] !== undefined) {
+            nextTargetValues[name] = targetValues[name];
+          } else if (pack[name] !== undefined) {
+            nextTargetValues[name] = pack[name];
+          } else {
+            nextTargetValues[name] = sourceValues[name];
+          }
+        });
+
+        semanticColorModes[targetMode] = nextTargetValues;
+      }
+
+      function storeCurrentSemanticColorMode() {
+        semanticColorModes[getCurrentMode()] = readSemanticColorPairs();
+        syncOtherSemanticColorMode(getCurrentMode());
+      }
+
+      function normalizeSemanticColorModes(colorValues) {
+        var normalized = { Light: {}, Dark: {} };
+        var entries = colorValues && typeof colorValues === "object" ? colorValues : {};
+
+        Object.entries(entries).forEach(function (entry) {
+          var name = entry[0];
+          var value = entry[1];
+          if (value && typeof value === "object" && !Array.isArray(value)) {
+            normalized.Light[name] = value.Light !== undefined
+              ? value.Light
+              : (semanticColorModePacks.Light[name] !== undefined ? semanticColorModePacks.Light[name] : "");
+            normalized.Dark[name] = value.Dark !== undefined
+              ? value.Dark
+              : (semanticColorModePacks.Dark[name] !== undefined ? semanticColorModePacks.Dark[name] : normalized.Light[name]);
+            return;
+          }
+          normalized.Light[name] = value;
+          normalized.Dark[name] = semanticColorModePacks.Dark[name] !== undefined ? semanticColorModePacks.Dark[name] : value;
+        });
+
+        if (!Object.keys(normalized.Light).length) {
+          defaults.semanticColor.forEach(function (row) {
+            normalized.Light[row[0]] = semanticColorModePacks.Light[row[0]] !== undefined ? semanticColorModePacks.Light[row[0]] : row[1];
+            normalized.Dark[row[0]] = semanticColorModePacks.Dark[row[0]] !== undefined ? semanticColorModePacks.Dark[row[0]] : normalized.Light[row[0]];
+          });
+        }
+
+        return normalized;
       }
 
       function listValues(id) {
@@ -2008,6 +2373,64 @@ var defaults = {
         suggestionPopover.innerHTML = "";
         suggestionPopover.classList.remove("open");
         suggestionPopover.setAttribute("aria-hidden", "true");
+      }
+
+      function setImportMenuOpen(open) {
+        if (!importMenu || !loadSessionButton) return;
+        var nextOpen = !!open;
+        importMenu.hidden = !nextOpen;
+        loadSessionButton.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+      }
+
+      function setSaveMenuOpen(open) {
+        if (!saveMenu || !saveSessionButton) return;
+        var nextOpen = !!open;
+        saveMenu.hidden = !nextOpen;
+        saveSessionButton.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+      }
+
+      async function readSelectedFileText(file) {
+        return await file.text();
+      }
+
+      async function importTokensJsonFile(file) {
+        var text = await readSelectedFileText(file);
+        var tokens = JSON.parse(text);
+        generateButton.disabled = true;
+        if (importDashboardButton) importDashboardButton.disabled = true;
+        parent.postMessage({
+          pluginMessage: { type: "import-tokens", tokens: tokens, options: options() }
+        }, "*");
+      }
+
+      async function importSessionMarkdownFile(file) {
+        var markdown = await readSelectedFileText(file);
+        var payload = parseSessionMarkdown(markdown);
+        applySessionPayload(payload);
+        var importedName = (file.name || "imported-session").replace(/\.(md|markdown)$/i, "") || "Imported session";
+        var importedRecord = createSessionRecord(importedName, payload, markdown);
+        saveSessionRecord(importedRecord);
+        selectedSavedSessionId = importedRecord.id;
+        setStatus("Session markdown loaded: " + file.name, "ok");
+      }
+
+      async function handleSessionImportFile(file) {
+        var fileName = String(file && file.name || "");
+        var mimeType = String(file && file.type || "");
+        var isJson = /\.json$/i.test(fileName) || /\bjson\b/i.test(mimeType);
+        if (isJson) {
+          try {
+            await importTokensJsonFile(file);
+          } catch (error) {
+            setStatus("Invalid JSON: " + (error && error.message ? error.message : String(error)), "error");
+          }
+          return;
+        }
+        try {
+          await importSessionMarkdownFile(file);
+        } catch (error) {
+          setStatus("Invalid session markdown: " + (error && error.message ? error.message : String(error)), "error");
+        }
       }
 
       function positionSuggestions(inputEl) {
@@ -2130,6 +2553,12 @@ var defaults = {
         return el;
       }
 
+      function fontFamilyInput(value) {
+        var el = input(value === undefined ? "" : value, "text", "fontFamilyNames", "font family");
+        el.setAttribute("spellcheck", "false");
+        return el;
+      }
+
       function field(kind, child) {
         var wrapper = document.createElement("div");
         wrapper.className = "field field-" + kind;
@@ -2141,6 +2570,7 @@ var defaults = {
         close: { body: "<path fill=\"currentColor\" d=\"M17.414 16L24 9.414L22.586 8L16 14.586L9.414 8L8 9.414L14.586 16L8 22.586L9.414 24L16 17.414L22.586 24L24 22.586z\"/>", width: 32, height: 32 },
         add: { body: "<path fill=\"currentColor\" d=\"M17 15V8h-2v7H8v2h7v7h2v-7h7v-2z\"/>", width: 32, height: 32 },
         subtract: { body: "<path fill=\"currentColor\" d=\"M8 15h16v2H8z\"/>", width: 32, height: 32 },
+        import: { body: "<path fill=\"currentColor\" d=\"M15 4h2v12.17l3.59-3.58L22 14l-6 6l-6-6l1.41-1.41L15 16.17z\"/><path fill=\"currentColor\" d=\"M6 22h20v2H6z\"/>", width: 32, height: 32 },
         information: { body: "<path fill=\"currentColor\" d=\"M17 22v-8h-4v2h2v6h-3v2h8v-2zM16 8a1.5 1.5 0 1 0 1.5 1.5A1.5 1.5 0 0 0 16 8\"/><path fill=\"currentColor\" d=\"M16 30a14 14 0 1 1 14-14a14 14 0 0 1-14 14m0-26a12 12 0 1 0 12 12A12 12 0 0 0 16 4\"/>", width: 32, height: 32 },
         export: { body: "<path fill=\"currentColor\" d=\"M26 24v4H6v-4H4v4l.008-.005A2 2 0 0 0 6 30h20a2 2 0 0 0 2-2v-4ZM6 12l1.411 1.405L15 5.825V24h2V5.825l7.591 7.58L26 12L16 2z\"/>", width: 32, height: 32 },
         "trash-can": { body: "<path fill=\"currentColor\" d=\"M12 12h2v12h-2zm6 0h2v12h-2z\"/><path fill=\"currentColor\" d=\"M4 6v2h2v20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8h2V6Zm4 22V8h16v20Zm4-26h8v2h-8z\"/>", width: 32, height: 32 }
@@ -2190,6 +2620,15 @@ var defaults = {
         row.className = "token-row " + className;
         row.appendChild(field("token", input(name || "", "text", null, "token name")));
         row.appendChild(field(list ? "ref" : "value", input(value === undefined ? "" : value, valueType || "text", list, list ? "reference" : "value")));
+        addRemove(row);
+        container.appendChild(row);
+      }
+
+      function addFontFamilyPair(container, name, value) {
+        var row = document.createElement("div");
+        row.className = "token-row cols-2";
+        row.appendChild(field("token", input(name || "", "text", null, "token name")));
+        row.appendChild(field("value", fontFamilyInput(value)));
         addRemove(row);
         container.appendChild(row);
       }
@@ -2547,7 +2986,6 @@ var defaults = {
         containers.brandColors.innerHTML = "";
         containers.neutralColors.innerHTML = "";
         containers.statusColors.innerHTML = "";
-        tonePreview.innerHTML = "";
         Object.keys(canonical).forEach(function (tokenName) {
           if (isNeutralColorToken(tokenName)) {
             addFoundationColorRow(containers.neutralColors, tokenName, canonical[tokenName], "color");
@@ -2555,14 +2993,6 @@ var defaults = {
             addFoundationColorRow(containers.statusColors, tokenName, canonical[tokenName], "color");
           } else {
             addFoundationColorRow(containers.brandColors, tokenName, canonical[tokenName], "color");
-            var match = tokenName.match(/\.(100|300|500|700|900)$/);
-            if (!match) return;
-            if (brandPackNameFromToken(tokenName) !== selectedBrandPackName) return;
-            var chip = document.createElement("div");
-            chip.className = "tone-chip";
-            chip.style.background = canonical[tokenName];
-            chip.textContent = tokenName + " " + canonical[tokenName];
-            tonePreview.appendChild(chip);
           }
         });
         ensureNeutralRows();
@@ -2573,7 +3003,6 @@ var defaults = {
       function setBrandColorsCollapsed(collapsed) {
         brandColorsCollapsed = !!collapsed;
         containers.brandColors.hidden = brandColorsCollapsed;
-        tonePreview.hidden = brandColorsCollapsed;
         toggleBrandColorsButton.textContent = brandColorsCollapsed ? "Expand Brand Colors" : "Collapse Brand Colors";
       }
 
@@ -2586,7 +3015,6 @@ var defaults = {
         var rawName = mainColorNameInput.value.trim();
         if (!rawName) {
           containers.brandColors.innerHTML = "";
-          tonePreview.innerHTML = "";
           return;
         }
         var nextBaseHex = rgbToHex(hexToRgb(mainColorValueInput.value || "#E8341C"));
@@ -2705,13 +3133,15 @@ var defaults = {
         defaults.foundationSize.forEach(function (row) { addPair(containers.foundationSize, "cols-2", row[0], row[1], "number"); });
         defaults.foundationRadius.forEach(function (row) { addPair(containers.foundationRadius, "cols-2", row[0], row[1], "number"); });
         defaults.foundationOpacity.forEach(function (row) { addPair(containers.foundationOpacity, "cols-2", row[0], row[1], "number"); });
-        defaults.semanticColor.forEach(function (row) { addPair(containers.semanticColors, "cols-2", row[0], row[1], "text", "colorRefs"); });
+        semanticColorModes = normalizeSemanticColorModes({});
+        setSelectedGenerationModes(["Light", "Dark"]);
+        renderSemanticColorMode("Light");
         defaults.semanticSpacing.forEach(function (row) { addPair(containers.semanticSpacing, "cols-2", row[0], row[1], "text", "spaceRefs"); });
         defaults.semanticSize.forEach(function (row) { addPair(containers.semanticSize, "cols-2", row[0], row[1], "text", "sizeRefs"); });
         defaults.semanticRadius.forEach(function (row) { addPair(containers.semanticRadius, "cols-2", row[0], row[1], "text", "radiusRefs"); });
         defaults.semanticOpacity.forEach(function (row) { addPair(containers.semanticOpacity, "cols-2", row[0], row[1], "text", "opacityRefs"); });
         defaults.semanticShadow.forEach(function (row) { addPair(containers.semanticShadow, "cols-2", row[0], row[1], "text"); });
-        defaults.text.family.forEach(function (row) { addPair(containers.fontFamily, "cols-2", row[0], row[1]); });
+        defaults.text.family.forEach(function (row) { addFontFamilyPair(containers.fontFamily, row[0], row[1]); });
         defaults.text.size.forEach(function (row) { addPair(containers.fontSize, "cols-2", row[0], row[1], "number"); });
         defaults.text.weight.forEach(function (row) { addPair(containers.fontWeight, "cols-2", row[0], row[1], "number"); });
         defaults.text.lineHeight.forEach(function (row) { addPair(containers.fontLineHeight, "cols-2", row[0], row[1], "text"); });
@@ -2752,6 +3182,22 @@ var defaults = {
       }
 
       function buildSetup() {
+        storeCurrentSemanticColorMode();
+        var semanticColor = {};
+        var semanticColorNames = {};
+        Object.keys(semanticColorModes.Light || {}).forEach(function (name) { semanticColorNames[name] = true; });
+        Object.keys(semanticColorModes.Dark || {}).forEach(function (name) { semanticColorNames[name] = true; });
+        Object.keys(semanticColorNames).forEach(function (name) {
+          semanticColor[name] = {
+            Light: semanticColorModes.Light && semanticColorModes.Light[name] !== undefined ? semanticColorModes.Light[name] : "",
+            Dark: semanticColorModes.Dark && semanticColorModes.Dark[name] !== undefined ? semanticColorModes.Dark[name] : (
+              semanticColorModePacks.Dark[name] !== undefined
+                ? semanticColorModePacks.Dark[name]
+                : (semanticColorModes.Light && semanticColorModes.Light[name] !== undefined ? semanticColorModes.Light[name] : "")
+            )
+          };
+        });
+
         return {
           foundation: {
             color: readPairs(containers.foundationColors, false),
@@ -2769,7 +3215,7 @@ var defaults = {
             }
           },
           semantic: {
-            color: readPairs(containers.semanticColors, false),
+            color: semanticColor,
             spacing: readPairs(containers.semanticSpacing, false),
             size: readPairs(containers.semanticSize, false),
             radius: readPairs(containers.semanticRadius, false),
@@ -2848,7 +3294,6 @@ var defaults = {
         containers.brandColors.innerHTML = "";
         containers.neutralColors.innerHTML = "";
         containers.statusColors.innerHTML = "";
-        tonePreview.innerHTML = "";
         if (colorEntries.length) {
           var seenColors = {};
           colorEntries.forEach(function (row) {
@@ -2890,7 +3335,8 @@ var defaults = {
         fillPairGroup(containers.foundationSize, foundation.size, defaults.foundationSize, "number");
         fillPairGroup(containers.foundationRadius, foundation.radius, defaults.foundationRadius, "number");
         fillPairGroup(containers.foundationOpacity, foundation.opacity, defaults.foundationOpacity, "number");
-        fillPairGroup(containers.semanticColors, semantic.color, defaults.semanticColor, "text", "colorRefs");
+        semanticColorModes = normalizeSemanticColorModes(semantic.color);
+        renderSemanticColorMode(getCurrentMode());
         fillPairGroup(containers.semanticSpacing, semantic.spacing, defaults.semanticSpacing, "text", "spaceRefs");
         fillPairGroup(containers.semanticSize, semantic.size, defaults.semanticSize, "text", "sizeRefs");
         fillPairGroup(containers.semanticRadius, semantic.radius, defaults.semanticRadius, "text", "radiusRefs");
@@ -2914,7 +3360,11 @@ var defaults = {
             if (orderedKeys.indexOf(key) === -1) orderedKeys.push(key);
           });
           orderedKeys.forEach(function (key) {
-            addPair(container, "cols-2", key, values[key], valueType || "text");
+            if (container === containers.fontFamily) {
+              addFontFamilyPair(container, key, values[key]);
+            } else {
+              addPair(container, "cols-2", key, values[key], valueType || "text");
+            }
           });
         }
 
@@ -2950,6 +3400,7 @@ var defaults = {
         var paletteInput = document.getElementById("paletteName");
         if (paletteInput) paletteInput.value = "Foundation";
         document.getElementById("themeName").value = opts.themeName || "Theme";
+        setSelectedGenerationModes(opts.modeNames || (opts.modeName ? [opts.modeName] : ["Light", "Dark"]));
         setMode(opts.modeName || "Light", false);
 
         if (payload.activeTab) setActiveTokenTab(payload.activeTab);
@@ -3039,18 +3490,6 @@ var defaults = {
           search.className = "session-menu-search";
           search.placeholder = "Search sessions";
           toolbar.appendChild(search);
-
-          var actionRow = document.createElement("div");
-          actionRow.className = "session-menu-actions-row";
-          appendActionButton(actionRow, "Import .md", function () {
-            sessionFileInput.click();
-          });
-          appendActionButton(actionRow, "Export current .md", function () {
-            var name = currentSessionName();
-            downloadTextFile(slugifyFileName(name) + ".md", buildSessionMarkdown(name, currentSessionPayload()));
-            setStatus("Current session exported: " + slugifyFileName(name) + ".md", "ok");
-          });
-          toolbar.appendChild(actionRow);
           sessionSelectMenu.appendChild(toolbar);
 
           list = document.createElement("span");
@@ -3126,17 +3565,29 @@ var defaults = {
 
           var actions = document.createElement("span");
           actions.className = "session-menu-actions";
-          var exportButton = document.createElement("button");
-          exportButton.type = "button";
-          setIcon(exportButton, "export");
-          exportButton.title = "Export " + (session.name || "Session");
-          exportButton.setAttribute("aria-label", "Export " + (session.name || "Session"));
-          exportButton.addEventListener("click", function (event) {
+          var exportMarkdownButton = document.createElement("button");
+          exportMarkdownButton.type = "button";
+          setIcon(exportMarkdownButton, "export");
+          exportMarkdownButton.title = "Export " + (session.name || "Session") + " as .md";
+          exportMarkdownButton.setAttribute("aria-label", "Export " + (session.name || "Session") + " as .md");
+          exportMarkdownButton.innerHTML += "<span class=\"session-menu-action-label\">.md</span>";
+          exportMarkdownButton.addEventListener("click", function (event) {
             event.stopPropagation();
             downloadTextFile(session.fileName || slugifyFileName(session.name) + ".md", session.markdown || buildSessionMarkdown(session.name, session.payload));
           });
+          var exportJsonButton = document.createElement("button");
+          exportJsonButton.type = "button";
+          setIcon(exportJsonButton, "export");
+          exportJsonButton.title = "Export " + (session.name || "Session") + " as .json";
+          exportJsonButton.setAttribute("aria-label", "Export " + (session.name || "Session") + " as .json");
+          exportJsonButton.innerHTML += "<span class=\"session-menu-action-label\">.json</span>";
+          exportJsonButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            downloadTextFile(slugifyFileName(session.name || "session") + ".json", JSON.stringify(session.payload || {}, null, 2) + "\n");
+          });
           var deleteButton = document.createElement("button");
           deleteButton.type = "button";
+          deleteButton.className = "session-menu-icon-only";
           setIcon(deleteButton, "trash-can");
           deleteButton.title = "Delete " + (session.name || "Session");
           deleteButton.setAttribute("aria-label", "Delete " + (session.name || "Session"));
@@ -3144,7 +3595,8 @@ var defaults = {
             event.stopPropagation();
             deleteSavedSession(session.id);
           });
-          actions.appendChild(exportButton);
+          actions.appendChild(exportMarkdownButton);
+          actions.appendChild(exportJsonButton);
           actions.appendChild(deleteButton);
           row.appendChild(actions);
           list.appendChild(row);
@@ -3163,6 +3615,7 @@ var defaults = {
       }
 
       function updateSessionOptionState() {
+        if (saveCurrentSessionButton) saveCurrentSessionButton.disabled = !selectedSavedSessionId;
         if (!sessionSelectMenu) return;
         Array.prototype.forEach.call(sessionSelectMenu.querySelectorAll("[data-session-id]"), function (item) {
           item.classList.toggle("active", item.getAttribute("data-session-id") === selectedSavedSessionId);
@@ -3219,6 +3672,26 @@ var defaults = {
         parent.postMessage({ pluginMessage: { type: "save-session", session: record } }, "*");
       }
 
+      function saveCurrentSessionRecord() {
+        var selectedSession = savedSessions.find(function (session) { return session && session.id === selectedSavedSessionId; });
+        if (!selectedSession) {
+          openSaveModal();
+          setStatus("Choose a saved session or use Save as new.", "error");
+          return;
+        }
+        var payload = currentSessionPayload();
+        var record = {
+          id: selectedSession.id,
+          name: selectedSession.name,
+          fileName: selectedSession.fileName || slugifyFileName(selectedSession.name) + ".md",
+          savedAt: new Date().toISOString(),
+          payload: payload,
+          markdown: buildSessionMarkdown(selectedSession.name, payload)
+        };
+        saveSessionRecord(record);
+        setStatus("Session updated: " + record.name, "ok");
+      }
+
       function deleteSavedSession(id) {
         if (selectedSavedSessionId === id) selectedSavedSessionId = "";
         setSavedSessions(savedSessions.filter(function (item) { return item && item.id !== id; }));
@@ -3264,6 +3737,20 @@ var defaults = {
         }
       }
 
+      function applyAvailableFonts(message) {
+        var families = Array.isArray(message && message.families) ? message.families.slice() : [];
+        families = families
+          .map(function (family) { return String(family || "").trim(); })
+          .filter(Boolean)
+          .filter(function (family, index, items) { return items.indexOf(family) === index; })
+          .sort(function (a, b) { return a.localeCompare(b); });
+        availableFontFamilies = families;
+        availableFontStylesByFamily = message && message.stylesByFamily && typeof message.stylesByFamily === "object"
+          ? message.stylesByFamily
+          : {};
+        fillDatalist("fontFamilyNames", availableFontFamilies);
+      }
+
       function prefixedPairs(container, prefix, legacyPrefix) {
         var values = [];
         Array.prototype.forEach.call(container.children, function (row) {
@@ -3290,6 +3777,7 @@ var defaults = {
         fillDatalist("radiusRefs", prefixedPairs(containers.semanticRadius, "radius."));
         fillDatalist("opacityRefs", prefixedPairs(containers.semanticOpacity, "opacity."));
         fillDatalist("shadowRefs", prefixedPairs(containers.semanticShadow, "shadow."));
+        fillDatalist("fontFamilyNames", availableFontFamilies);
         fillDatalist("fontFamilyRefs", prefixedPairs(containers.fontFamily, "font.family.", "family."));
         fillDatalist("fontSizeRefs", prefixedPairs(containers.fontSize, "font.size.", "size."));
         fillDatalist("fontWeightRefs", prefixedPairs(containers.fontWeight, "font.weight.", "weight."));
@@ -3306,6 +3794,7 @@ var defaults = {
           overwrite: document.getElementById("overwrite").checked,
           paletteName: "Foundation",
           themeName: document.getElementById("themeName").value.trim() || "Theme",
+          modeNames: getSelectedGenerationModes(),
           modeName: (modeInput && modeInput.value ? modeInput.value.trim() : "Light") || "Light"
         };
       }
@@ -3436,6 +3925,7 @@ var defaults = {
       document.getElementById("addSemanticOpacity").addEventListener("click", function () { addPair(containers.semanticOpacity, "cols-2", "", "opacity.12", "text", "opacityRefs"); refreshLists(); });
       document.getElementById("addSemanticShadow").addEventListener("click", function () { addPair(containers.semanticShadow, "cols-2", "", "0px 4px 12px 0px rgba(18, 21, 27, 0.12)", "text"); refreshLists(); });
       document.getElementById("addSemanticText").addEventListener("click", function () { addTextStyle(); refreshLists(); });
+      bindGenerationModeCheckboxes();
       sortSemanticTextButton.addEventListener("click", function () {
         sortSemanticTextRows();
         refreshLists();
@@ -3455,7 +3945,11 @@ var defaults = {
           var map = { family: containers.fontFamily, size: containers.fontSize, weight: containers.fontWeight, lineHeight: containers.fontLineHeight, letterSpacing: containers.fontLetterSpacing, textTransform: containers.fontTextTransform };
           var prefixes = { family: "font.family.", size: "font.size.", weight: "font.weight.", lineHeight: "font.lineHeight.", letterSpacing: "font.letterSpacing.", textTransform: "font.textTransform." };
           var numeric = kind !== "family" && kind !== "textTransform" && kind !== "lineHeight";
-          addPair(map[kind], "cols-2", prefixes[kind] || "", numeric ? 0 : "", numeric ? "number" : "text");
+          if (kind === "family") {
+            addFontFamilyPair(map[kind], prefixes[kind] || "", "");
+          } else {
+            addPair(map[kind], "cols-2", prefixes[kind] || "", numeric ? 0 : "", numeric ? "number" : "text");
+          }
           refreshLists();
         });
       });
@@ -3492,6 +3986,12 @@ var defaults = {
         if (sessionSelectMenu && !sessionSelectMenu.hidden && !sessionSelectMenu.contains(event.target) && event.target !== sessionSelectButton) {
           setSessionSelectOpen(false);
         }
+        if (saveMenu && !saveMenu.hidden && !saveMenu.contains(event.target) && event.target !== saveSessionButton && !saveSessionButton.contains(event.target)) {
+          setSaveMenuOpen(false);
+        }
+        if (importMenu && !importMenu.hidden && !importMenu.contains(event.target) && event.target !== loadSessionButton && !loadSessionButton.contains(event.target)) {
+          setImportMenuOpen(false);
+        }
         if (!suggestionPopover || !suggestionPopover.classList.contains("open")) return;
         if (suggestionPopover.contains(event.target)) return;
         if (activeSuggestionInput === event.target) return;
@@ -3501,25 +4001,13 @@ var defaults = {
       fileInput.addEventListener("change", async function () {
         var file = fileInput.files && fileInput.files[0];
         if (!file) return;
-        var text;
         try {
-          text = await file.text();
-        } catch (error) {
-          setStatus("Could not read file: " + error.message, "error");
-          return;
-        }
-        var tokens;
-        try {
-          tokens = JSON.parse(text);
+          await importTokensJsonFile(file);
         } catch (error) {
           setStatus("Invalid JSON: " + error.message, "error");
-          return;
+        } finally {
+          fileInput.value = "";
         }
-        generateButton.disabled = true;
-        if (importDashboardButton) importDashboardButton.disabled = true;
-        parent.postMessage({
-          pluginMessage: { type: "import-tokens", tokens: tokens, options: options() }
-        }, "*");
       });
 
       resetButton.addEventListener("click", function () {
@@ -3542,11 +4030,35 @@ var defaults = {
       });
 
       saveSessionButton.addEventListener("click", function () {
+        setSessionSelectOpen(false);
+        setImportMenuOpen(false);
+        setSaveMenuOpen(saveMenu.hidden);
+      });
+
+      saveAsNewSessionButton.addEventListener("click", function () {
+        setSaveMenuOpen(false);
         openSaveModal();
       });
 
+      saveCurrentSessionButton.addEventListener("click", function () {
+        setSaveMenuOpen(false);
+        saveCurrentSessionRecord();
+      });
+
       loadSessionButton.addEventListener("click", function () {
+        setSaveMenuOpen(false);
+        setSessionSelectOpen(false);
+        setImportMenuOpen(importMenu.hidden);
+      });
+
+      importSessionMarkdownButton.addEventListener("click", function () {
+        setImportMenuOpen(false);
         sessionFileInput.click();
+      });
+
+      importSessionJsonButton.addEventListener("click", function () {
+        setImportMenuOpen(false);
+        fileInput.click();
       });
 
       sessionSelect.addEventListener("change", function () {
@@ -3569,16 +4081,7 @@ var defaults = {
         var file = sessionFileInput.files && sessionFileInput.files[0];
         if (!file) return;
         try {
-          var markdown = await file.text();
-          var payload = parseSessionMarkdown(markdown);
-          applySessionPayload(payload);
-          var importedName = (file.name || "imported-session").replace(/\.(md|markdown)$/i, "") || "Imported session";
-          var importedRecord = createSessionRecord(importedName, payload, markdown);
-          saveSessionRecord(importedRecord);
-          selectedSavedSessionId = importedRecord.id;
-          setStatus("Session markdown loaded: " + file.name, "ok");
-        } catch (error) {
-          setStatus("Invalid session markdown: " + (error && error.message ? error.message : String(error)), "error");
+          await handleSessionImportFile(file);
         } finally {
           sessionFileInput.value = "";
         }
@@ -3683,9 +4186,18 @@ var defaults = {
         if (message.type === "delete-session-error") {
           setStatus(message.error || "Could not delete session.", "error");
         }
+        if (message.type === "available-fonts") {
+          applyAvailableFonts(message);
+        }
+        if (message.type === "available-fonts-error") {
+          setStatus(message.error || "Could not load available fonts.", "error");
+        }
       };
 
       setIcon(addBrandPackButton, "add");
+      setSaveMenuOpen(false);
+      setIcon(loadSessionButton.querySelector(".button-icon"), "import");
+      setImportMenuOpen(false);
       renderHintTipIcons();
       resetFields();
       setSavedSessions(readUiFallbackSessions());
@@ -3694,6 +4206,7 @@ var defaults = {
       setSemanticMappingCollapsed(false);
       var initialFallbackDefault = readUiFallbackDefault();
       if (initialFallbackDefault) applySessionPayload(initialFallbackDefault);
+      parent.postMessage({ pluginMessage: { type: "load-fonts" } }, "*");
       parent.postMessage({ pluginMessage: { type: "load-sessions" } }, "*");
       parent.postMessage({ pluginMessage: { type: "load-default" } }, "*");
 </script>

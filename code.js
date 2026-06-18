@@ -62,6 +62,45 @@ const messageHandlers = {
       figma.ui.postMessage({ type: "load-sessions-error", error: errorMessage });
     }
   },
+  "load-fonts": async () => {
+    try {
+      const availableFonts = typeof figma.listAvailableFontsAsync === "function"
+        ? await figma.listAvailableFontsAsync()
+        : [];
+      const families = [];
+      const stylesByFamily = {};
+      const seenFamilies = new Set();
+
+      availableFonts.forEach((entry) => {
+        const fontName = entry && entry.fontName ? entry.fontName : null;
+        const family = fontName && fontName.family ? String(fontName.family).trim() : "";
+        const style = fontName && fontName.style ? String(fontName.style).trim() : "";
+        if (!family) return;
+        if (!seenFamilies.has(family)) {
+          seenFamilies.add(family);
+          families.push(family);
+        }
+        if (!stylesByFamily[family]) stylesByFamily[family] = [];
+        if (style && stylesByFamily[family].indexOf(style) === -1) {
+          stylesByFamily[family].push(style);
+        }
+      });
+
+      families.sort((a, b) => a.localeCompare(b));
+      Object.keys(stylesByFamily).forEach((family) => {
+        stylesByFamily[family].sort((a, b) => a.localeCompare(b));
+      });
+
+      figma.ui.postMessage({
+        type: "available-fonts",
+        families,
+        stylesByFamily
+      });
+    } catch (error) {
+      const errorMessage = error && error.message ? error.message : String(error);
+      figma.ui.postMessage({ type: "available-fonts-error", error: errorMessage });
+    }
+  },
   "save-session": async (message) => {
     try {
       const session = message.session;
@@ -265,8 +304,12 @@ function buildTokensFromSetup(setup, options) {
   const paletteName = options.paletteName || "Foundation";
   const themeName = options.themeName || "Theme";
   const modeName = options.modeName || "Light";
+  const semanticColorModes = collectSemanticColorModes(
+    (setup.semantic || {}).color || (setup.semantic || {}).colors || {},
+    Array.isArray(options.modeNames) && options.modeNames.length ? options.modeNames : [modeName]
+  );
   const palette = { $collection: { modes: ["Value"] } };
-  const theme = { $collection: { modes: [modeName] } };
+  const theme = { $collection: { modes: semanticColorModes } };
   const foundation = setup.global || setup.foundation || {};
   const semantic = setup.semantic || {};
   const semanticColorRefs = new Set();
@@ -320,7 +363,7 @@ function buildTokensFromSetup(setup, options) {
   Object.entries(semantic.color || semantic.colors || {}).forEach(([name, value]) => {
     setDtcgPath(theme, tokenPath(normalizeSemanticName("color", name)), {
       $type: "color",
-      $value: toTokenValue(value, paletteName, "color")
+      $value: toModeAwareTokenValue(value, semanticColorModes, paletteName, "color")
     });
   });
 
@@ -385,6 +428,49 @@ function buildTokensFromSetup(setup, options) {
   output[paletteName] = palette;
   output[themeName] = theme;
   return output;
+}
+
+function collectSemanticColorModes(semanticColors, preferredModes) {
+  const explicitModes = Array.isArray(preferredModes) && preferredModes.length
+    ? preferredModes
+    : (preferredModes ? [preferredModes] : []);
+  const modes = [];
+  const seen = new Set();
+
+  explicitModes.forEach((modeName) => {
+    if (!modeName || seen.has(modeName)) return;
+    seen.add(modeName);
+    modes.push(modeName);
+  });
+
+  if (modes.length) return modes;
+
+  Object.values(semanticColors || {}).forEach((value) => {
+    if (!isModeValueMap(value)) return;
+    Object.keys(value).forEach((modeName) => {
+      if (!modeName || seen.has(modeName)) return;
+      seen.add(modeName);
+      modes.push(modeName);
+    });
+  });
+
+  return modes.length ? modes : ["Light"];
+}
+
+function toModeAwareTokenValue(value, modeNames, paletteName, refType) {
+  if (!isModeValueMap(value)) return toTokenValue(value, paletteName, refType);
+
+  const entries = {};
+  modeNames.forEach((modeName) => {
+    if (value[modeName] === undefined) return;
+    entries[modeName] = toTokenValue(value[modeName], paletteName, refType);
+  });
+
+  if (!Object.keys(entries).length) {
+    return toTokenValue(selectModeValue(value), paletteName, refType);
+  }
+
+  return entries;
 }
 
 function addTextFoundationGroup(palette, groupName, values, type) {
@@ -725,7 +811,7 @@ async function setVariableValues(collections, context) {
         const modeId = record.modeIdByName.get(modeName);
         if (!modeId) continue;
 
-        const value = resolveVariableValue(token, context);
+        const value = resolveVariableValue(token, context, modeName);
         if (value === undefined) continue;
 
         try {
@@ -738,8 +824,8 @@ async function setVariableValues(collections, context) {
   }
 }
 
-function resolveVariableValue(token, context) {
-  const value = token.value;
+function resolveVariableValue(token, context, modeName) {
+  const value = selectModeValue(token.value, modeName);
   if (isReference(value)) {
     const target = context.variableByRef.get(referenceToRef(value));
     if (!target) {
@@ -1064,35 +1150,52 @@ function referenceToRef(value) {
   return value.trim().slice(1, -1);
 }
 
-function resolveConcreteValue(token, context, seen = new Set()) {
+function resolveConcreteValue(token, context, seen = new Set(), modeName) {
   if (!token) return undefined;
   if (seen.has(token.ref)) {
     context.warnings.push(`Circular reference found at ${token.ref}.`);
     return undefined;
   }
 
-  if (isReference(token.value)) {
-    const targetRef = referenceToRef(token.value);
+  const value = selectModeValue(token.value, modeName);
+
+  if (isReference(value)) {
+    const targetRef = referenceToRef(value);
     const target = context.tokenByRef.get(targetRef);
     if (!target) {
-      context.warnings.push(`Unresolved concrete value alias ${token.value} at ${token.ref}.`);
+      context.warnings.push(`Unresolved concrete value alias ${value} at ${token.ref}.`);
       return undefined;
     }
     seen.add(token.ref);
-    return resolveConcreteValue(target, context, seen);
+    return resolveConcreteValue(target, context, seen, modeName);
   }
 
-  return token.value;
+  return value;
 }
 
-function resolveConcreteColor(token, context) {
-  return toFigmaColor(resolveConcreteValue(token, context));
+function resolveConcreteColor(token, context, modeName) {
+  return toFigmaColor(resolveConcreteValue(token, context, new Set(), modeName));
 }
 
-function resolveAlpha(token, context) {
-  const value = resolveConcreteValue(token, context);
+function resolveAlpha(token, context, modeName) {
+  const value = resolveConcreteValue(token, context, new Set(), modeName);
   if (value && typeof value === "object" && typeof value.alpha === "number") return value.alpha;
   return 1;
+}
+
+function isModeValueMap(value) {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return false;
+  if (value.components || value.colorSpace || value.hex) return false;
+  return true;
+}
+
+function selectModeValue(value, modeName) {
+  if (!isModeValueMap(value)) return value;
+  if (modeName && value[modeName] !== undefined) return value[modeName];
+  if (value.Light !== undefined) return value.Light;
+  if (value.Dark !== undefined) return value.Dark;
+  const firstModeName = Object.keys(value)[0];
+  return firstModeName ? value[firstModeName] : undefined;
 }
 
 function toFigmaColor(value) {
