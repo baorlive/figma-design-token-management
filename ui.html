@@ -1,0 +1,3657 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        font-size: 12px;
+        --bg-app: #090b0f;
+        --bg-panel: #12161b;
+        --bg-panel-2: #181e25;
+        --bg-elevated: #202731;
+        --bg-hover: rgba(255, 255, 255, 0.055);
+        --bg-selected: rgba(255, 255, 255, 0.075);
+        --bg-selected-strong: rgba(255, 255, 255, 0.13);
+        --border-subtle: rgba(236, 244, 255, 0.095);
+        --border-strong: rgba(236, 244, 255, 0.16);
+        --text-primary: rgba(255, 255, 255, 0.94);
+        --text-secondary: rgba(236, 244, 255, 0.72);
+        --text-muted: rgba(226, 235, 248, 0.52);
+        --text-disabled: rgba(226, 235, 248, 0.32);
+        --accent: #d7e0ea;
+        --accent-soft: rgba(203, 213, 225, 0.1);
+        --accent-border: rgba(203, 213, 225, 0.28);
+        --cta: #f97316;
+        --cta-hover: #fb923c;
+        --cta-border: rgba(251, 146, 60, 0.5);
+        --cta-text: #170f08;
+        --button-bg: #161c23;
+        --button-bg-hover: #eef2f7;
+        --button-border: rgba(236, 244, 255, 0.18);
+        --button-text: rgba(255, 255, 255, 0.92);
+        --button-hover-text: #111827;
+        --button-secondary-bg: #ffffff;
+        --button-secondary-border: rgba(255, 255, 255, 0.86);
+        --button-secondary-text: #111827;
+        --danger: #e45d4e;
+        --danger-soft: rgba(228, 93, 78, 0.14);
+        --radius-sm: 8px;
+        --radius-md: 12px;
+        --radius-lg: 16px;
+        --radius-xl: 22px;
+        --shadow-elevated: 0 20px 52px rgba(0, 0, 0, 0.44);
+        color: var(--text-primary);
+        background: var(--bg-app);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        padding: 16px 16px 18px;
+        overflow-y: scroll;
+        scrollbar-gutter: stable;
+        color: var(--text-primary);
+        background: linear-gradient(180deg, #0e1116 0%, var(--bg-app) 42%, #07090c 100%);
+      }
+      h1 { margin: 0; font-size: 18px; line-height: 1.2; font-weight: 650; letter-spacing: -0.01em; }
+      h2, h3 { margin: 0; }
+      p { margin: 0; color: var(--text-secondary); line-height: 1.5; }
+      label { display: grid; gap: 6px; color: var(--text-primary); font-weight: 600; }
+
+      input[type="text"],
+      input[type="number"],
+      input[type="color"],
+      select,
+      textarea {
+        width: 100%;
+        min-width: 0;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        min-height: 42px;
+        padding: 10px 12px;
+        color: var(--text-primary);
+        background: var(--bg-panel);
+        font: inherit;
+        transition: border-color 140ms ease, background-color 140ms ease, color 140ms ease;
+      }
+
+      input[type="color"] {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        padding: 3px;
+        border-radius: var(--radius-md);
+      }
+
+      input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+        border-radius: calc(var(--radius-md) - 3px);
+      }
+
+      input[type="color"]::-webkit-color-swatch {
+        border: 0;
+        border-radius: calc(var(--radius-md) - 3px);
+      }
+
+      input[type="color"]::-moz-color-swatch {
+        border: 0;
+        border-radius: calc(var(--radius-md) - 3px);
+      }
+
+      textarea {
+        min-height: 152px;
+        resize: vertical;
+        font: 11px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      }
+
+      textarea:focus,
+      button:focus,
+      input:focus,
+      select:focus {
+        outline: none;
+        border-color: var(--accent-border);
+        box-shadow: 0 0 0 1px var(--accent-border);
+      }
+
+      .panel { display: grid; gap: 12px; }
+      .header-copy {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 16px;
+        min-height: 100%;
+      }
+
+      .header-copy h1 {
+        font-size: 28px;
+        line-height: 1.05;
+        font-weight: 700;
+      }
+
+      .header-copy p {
+        max-width: 560px;
+      }
+
+      main.panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-height: calc(100vh - 16px);
+      }
+      .panel { padding-bottom: 0; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        justify-content: start;
+        gap: 12px;
+      }
+      .row { display: flex; align-items: center; gap: 8px; }
+      .row.wrap { flex-wrap: wrap; }
+      .mode-toggle {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .mode-option {
+        min-height: 42px;
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.075);
+        color: var(--text-primary);
+      }
+
+      .mode-option.active {
+        border-color: transparent;
+        background: #ffffff;
+        color: #111827;
+      }
+
+      .mode-option:hover:not(:disabled) {
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.13);
+        color: var(--text-primary);
+      }
+
+      .checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text-secondary);
+        font-weight: 500;
+        user-select: none;
+      }
+
+      .checkbox input {
+        accent-color: #d8d8d8;
+      }
+
+      button {
+        appearance: none;
+        border: 1px solid var(--button-border);
+        border-radius: var(--radius-md);
+        min-height: 42px;
+        padding: 0 14px;
+        background: var(--button-bg);
+        color: var(--button-text);
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: background-color 140ms ease, border-color 140ms ease, color 140ms ease, opacity 140ms ease;
+      }
+
+      #generate.primary {
+        border-color: var(--cta-border);
+        background: var(--cta);
+        color: var(--cta-text);
+      }
+
+      #generate.primary:hover:not(:disabled) {
+        border-color: var(--cta-hover);
+        background: var(--cta-hover);
+      }
+
+      button.icon {
+        display: inline-grid;
+        place-items: center;
+        width: 40px;
+        padding: 0;
+      }
+
+      button.icon svg,
+      .brand-pack-add svg,
+      .brand-pack-delete svg,
+      .session-menu-actions button svg {
+        width: 16px;
+        height: 16px;
+        color: currentColor;
+        pointer-events: none;
+      }
+
+      button:disabled {
+        opacity: 0.48;
+        cursor: not-allowed;
+      }
+
+      button:hover:not(:disabled),
+      .session-menu-command:hover:not(:disabled) {
+        background: var(--button-bg-hover);
+        color: var(--button-hover-text);
+        border-color: var(--button-bg-hover);
+      }
+
+      .header-action-row button:not(.primary),
+      #saveSession {
+        border-color: var(--button-secondary-border);
+        background: var(--button-secondary-bg);
+        color: var(--button-secondary-text);
+      }
+
+      .token-tab:hover,
+      .brand-pack-tab:hover,
+      button.icon:hover:not(:disabled),
+      .session-select-button:hover:not(:disabled),
+      .session-select-option:hover:not(:disabled) {
+        color: var(--text-primary);
+        background: var(--bg-hover);
+      }
+
+      .token-tab,
+      .brand-pack-tab,
+      button.icon {
+        border-color: var(--border-subtle);
+        background: transparent;
+        color: var(--text-primary);
+      }
+
+      .token-tab:hover,
+      .brand-pack-tab:hover {
+        background: var(--bg-hover);
+      }
+
+      .token-tab:hover:not(.active) {
+        color: var(--button-hover-text);
+      }
+
+      details {
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        padding: 10px;
+      }
+
+      details[open] { background: var(--bg-panel); }
+
+      summary {
+        cursor: pointer;
+        font-weight: 700;
+      }
+
+      .section-body {
+        display: grid;
+        gap: 10px;
+        padding-top: 10px;
+      }
+
+      .table {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+        max-width: 100%;
+      }
+      [hidden] {
+        display: none !important;
+      }
+
+      .token-row {
+        display: grid;
+        gap: 8px;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .field {
+        display: block;
+        min-width: 0;
+      }
+
+      .field input {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .field-token input {
+        background: var(--bg-panel-2);
+        border-color: var(--border-strong);
+        font-weight: 650;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .field-value input {
+        border-color: var(--border-subtle);
+        background: var(--bg-panel);
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .field-ref input {
+        border-color: rgba(203, 213, 225, 0.22);
+        background: #1d242d;
+        color: #dbeafe;
+      }
+
+      .field-ref {
+        position: relative;
+      }
+
+      .field-ref.suggestion-active {
+        z-index: 121;
+      }
+
+      .field-ref.suggestion-active input {
+        position: relative;
+        border-color: rgba(203, 213, 225, 0.42);
+        background: #252d38;
+        color: #edf1ff;
+        box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.24), 0 12px 28px rgba(0, 0, 0, 0.28);
+      }
+
+      .cols-2 { grid-template-columns: minmax(0, 1fr) minmax(92px, 1fr) 36px; }
+      .cols-3 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(92px, 1fr) 36px; }
+      [data-token-panel="foundation-color"] .cols-2 {
+        grid-template-columns: minmax(0, 1fr) 42px 36px;
+        width: 100%;
+        max-width: 100%;
+      }
+      .cols-text { grid-template-columns: minmax(0, 1fr) 74px; align-items: start; }
+      .cols-text .field { grid-column: 1; }
+      .cols-text .row-actions {
+        grid-column: 2;
+        grid-row: 1;
+        display: grid;
+        grid-template-columns: 34px 34px;
+        gap: 6px;
+        align-self: center;
+      }
+
+      .cols-text .row-actions .icon {
+        width: 34px;
+        min-height: 40px;
+        height: 40px;
+        padding: 0;
+      }
+
+      #semanticText .token-row.semantic-text-row.row-collapsed .field-ref {
+        display: none;
+      }
+
+      .scroll {
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+
+      .hint {
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
+
+      .tone-setup {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 42px;
+        gap: 12px;
+        align-items: end;
+        width: min(100%, 498px);
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .tone-setup label {
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .tone-setup label:first-child {
+        grid-column: 1;
+      }
+
+      .tone-setup label:last-child {
+        grid-column: 2;
+        width: 42px;
+      }
+
+      .tone-setup input {
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      #mainColorName {
+        display: block;
+        width: 100%;
+        inline-size: 100%;
+        min-inline-size: 0;
+        max-inline-size: 400px;
+        flex: 0 1 auto;
+        box-shadow: none;
+      }
+
+      #mainColorName:focus {
+        border-color: var(--accent-border);
+        box-shadow: inset 0 0 0 1px var(--accent-border);
+      }
+
+      #mainColorValue {
+        display: block;
+        width: 42px;
+        inline-size: 42px;
+        min-inline-size: 42px;
+        max-inline-size: 42px;
+        justify-self: start;
+      }
+
+      .brand-pack-toolbar {
+        display: block;
+        min-width: 0;
+        width: 100%;
+      }
+
+      .brand-pack-tabs {
+        display: flex;
+        align-items: flex-start;
+        flex-wrap: wrap;
+        gap: 8px;
+        width: 100%;
+        min-width: 0;
+        overflow: visible;
+      }
+
+      .brand-pack-add {
+        display: inline-grid;
+        place-items: center;
+        width: 42px;
+        min-width: 42px;
+        max-width: 42px;
+        height: 42px;
+        min-height: 42px;
+        max-height: 42px;
+        aspect-ratio: 1 / 1;
+        padding: 0;
+        border-color: var(--border-subtle);
+        background: var(--bg-panel-2);
+        color: var(--text-primary);
+        flex: 0 0 auto;
+        order: -1;
+      }
+
+      .brand-pack-add:hover:not(:disabled) {
+        border-color: var(--button-bg-hover);
+        background: var(--button-bg-hover);
+        color: var(--button-hover-text);
+      }
+
+      .brand-pack-item {
+        display: inline-grid;
+        grid-template-columns: minmax(0, 1fr) 30px;
+        align-items: center;
+        gap: 2px;
+        min-width: 116px;
+        min-height: 42px;
+        height: 42px;
+        max-width: 220px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        background: rgba(236, 244, 255, 0.06);
+        overflow: hidden;
+      }
+
+      .brand-pack-item.active {
+        border-color: var(--border-subtle);
+        background: var(--bg-selected);
+        grid-template-columns: minmax(0, 1fr) 34px 30px;
+        min-width: 188px;
+        max-width: 280px;
+        min-height: 0;
+        height: auto;
+        max-height: none;
+        padding: 3px;
+        gap: 4px;
+      }
+
+      .brand-pack-tab {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 8px;
+        min-width: 0;
+        min-height: 40px;
+        height: 100%;
+        padding: 0 8px 0 10px;
+        border-color: transparent;
+        background: transparent;
+        color: var(--text-secondary);
+        text-align: left;
+      }
+
+      .brand-pack-tab.active {
+        color: var(--text-primary);
+      }
+
+      input.brand-pack-editor-name {
+        width: 100%;
+        min-width: 0;
+        min-height: 34px;
+        height: 34px;
+        max-height: 34px;
+        padding: 0 8px;
+        border: 0;
+        border-radius: calc(var(--radius-md) - 4px);
+        background: transparent;
+        color: var(--text-primary);
+        font: inherit;
+        font-weight: 600;
+        line-height: 34px;
+        box-shadow: none;
+        align-self: center;
+      }
+
+      .brand-pack-item.active .brand-pack-editor-name {
+        margin: 0;
+        background: rgba(0, 0, 0, 0.22);
+      }
+
+      .brand-pack-editor-name:focus {
+        outline: none;
+        background: rgba(0, 0, 0, 0.3);
+      }
+
+      .brand-pack-editor-color {
+        width: 34px;
+        height: 34px;
+        min-width: 34px;
+        padding: 3px;
+        border: 1px solid var(--border-subtle);
+        border-radius: calc(var(--radius-md) - 4px);
+        background: transparent;
+        cursor: pointer;
+      }
+
+      .brand-pack-swatch {
+        width: 14px;
+        height: 14px;
+        flex: 0 0 auto;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 999px;
+      }
+
+      .brand-pack-name {
+        min-width: 0;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .brand-pack-delete {
+        display: inline-grid;
+        place-items: center;
+        width: 28px;
+        min-height: 40px;
+        height: 100%;
+        padding: 0;
+        border-color: transparent;
+        background: transparent;
+        color: var(--text-muted);
+      }
+
+      .brand-pack-item.active .brand-pack-delete {
+        min-height: 34px;
+        height: 34px;
+        border-radius: calc(var(--radius-md) - 4px);
+      }
+
+      .brand-pack-delete:hover:not(:disabled) {
+        background: var(--button-bg-hover);
+        color: var(--button-hover-text);
+      }
+
+      .tone-preview {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+      }
+
+      .tone-chip {
+        display: grid;
+        min-height: 64px;
+        align-content: end;
+        padding: 8px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: var(--radius-md);
+        color: #ffffff;
+        font: 10px/1.2 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, 0.32);
+      }
+
+      .header-row {
+        display: grid;
+        grid-template-columns: minmax(280px, 1fr) minmax(380px, auto);
+        gap: 16px;
+        align-items: center;
+        padding: 16px 4px;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+      }
+
+      .header-controls {
+        display: grid;
+        gap: 10px;
+        justify-items: end;
+      }
+
+      .header-control-row {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .header-action-row {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+      }
+
+      .generation-controls {
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 10px;
+        align-items: center;
+        justify-content: flex-end;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: transparent;
+        min-width: 0;
+      }
+
+      .token-workspace {
+        display: grid;
+        grid-template-columns: 180px minmax(0, 1fr) minmax(0, 1fr);
+        gap: 14px;
+        align-items: start;
+        min-width: 0;
+        max-width: 100%;
+      }
+
+      .token-tabs {
+        display: grid;
+        gap: 8px;
+        position: sticky;
+        top: 16px;
+        padding: 18px;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        background: var(--bg-panel);
+      }
+
+      .token-tabs-label {
+        margin: 0 0 4px;
+      }
+
+      .token-tab {
+        justify-content: flex-start;
+        text-align: left;
+        min-height: 40px;
+        padding-inline: 12px;
+        border-color: transparent;
+        background: transparent;
+        color: var(--text-secondary);
+      }
+
+      .token-tab.active {
+        border-color: var(--border-subtle);
+        background: var(--bg-selected);
+        color: var(--text-primary);
+      }
+
+      .token-tab.active:hover {
+        background: var(--button-bg-hover);
+        color: var(--button-hover-text);
+      }
+
+      .token-column {
+        display: none;
+        gap: 12px;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        padding: 18px;
+        background: var(--bg-panel);
+      }
+
+      .token-column.active {
+        display: grid;
+      }
+
+      .column-title {
+        margin: 0;
+        color: var(--text-primary);
+        font-size: 15px;
+        font-weight: 750;
+      }
+      .column-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 4px;
+      }
+
+      .column-title-group {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        min-width: 0;
+      }
+
+      .semantic-mode-toggle {
+        width: min(220px, 48%);
+        flex: 0 0 auto;
+      }
+      .hint-tip {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 16px;
+        height: 16px;
+        border: 1px solid var(--border-subtle);
+        border-radius: 999px;
+        color: var(--text-secondary);
+        font-size: 10px;
+        font-weight: 700;
+        cursor: help;
+        user-select: none;
+        background: var(--bg-panel-2);
+      }
+      .hint-tip-icon,
+      .hint-tip-icon svg {
+        width: 12px;
+        height: 12px;
+        color: currentColor;
+        pointer-events: none;
+      }
+      .hint-tip-popover {
+        position: absolute;
+        left: 0;
+        top: calc(100% + 6px);
+        z-index: 20;
+        display: none;
+        width: 280px;
+        padding: 10px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-md);
+        background: var(--bg-elevated);
+        color: var(--text-secondary);
+        font-size: 11px;
+        font-weight: 500;
+        line-height: 1.4;
+        box-shadow: var(--shadow-elevated);
+        white-space: pre-line;
+      }
+      .hint-tip:hover .hint-tip-popover,
+      .hint-tip:focus-visible .hint-tip-popover {
+        display: block;
+      }
+
+      .subsection-title {
+        margin: 8px 0 0;
+        color: var(--text-muted);
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      #foundationTextBody .subsection-title {
+        margin: 12px 0 6px;
+      }
+
+      #foundationTextBody .subsection-title:first-child {
+        margin-top: 0;
+      }
+
+      #foundationTextBody .table {
+        margin-bottom: 6px;
+      }
+
+      #foundationTextBody button[data-add-text] {
+        margin-bottom: 6px;
+      }
+
+      .token-tools {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete) {
+        border: 0;
+        background: rgba(236, 244, 255, 0.075);
+        color: var(--button-text);
+      }
+
+      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete):hover:not(:disabled) {
+        border: 0;
+        background: rgba(236, 244, 255, 0.13);
+        color: var(--text-primary);
+      }
+
+      .token-column button:not(.mode-option):not(.brand-pack-tab):not(.brand-pack-delete):focus {
+        border: 0;
+      }
+
+      .file {
+        display: grid;
+        gap: 6px;
+        margin-top: 10px;
+      }
+
+      input[type="file"] {
+        width: 100%;
+        border: 1px dashed var(--border-strong);
+        border-radius: var(--radius-md);
+        padding: 10px;
+      }
+
+      .modal-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.52);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 100;
+      }
+
+      .modal-backdrop.open {
+        display: flex;
+      }
+
+      .modal {
+        width: min(420px, calc(100vw - 32px));
+        background: var(--bg-elevated);
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-xl);
+        padding: 20px;
+        display: grid;
+        gap: 14px;
+        box-shadow: var(--shadow-elevated);
+      }
+
+      .modal.wide {
+        width: min(760px, calc(100vw - 32px));
+      }
+
+      .modal-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+      }
+
+      .session-list {
+        display: grid;
+        gap: 8px;
+        max-height: min(460px, calc(100vh - 220px));
+        overflow: auto;
+      }
+
+      .session-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-md);
+        background: var(--bg-panel);
+      }
+
+      .session-name {
+        color: var(--text-primary);
+        font-weight: 700;
+      }
+
+      .session-meta {
+        margin-top: 3px;
+        color: var(--text-muted);
+        font-size: 11px;
+      }
+
+      .session-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      .session-actions button {
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.075);
+      }
+
+      .session-actions button:hover:not(:disabled) {
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.13);
+        color: var(--text-primary);
+      }
+
+      .empty-state {
+        padding: 14px;
+        border: 1px dashed var(--border-subtle);
+        border-radius: var(--radius-md);
+        color: var(--text-secondary);
+        background: var(--bg-panel);
+      }
+
+      .resize-corner-hitarea {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        z-index: 95;
+        width: 28px;
+        height: 28px;
+        cursor: nwse-resize;
+        background: transparent;
+        border: 0;
+        border-radius: 0;
+        min-height: 0;
+        padding: 0;
+        touch-action: none;
+      }
+
+      .resize-corner-hitarea:hover:not(:disabled),
+      .resize-corner-hitarea:focus {
+        background: transparent;
+        border-color: transparent;
+        box-shadow: none;
+      }
+
+      .resize-corner-hitarea::before {
+        content: "";
+        position: absolute;
+        right: 5px;
+        bottom: 5px;
+        width: 13px;
+        height: 13px;
+        background:
+          linear-gradient(135deg, transparent 0 42%, rgba(236, 244, 255, 0.32) 42% 50%, transparent 50% 100%) 0 0 / 6px 6px,
+          linear-gradient(135deg, transparent 0 42%, rgba(236, 244, 255, 0.52) 42% 50%, transparent 50% 100%) 4px 4px / 6px 6px;
+        opacity: 0.78;
+        pointer-events: none;
+      }
+
+      .resize-corner-hitarea:hover::before,
+      body.is-resizing .resize-corner-hitarea::before {
+        opacity: 1;
+      }
+
+      body.is-resizing {
+        cursor: nwse-resize;
+        user-select: none;
+      }
+
+      .feedback-message {
+        margin: 0;
+        color: var(--text-secondary);
+      }
+
+      .suggestion-scrim {
+        position: fixed;
+        inset: 0;
+        z-index: 110;
+        display: none;
+        background: rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(1.5px);
+      }
+
+      .suggestion-scrim.open {
+        display: block;
+      }
+
+      .suggestion-popover {
+        position: fixed;
+        z-index: 120;
+        display: none;
+        min-width: 220px;
+        max-width: min(420px, calc(100vw - 24px));
+        max-height: 240px;
+        overflow-y: auto;
+        padding: 6px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-lg);
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow-elevated);
+      }
+
+      .suggestion-popover.open {
+        display: grid;
+        gap: 4px;
+      }
+
+      .suggestion-option {
+        border: 0;
+        border-radius: var(--radius-md);
+        min-height: 36px;
+        padding: 0 10px;
+        justify-content: flex-start;
+        background: transparent;
+        color: var(--text-secondary);
+        text-align: left;
+      }
+
+      .suggestion-option.active,
+      .suggestion-option:hover {
+        background: var(--bg-selected);
+        color: var(--text-primary);
+      }
+
+      .header-row .row {
+        gap: 10px;
+      }
+
+      .session-config {
+        display: grid;
+        gap: 8px;
+        align-content: end;
+      }
+
+      .session-select-row {
+        display: grid;
+        grid-template-columns: minmax(220px, 1fr) auto;
+        gap: 8px;
+        align-items: end;
+      }
+
+      .session-select-field {
+        display: grid;
+        gap: 6px;
+        min-width: 0;
+      }
+
+      .session-select-native {
+        display: none;
+      }
+
+      .session-select-wrap {
+        position: relative;
+      }
+
+      .session-select-button {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 18px;
+        align-items: center;
+        width: 100%;
+        min-height: 42px;
+        padding: 0 12px;
+        border-color: var(--border-subtle);
+        background: var(--bg-panel);
+        color: var(--text-primary);
+        text-align: left;
+      }
+
+      .session-select-button:hover:not(:disabled) {
+        border-color: rgba(236, 244, 255, 0.28);
+        background: #182029;
+        color: var(--text-primary);
+      }
+
+      .session-select-button::after {
+        content: "";
+        width: 7px;
+        height: 7px;
+        justify-self: center;
+        border-right: 1.5px solid var(--text-secondary);
+        border-bottom: 1.5px solid var(--text-secondary);
+        transform: rotate(45deg) translateY(-2px);
+      }
+
+      .session-select-menu {
+        position: absolute;
+        top: calc(100% + 6px);
+        left: 0;
+        right: 0;
+        z-index: 70;
+        display: grid;
+        gap: 4px;
+        max-height: 260px;
+        min-width: min(520px, calc(100vw - 48px));
+        overflow: auto;
+        padding: 6px;
+        border: 1px solid var(--border-strong);
+        border-radius: var(--radius-lg);
+        background: var(--bg-elevated);
+        box-shadow: var(--shadow-elevated);
+      }
+
+      .session-select-menu[hidden] {
+        display: none;
+      }
+
+      .session-menu-toolbar {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .session-menu-actions-row {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      .session-menu-search {
+        min-height: 38px;
+      }
+
+      .session-menu-list {
+        display: grid;
+        gap: 4px;
+      }
+
+      .session-select-option {
+        justify-content: flex-start;
+        min-height: 36px;
+        padding: 0 10px;
+        border-color: transparent;
+        background: transparent;
+        color: var(--text-secondary);
+        text-align: left;
+      }
+
+      .session-select-option.active,
+      .session-select-option:hover:not(:disabled) {
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.1);
+        color: var(--text-primary);
+      }
+
+      .session-menu-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 8px;
+        align-items: center;
+        padding: 8px;
+        border: 1px solid transparent;
+        border-radius: var(--radius-md);
+        background: rgba(236, 244, 255, 0.045);
+      }
+
+      .session-menu-row.active {
+        border-color: rgba(236, 244, 255, 0.16);
+        background: rgba(236, 244, 255, 0.075);
+      }
+
+      .session-menu-title {
+        overflow: hidden;
+        color: var(--text-primary);
+        font-weight: 700;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .session-menu-meta {
+        margin-top: 3px;
+        overflow: hidden;
+        color: var(--text-muted);
+        font-size: 11px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .session-menu-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .session-menu-actions button {
+        display: inline-grid;
+        width: 34px;
+        min-height: 34px;
+        padding: 0;
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.075);
+        place-items: center;
+      }
+
+      .session-menu-actions button:hover:not(:disabled) {
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.13);
+        color: var(--text-primary);
+      }
+
+      .session-menu-command {
+        min-height: 34px;
+        width: auto;
+        max-width: none;
+        padding: 0 16px;
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.075);
+        color: var(--button-text);
+      }
+
+      .session-menu-command:hover:not(:disabled) {
+        border-color: transparent;
+        background: rgba(236, 244, 255, 0.13);
+        color: var(--text-primary);
+      }
+
+      .config-grid {
+        padding: 16px 18px;
+        border: 1px solid var(--border-subtle);
+        border-radius: var(--radius-xl);
+        background: var(--bg-panel);
+      }
+
+      @media (max-width: 920px) {
+        .token-workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .token-tabs {
+          position: static;
+          grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+          align-items: stretch;
+        }
+
+        .token-tabs-label {
+          grid-column: 1 / -1;
+        }
+
+        .header-row {
+          grid-template-columns: 1fr;
+        }
+
+        .header-controls {
+          justify-items: stretch;
+        }
+
+        .header-control-row {
+          justify-content: flex-start;
+        }
+
+        .header-action-row,
+        .generation-controls {
+          flex-wrap: wrap;
+          justify-content: flex-start;
+        }
+
+      }
+
+      @media (max-width: 720px) {
+        body {
+          padding-inline: 12px;
+        }
+
+        .grid,
+        .tone-setup {
+          grid-template-columns: 1fr;
+        }
+
+        .token-column {
+          padding: 16px;
+        }
+
+        .tone-preview {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="panel">
+      <div class="header-row">
+        <div class="panel header-copy">
+          <h1>Setup Figma Tokens</h1>
+          <p>Foundation tokens create primitive variables. Theme tokens map from Foundation variables and generate styles.</p>
+        </div>
+        <div class="header-controls">
+          <div class="header-control-row">
+            <div class="header-action-row">
+              <button id="reset">Reset</button>
+              <button id="cancel">Close</button>
+              <button id="generate" class="primary">Generate</button>
+            </div>
+          </div>
+          <div class="header-control-row">
+            <div class="generation-controls">
+              <label class="checkbox"><input id="variables" type="checkbox" checked /> Variables</label>
+              <label class="checkbox"><input id="styles" type="checkbox" checked /> Styles</label>
+              <label class="checkbox"><input id="overwrite" type="checkbox" checked /> Overwrite old generated tokens/styles</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid config-grid">
+        <input id="paletteName" type="hidden" value="Foundation" />
+        <input id="themeName" type="hidden" value="Theme" />
+        <input id="modeName" type="hidden" value="Light" />
+        <div class="session-config">
+          <div class="session-select-row">
+            <div class="session-select-field">
+              <span>Session</span>
+              <select id="sessionSelect" class="session-select-native" aria-hidden="true" tabindex="-1"></select>
+              <span class="session-select-wrap">
+                <button id="sessionSelectButton" class="session-select-button" type="button" aria-haspopup="listbox" aria-expanded="false">No saved sessions</button>
+                <span id="sessionSelectMenu" class="session-select-menu" role="listbox" hidden></span>
+              </span>
+            </div>
+            <button id="saveSession" type="button">Save session</button>
+          </div>
+          <div class="session-actions">
+            <button id="loadSession" type="button">Import .md</button>
+            <button id="setDefault" type="button">Set as default</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="token-workspace">
+        <nav class="token-tabs" aria-label="Token categories">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title token-tabs-label">Token Type</h2>
+            </div>
+          </div>
+          <button class="token-tab active" type="button" data-token-tab="color">Color</button>
+          <button class="token-tab" type="button" data-token-tab="text">Text</button>
+          <button class="token-tab" type="button" data-token-tab="spacing">Spacing</button>
+          <button class="token-tab" type="button" data-token-tab="size">Size</button>
+          <button class="token-tab" type="button" data-token-tab="radius">Radius</button>
+          <button class="token-tab" type="button" data-token-tab="opacity">Opacity</button>
+          <button class="token-tab" type="button" data-token-tab="shadow">Shadow</button>
+        </nav>
+
+        <section class="token-column active" data-token-panel="foundation-color">
+          <h2 class="column-title">Foundation</h2>
+          <p class="hint">Brand colors use tabs. Neutral and status colors stay in grouped foundation rows.</p>
+          <div class="brand-pack-toolbar">
+            <div id="brandPackTabs" class="brand-pack-tabs" role="tablist" aria-label="Brand colors">
+              <button id="addBrandPack" class="brand-pack-add" type="button" aria-label="Add brand" title="Add brand"></button>
+            </div>
+          </div>
+          <input id="mainColorName" type="hidden" value="brand" />
+          <input id="mainColorValue" type="color" value="#E8341C" hidden />
+          <div class="token-tools">
+            <button id="toggleBrandColors" type="button">Collapse Brand Colors</button>
+          </div>
+          <div id="brandColors" class="table"></div>
+          <h3 class="subsection-title">Neutral Scale</h3>
+          <div id="neutralColors" class="table"></div>
+          <h3 class="subsection-title">Status Scale</h3>
+          <div id="statusColors" class="table"></div>
+          <div id="foundationColors" class="table" hidden></div>
+          <div id="tonePreview" class="tone-preview"></div>
+        </section>
+
+        <section class="token-column active" data-token-panel="semantic-color">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title">Semantic</h2>
+              <span class="hint-tip" tabindex="0" aria-label="Semantic color naming guide">
+                <span class="hint-tip-popover">Use intent names:
+text.*    readable text
+bg.*      surfaces/backgrounds
+border.*  strokes/dividers
+action.*  interactive states
+focus.*   focus visuals
+
+Keep refs to `color.*` foundation tokens.</span>
+              </span>
+            </div>
+            <div class="mode-toggle semantic-mode-toggle" role="tablist" aria-label="Mode">
+              <button class="mode-option active" type="button" data-mode-option="Light">Light</button>
+              <button class="mode-option" type="button" data-mode-option="Dark">Dark</button>
+            </div>
+          </div>
+          <p class="hint">Intent-based color names; refs target `color.*` foundation tokens.</p>
+          <div id="semanticColors" class="table"></div>
+          <button id="addSemanticColor">Add semantic color</button>
+        </section>
+
+        <section class="token-column" data-token-panel="foundation-text">
+          <h2 class="column-title">Foundation</h2>
+          <p class="hint">Text foundation tokens use `font.*` primitive names; semantic text styles carry the usage names.</p>
+          <div id="foundationTextBody">
+            <h3 class="subsection-title">Family</h3>
+            <div id="fontFamily" class="table"></div>
+            <button data-add-text="family">Add font family</button>
+            <h3 class="subsection-title">Size</h3>
+            <div id="fontSize" class="table"></div>
+            <button data-add-text="size">Add font size</button>
+            <h3 class="subsection-title">Weight</h3>
+            <div id="fontWeight" class="table"></div>
+            <button data-add-text="weight">Add font weight</button>
+            <h3 class="subsection-title">Line height</h3>
+            <div id="fontLineHeight" class="table"></div>
+            <button data-add-text="lineHeight">Add line height</button>
+            <h3 class="subsection-title">Letter spacing</h3>
+            <div id="fontLetterSpacing" class="table"></div>
+            <button data-add-text="letterSpacing">Add letter spacing</button>
+            <h3 class="subsection-title">Text transform</h3>
+            <div id="fontTextTransform" class="table"></div>
+            <button data-add-text="textTransform">Add text transform</button>
+          </div>
+        </section>
+
+        <section class="token-column" data-token-panel="semantic-text">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title">Semantic</h2>
+              <span class="hint-tip" tabindex="0" aria-label="Semantic text naming guide">
+                <span class="hint-tip-popover">Use role + size names:
+display.*
+headline.*
+title.*
+body.*
+label.*
+caption.*
+
+Each row maps to semantic color + foundation font refs.</span>
+              </span>
+            </div>
+          </div>
+          <p class="hint">Role-based text names; map to color and font references.</p>
+          <div class="token-tools">
+            <button id="sortSemanticText" type="button">Sort Font Size (Desc)</button>
+            <button id="toggleSemanticMapping" type="button">Collapse Mapping</button>
+          </div>
+          <div class="scroll">
+            <div id="semanticText" class="table"></div>
+          </div>
+          <button id="addSemanticText">Add semantic text style</button>
+        </section>
+
+        <section class="token-column" data-token-panel="foundation-spacing">
+          <h2 class="column-title">Foundation</h2>
+          <p class="hint">Spacing foundation names use numeric scale IDs; semantic spacing carries the usage names.</p>
+          <div id="foundationSpacing" class="table"></div>
+          <button id="addFoundationSpacing">Add foundation spacing</button>
+        </section>
+
+        <section class="token-column" data-token-panel="semantic-spacing">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title">Semantic</h2>
+              <span
+                class="hint-tip"
+                tabindex="0"
+                aria-label="Semantic spacing naming guide"
+              >
+                <span class="hint-tip-popover">Use intent names:
+inline.*  horizontal gaps
+stack.*   vertical gaps
+inset.*   padding
+layout.*  section/page spacing
+control.* component internals
+
+Keep refs to `space.*` foundation tokens.</span>
+              </span>
+            </div>
+          </div>
+          <p class="hint">Intent-based spacing names; refs target `space.*` foundation tokens.</p>
+          <div id="semanticSpacing" class="table"></div>
+          <button id="addSemanticSpacing">Add semantic spacing</button>
+        </section>
+
+        <section class="token-column" data-token-panel="foundation-size">
+          <h2 class="column-title">Foundation</h2>
+          <p class="hint">Size foundation tokens define primitive dimensions for controls, icons, and touch targets.</p>
+          <div id="foundationSize" class="table"></div>
+          <button id="addFoundationSize">Add foundation size</button>
+        </section>
+
+        <section class="token-column" data-token-panel="semantic-size">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title">Semantic</h2>
+              <span class="hint-tip" tabindex="0" aria-label="Semantic size naming guide">
+                <span class="hint-tip-popover">Use by fixed dimension:
+control.* = component height
+icon.* = icon box size
+touch.* = minimum hit area
+avatar.* = avatar width/height
+
+Do not use size for gaps or padding; use `space.*` for layout distance.
+
+Keep refs to `size.*` foundation tokens.</span>
+              </span>
+            </div>
+          </div>
+          <p class="hint">Usage-based size names; refs target `size.*` foundation tokens.</p>
+          <div id="semanticSize" class="table"></div>
+          <button id="addSemanticSize">Add semantic size</button>
+        </section>
+
+        <section class="token-column" data-token-panel="foundation-radius">
+          <h2 class="column-title">Foundation</h2>
+          <p class="hint">Radius foundation tokens define primitive corner values used by semantic aliases.</p>
+          <div id="foundationRadius" class="table"></div>
+          <button id="addFoundationRadius" hidden>Add foundation radius</button>
+        </section>
+
+        <section class="token-column" data-token-panel="semantic-radius">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title">Semantic</h2>
+              <span class="hint-tip" tabindex="0" aria-label="Semantic radius naming guide">
+                <span class="hint-tip-popover">Use three usage names:
+sm
+md
+lg
+
+Keep refs to `radius.*` foundation tokens.</span>
+              </span>
+            </div>
+          </div>
+          <p class="hint">Usage-based radius names; refs target `radius.*` foundation tokens.</p>
+          <div id="semanticRadius" class="table"></div>
+          <button id="addSemanticRadius" hidden>Add semantic radius</button>
+        </section>
+
+        <section class="token-column" data-token-panel="foundation-opacity">
+          <h2 class="column-title">Foundation</h2>
+          <p class="hint">Opacity foundation tokens define primitive alpha values used by semantic aliases.</p>
+          <div id="foundationOpacity" class="table"></div>
+          <button id="addFoundationOpacity">Add foundation opacity</button>
+        </section>
+
+        <section class="token-column" data-token-panel="semantic-opacity">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title">Semantic</h2>
+              <span class="hint-tip" tabindex="0" aria-label="Semantic opacity naming guide">
+                <span class="hint-tip-popover">Use state/intent names:
+state.hover
+state.focus
+state.pressed
+state.dragged
+state.disabled
+overlay.*
+content.*
+
+Keep refs to `opacity.*` foundation tokens.</span>
+              </span>
+            </div>
+          </div>
+          <p class="hint">State-based opacity names; refs target `opacity.*` foundation tokens.</p>
+          <div id="semanticOpacity" class="table"></div>
+          <button id="addSemanticOpacity">Add semantic opacity</button>
+        </section>
+
+        <section class="token-column" data-token-panel="foundation-shadow">
+          <h2 class="column-title">Foundation</h2>
+          <p class="hint">Shadow tokens are semantic Theme tokens because they represent component elevation usage.</p>
+        </section>
+
+        <section class="token-column" data-token-panel="semantic-shadow">
+          <div class="column-head">
+            <div class="column-title-group">
+              <h2 class="column-title">Semantic</h2>
+              <span class="hint-tip" tabindex="0" aria-label="Semantic shadow naming guide">
+                <span class="hint-tip-popover">Use three elevation names:
+sm
+md
+lg
+
+Values use CSS shadow syntax and generate Figma effect styles.</span>
+              </span>
+            </div>
+          </div>
+          <p class="hint">Elevation shadows for cards, popovers, modals, and menus. Values use CSS shadow syntax.</p>
+          <div id="semanticShadow" class="table"></div>
+          <button id="addSemanticShadow">Add semantic shadow</button>
+        </section>
+      </section>
+
+      <input id="file" type="file" accept=".json,application/json" hidden />
+      <input id="sessionFile" type="file" accept=".md,.markdown,text/markdown,text/plain" hidden />
+
+      <datalist id="colorRefs"></datalist>
+      <datalist id="textColorRefs"></datalist>
+      <datalist id="spaceRefs"></datalist>
+      <datalist id="sizeRefs"></datalist>
+      <datalist id="radiusRefs"></datalist>
+      <datalist id="opacityRefs"></datalist>
+      <datalist id="shadowRefs"></datalist>
+      <datalist id="fontFamilyRefs"></datalist>
+      <datalist id="fontSizeRefs"></datalist>
+      <datalist id="fontWeightRefs"></datalist>
+      <datalist id="fontLineHeightRefs"></datalist>
+      <datalist id="fontLetterSpacingRefs"></datalist>
+      <datalist id="fontTextTransformRefs"></datalist>
+
+    </main>
+    <div id="saveModalBackdrop" class="modal-backdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
+        <h2 id="saveModalTitle" class="modal-title">Save Session</h2>
+        <label>Session name <input id="saveModalName" type="text" placeholder="e.g. App v1" /></label>
+        <div class="row">
+          <button id="saveModalConfirm" type="button">Save</button>
+          <button id="saveModalCancel" type="button">Cancel</button>
+        </div>
+      </div>
+    </div>
+    <div id="feedbackModalBackdrop" class="modal-backdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="feedbackModalTitle">
+        <h2 id="feedbackModalTitle" class="modal-title">Done</h2>
+        <p id="feedbackModalMessage" class="feedback-message">Completed.</p>
+        <div class="row">
+          <button id="feedbackModalOk" type="button">OK</button>
+        </div>
+      </div>
+    </div>
+    <div id="suggestionScrim" class="suggestion-scrim" aria-hidden="true"></div>
+    <div id="suggestionPopover" class="suggestion-popover" role="listbox" aria-hidden="true"></div>
+    <button id="resizeCornerHitarea" class="resize-corner-hitarea" type="button" aria-label="Resize plugin panel" title="Resize panel"></button>
+
+        <script>
+var defaults = {
+        foundationSpacing: [["space.0", 0], ["space.2", 2], ["space.4", 4], ["space.6", 6], ["space.8", 8], ["space.12", 12], ["space.16", 16], ["space.20", 20], ["space.24", 24], ["space.32", 32], ["space.40", 40], ["space.48", 48], ["space.56", 56], ["space.64", 64], ["space.72", 72], ["space.80", 80]],
+        foundationSize: [["size.0", 0], ["size.16", 16], ["size.20", 20], ["size.24", 24], ["size.32", 32], ["size.36", 36], ["size.40", 40], ["size.44", 44], ["size.48", 48], ["size.56", 56], ["size.64", 64]],
+        foundationRadius: [["radius.sm", 4], ["radius.md", 8], ["radius.lg", 16]],
+        foundationOpacity: [["opacity.0", 0], ["opacity.8", 0.08], ["opacity.12", 0.12], ["opacity.16", 0.16], ["opacity.38", 0.38], ["opacity.60", 0.6], ["opacity.80", 0.8], ["opacity.100", 1]],
+        text: {
+          family: [["font.family.sans", "Inter"], ["font.family.serif", "Georgia"], ["font.family.mono", "JetBrains Mono"]],
+          size: [["font.size.12", 12], ["font.size.14", 14], ["font.size.16", 16], ["font.size.21", 21], ["font.size.28", 28], ["font.size.38", 38], ["font.size.51", 51], ["font.size.67", 67], ["font.size.90", 90]],
+          weight: [["font.weight.light", 300], ["font.weight.regular", 400], ["font.weight.medium", 500], ["font.weight.semibold", 600], ["font.weight.bold", 700]],
+          lineHeight: [["font.lineHeight.110", 1.1], ["font.lineHeight.120", 1.2], ["font.lineHeight.130", 1.3], ["font.lineHeight.150", 1.5]],
+          letterSpacing: [["font.letterSpacing.tight", -2], ["font.letterSpacing.default", 0], ["font.letterSpacing.wide", 2]],
+          textTransform: [["font.textTransform.none", "none"], ["font.textTransform.uppercase", "uppercase"]]
+        },
+        semanticColor: [
+          ["text.primary", "color.neutral.900"], ["text.secondary", "color.neutral.700"],
+          ["text.tertiary", "color.neutral.500"], ["text.inverse", "color.neutral.0"],
+          ["text.link", "color.brand.500"], ["bg.canvas", "color.brand.100"],
+          ["bg.surface", "color.neutral.0"], ["bg.surface.subtle", "color.neutral.50"],
+          ["bg.inverse", "color.neutral.900"], ["bg.brand", "color.brand.500"],
+          ["border.default", "color.neutral.200"], ["border.subtle", "color.neutral.100"],
+          ["border.strong", "color.neutral.500"], ["border.brand", "color.brand.500"],
+          ["action.primary.bg.default", "color.brand.500"],
+          ["action.primary.text.default", "color.neutral.0"],
+          ["focus.ring", "color.brand.300"],
+          ["status.info.text", "color.info.700"], ["status.info.bg", "color.info.100"],
+          ["status.info.border", "color.info.300"], ["status.info.icon", "color.info.500"],
+          ["status.success.text", "color.success.700"], ["status.success.bg", "color.success.100"],
+          ["status.success.border", "color.success.300"], ["status.success.icon", "color.success.500"],
+          ["status.warning.text", "color.warning.700"], ["status.warning.bg", "color.warning.100"],
+          ["status.warning.border", "color.warning.300"], ["status.warning.icon", "color.warning.500"],
+          ["status.danger.text", "color.danger.700"], ["status.danger.bg", "color.danger.100"],
+          ["status.danger.border", "color.danger.300"], ["status.danger.icon", "color.danger.500"]
+        ],
+        semanticSpacing: [
+          ["inline.xs", "space.4"], ["inline.sm", "space.8"], ["inline.md", "space.16"], ["inline.lg", "space.24"],
+          ["stack.xs", "space.4"], ["stack.sm", "space.8"], ["stack.md", "space.16"], ["stack.lg", "space.24"],
+          ["inset.xs", "space.8"], ["inset.sm", "space.12"], ["inset.md", "space.16"], ["inset.lg", "space.24"],
+          ["layout.section", "space.40"], ["layout.page", "space.64"],
+          ["control.xs", "space.4"], ["control.sm", "space.8"], ["control.md", "space.12"]
+        ],
+        semanticSize: [
+          ["control.sm", "size.32"], ["control.md", "size.40"], ["control.lg", "size.48"],
+          ["icon.sm", "size.16"], ["icon.md", "size.20"], ["icon.lg", "size.24"],
+          ["touch.min", "size.44"], ["avatar.sm", "size.32"], ["avatar.md", "size.40"], ["avatar.lg", "size.56"]
+        ],
+        semanticRadius: [
+          ["sm", "radius.sm"], ["md", "radius.md"], ["lg", "radius.lg"]
+        ],
+        semanticOpacity: [
+          ["state.hover", "opacity.8"], ["state.focus", "opacity.12"], ["state.pressed", "opacity.12"], ["state.dragged", "opacity.16"], ["state.disabled", "opacity.38"], ["overlay.scrim", "opacity.60"], ["content.subtle", "opacity.80"], ["content.default", "opacity.100"]
+        ],
+        semanticShadow: [
+          ["sm", "0px 1px 2px 0px rgba(18, 21, 27, 0.08)"],
+          ["md", "0px 4px 12px 0px rgba(18, 21, 27, 0.12)"],
+          ["lg", "0px 12px 32px 0px rgba(18, 21, 27, 0.18)"]
+        ],
+        semanticText: [
+          ["display.l", "font.family.serif", "font.size.90", "font.weight.regular", "font.lineHeight.110", "font.letterSpacing.tight", "font.textTransform.none"],
+          ["headline.l", "font.family.sans", "font.size.38", "font.weight.semibold", "font.lineHeight.120", "font.letterSpacing.default", "font.textTransform.none"],
+          ["headline.m", "font.family.sans", "font.size.28", "font.weight.semibold", "font.lineHeight.130", "font.letterSpacing.default", "font.textTransform.none"],
+          ["headline.s", "font.family.sans", "font.size.21", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["title.l", "font.family.sans", "font.size.21", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["title.m", "font.family.sans", "font.size.16", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["title.s", "font.family.sans", "font.size.14", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["body.l", "font.family.sans", "font.size.16", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["body.m", "font.family.sans", "font.size.14", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["body.s", "font.family.sans", "font.size.12", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["button.m", "font.family.sans", "font.size.14", "font.weight.medium", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["button.s", "font.family.sans", "font.size.12", "font.weight.medium", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["label.m", "font.family.sans", "font.size.12", "font.weight.medium", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["caption.s", "font.family.sans", "font.size.12", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"]
+        ]
+      };
+
+      var containers = {
+        brandColors: document.getElementById("brandColors"),
+        neutralColors: document.getElementById("neutralColors"),
+        statusColors: document.getElementById("statusColors"),
+        foundationColors: document.getElementById("foundationColors"),
+        foundationSpacing: document.getElementById("foundationSpacing"),
+        foundationSize: document.getElementById("foundationSize"),
+        foundationRadius: document.getElementById("foundationRadius"),
+        foundationOpacity: document.getElementById("foundationOpacity"),
+        semanticColors: document.getElementById("semanticColors"),
+        semanticSpacing: document.getElementById("semanticSpacing"),
+        semanticSize: document.getElementById("semanticSize"),
+        semanticRadius: document.getElementById("semanticRadius"),
+        semanticOpacity: document.getElementById("semanticOpacity"),
+        semanticShadow: document.getElementById("semanticShadow"),
+        semanticText: document.getElementById("semanticText"),
+        fontFamily: document.getElementById("fontFamily"),
+        fontSize: document.getElementById("fontSize"),
+        fontWeight: document.getElementById("fontWeight"),
+        fontLineHeight: document.getElementById("fontLineHeight"),
+        fontLetterSpacing: document.getElementById("fontLetterSpacing"),
+        fontTextTransform: document.getElementById("fontTextTransform")
+      };
+
+      var fileInput = document.getElementById("file");
+      var sessionFileInput = document.getElementById("sessionFile");
+      var importDashboardButton = document.getElementById("importDashboard");
+      var generateButton = document.getElementById("generate");
+      var resetButton = document.getElementById("reset");
+      var cancelButton = document.getElementById("cancel");
+      var status = document.getElementById("status");
+      var brandPackTabs = document.getElementById("brandPackTabs");
+      var addBrandPackButton = document.getElementById("addBrandPack");
+      var mainColorNameInput = document.getElementById("mainColorName");
+      var mainColorValueInput = document.getElementById("mainColorValue");
+      var tonePreview = document.getElementById("tonePreview");
+      var toggleBrandColorsButton = document.getElementById("toggleBrandColors");
+      var sessionSelect = document.getElementById("sessionSelect");
+      var sessionSelectButton = document.getElementById("sessionSelectButton");
+      var sessionSelectMenu = document.getElementById("sessionSelectMenu");
+      var saveSessionButton = document.getElementById("saveSession");
+      var loadSessionButton = document.getElementById("loadSession");
+      var setDefaultButton = document.getElementById("setDefault");
+      var sortSemanticTextButton = document.getElementById("sortSemanticText");
+      var toggleSemanticMappingButton = document.getElementById("toggleSemanticMapping");
+      var feedbackModalBackdrop = document.getElementById("feedbackModalBackdrop");
+      var feedbackModalTitle = document.getElementById("feedbackModalTitle");
+      var feedbackModalMessage = document.getElementById("feedbackModalMessage");
+      var feedbackModalOk = document.getElementById("feedbackModalOk");
+      var saveModalBackdrop = document.getElementById("saveModalBackdrop");
+      var saveModalNameInput = document.getElementById("saveModalName");
+      var saveModalConfirmButton = document.getElementById("saveModalConfirm");
+      var saveModalCancelButton = document.getElementById("saveModalCancel");
+      var suggestionScrim = document.getElementById("suggestionScrim");
+      var suggestionPopover = document.getElementById("suggestionPopover");
+      var resizeCornerHitarea = document.getElementById("resizeCornerHitarea");
+      var minWindowWidth = 360;
+      var minWindowHeight = 320;
+      var currentWindowWidth = Math.max(minWindowWidth, Math.round(window.innerWidth || 1080));
+      var currentWindowHeight = Math.max(minWindowHeight, Math.round(window.innerHeight || 960));
+      var uiDefaultStorageKey = "tokenPluginDefaultSetupFallback";
+      var uiSessionsStorageKey = "tokenPluginSavedSessionsFallback";
+      var savedSessions = [];
+      var selectedSavedSessionId = "";
+      var pendingDefaultLoadTimer = null;
+      var toneSteps = [100, 300, 500, 700, 900];
+      var defaultFoundationColorPacks = [
+        ["brand", "#E8341C"]
+      ];
+      var defaultFoundationStatusColorPacks = [
+        ["info", "#2563EB"],
+        ["success", "#16A34A"],
+        ["warning", "#D97706"],
+        ["danger", "#DC2626"]
+      ];
+      var activeSuggestionInput = null;
+      var activeSuggestionItems = [];
+      var activeSuggestionIndex = -1;
+      var semanticColorModePacks = {
+        Light: {
+          "text.primary": "color.neutral.900",
+          "text.secondary": "color.neutral.700",
+          "text.tertiary": "color.neutral.500",
+          "text.inverse": "color.neutral.0",
+          "text.link": "color.brand.500",
+          "bg.canvas": "color.brand.100",
+          "bg.surface": "color.neutral.0",
+          "bg.surface.subtle": "color.neutral.50",
+          "bg.inverse": "color.neutral.900",
+          "bg.brand": "color.brand.500",
+          "border.default": "color.neutral.200",
+          "border.subtle": "color.neutral.100",
+          "border.strong": "color.neutral.500",
+          "border.brand": "color.brand.500",
+          "action.primary.bg.default": "color.brand.500",
+          "action.primary.text.default": "color.neutral.0",
+          "focus.ring": "color.brand.300",
+          "status.info.text": "color.info.700",
+          "status.info.bg": "color.info.100",
+          "status.info.border": "color.info.300",
+          "status.info.icon": "color.info.500",
+          "status.success.text": "color.success.700",
+          "status.success.bg": "color.success.100",
+          "status.success.border": "color.success.300",
+          "status.success.icon": "color.success.500",
+          "status.warning.text": "color.warning.700",
+          "status.warning.bg": "color.warning.100",
+          "status.warning.border": "color.warning.300",
+          "status.warning.icon": "color.warning.500",
+          "status.danger.text": "color.danger.700",
+          "status.danger.bg": "color.danger.100",
+          "status.danger.border": "color.danger.300",
+          "status.danger.icon": "color.danger.500"
+        },
+        Dark: {
+          "text.primary": "color.neutral.0",
+          "text.secondary": "color.neutral.100",
+          "text.tertiary": "color.neutral.300",
+          "text.inverse": "color.neutral.900",
+          "text.link": "color.brand.300",
+          "bg.canvas": "color.neutral.1000",
+          "bg.surface": "color.neutral.900",
+          "bg.surface.subtle": "color.neutral.700",
+          "bg.inverse": "color.neutral.0",
+          "bg.brand": "color.brand.500",
+          "border.default": "color.neutral.700",
+          "border.subtle": "color.neutral.500",
+          "border.strong": "color.neutral.300",
+          "border.brand": "color.brand.300",
+          "action.primary.bg.default": "color.brand.500",
+          "action.primary.text.default": "color.neutral.0",
+          "focus.ring": "color.brand.300",
+          "status.info.text": "color.info.300",
+          "status.info.bg": "color.info.900",
+          "status.info.border": "color.info.700",
+          "status.info.icon": "color.info.300",
+          "status.success.text": "color.success.300",
+          "status.success.bg": "color.success.900",
+          "status.success.border": "color.success.700",
+          "status.success.icon": "color.success.300",
+          "status.warning.text": "color.warning.300",
+          "status.warning.bg": "color.warning.900",
+          "status.warning.border": "color.warning.700",
+          "status.warning.icon": "color.warning.300",
+          "status.danger.text": "color.danger.300",
+          "status.danger.bg": "color.danger.900",
+          "status.danger.border": "color.danger.700",
+          "status.danger.icon": "color.danger.300"
+        }
+      };
+      var neutralScale = {
+        "0": "#FFFFFF",
+        "50": "#F7F7F8",
+        "100": "#EFEFF1",
+        "200": "#DDDEE2",
+        "300": "#C8CAD1",
+        "500": "#868C98",
+        "700": "#4D5360",
+        "900": "#1E222B",
+        "1000": "#12151B"
+      };
+      var currentMainColorName = "brand";
+      var selectedBrandPackName = "brand";
+      var brandColorsCollapsed = false;
+
+      function setActiveTokenTab(category) {
+        Array.prototype.forEach.call(document.querySelectorAll("[data-token-tab]"), function (button) {
+          button.classList.toggle("active", button.getAttribute("data-token-tab") === category);
+        });
+        Array.prototype.forEach.call(document.querySelectorAll("[data-token-panel]"), function (panel) {
+          panel.classList.toggle("active", panel.getAttribute("data-token-panel").indexOf(category) !== -1);
+        });
+      }
+
+      function setMode(mode, applyPack) {
+        var nextMode = mode === "Dark" ? "Dark" : "Light";
+        var modeInput = document.getElementById("modeName");
+        if (modeInput) modeInput.value = nextMode;
+        Array.prototype.forEach.call(document.querySelectorAll("[data-mode-option]"), function (button) {
+          button.classList.toggle("active", button.getAttribute("data-mode-option") === nextMode);
+        });
+        if (applyPack) applySemanticColorPack(nextMode);
+      }
+
+      function applySemanticColorPack(mode) {
+        var pack = semanticColorModePacks[mode];
+        if (!pack) return;
+        Array.prototype.forEach.call(containers.semanticColors.children, function (row) {
+          var fields = row.querySelectorAll("input");
+          if (!fields.length) return;
+          var semanticName = (fields[0].value || "").trim();
+          if (!semanticName || !pack[semanticName]) return;
+          if (fields[1]) fields[1].value = pack[semanticName];
+        });
+        refreshLists();
+      }
+
+      function listValues(id) {
+        var list = id ? document.getElementById(id) : null;
+        if (!list) return [];
+        return Array.prototype.map.call(list.querySelectorAll("option"), function (option) {
+          return option.value;
+        });
+      }
+
+      function setSuggestionFieldState(inputEl, active) {
+        if (!inputEl || !inputEl.parentNode) return;
+        inputEl.parentNode.classList.toggle("suggestion-active", !!active);
+      }
+
+      function closeSuggestions() {
+        if (activeSuggestionInput) setSuggestionFieldState(activeSuggestionInput, false);
+        activeSuggestionInput = null;
+        activeSuggestionItems = [];
+        activeSuggestionIndex = -1;
+        if (suggestionScrim) {
+          suggestionScrim.classList.remove("open");
+          suggestionScrim.setAttribute("aria-hidden", "true");
+        }
+        if (!suggestionPopover) return;
+        suggestionPopover.innerHTML = "";
+        suggestionPopover.classList.remove("open");
+        suggestionPopover.setAttribute("aria-hidden", "true");
+      }
+
+      function positionSuggestions(inputEl) {
+        if (!suggestionPopover || !inputEl) return;
+        var rect = inputEl.getBoundingClientRect();
+        var gap = 6;
+        var width = Math.min(Math.max(rect.width, 220), window.innerWidth - 24);
+        var top = rect.bottom + gap;
+        var maxHeight = 240;
+        if (top + maxHeight > window.innerHeight - 12) {
+          top = Math.max(12, rect.top - maxHeight - gap);
+        }
+        suggestionPopover.style.width = width + "px";
+        suggestionPopover.style.left = Math.min(rect.left, window.innerWidth - width - 12) + "px";
+        suggestionPopover.style.top = top + "px";
+      }
+
+      function applySuggestion(index) {
+        if (!activeSuggestionInput || index < 0 || index >= activeSuggestionItems.length) return;
+        activeSuggestionInput.value = activeSuggestionItems[index];
+        activeSuggestionInput.dispatchEvent(new Event("input", { bubbles: true }));
+        closeSuggestions();
+      }
+
+      function setActiveSuggestion(index) {
+        activeSuggestionIndex = index;
+        Array.prototype.forEach.call(suggestionPopover.querySelectorAll(".suggestion-option"), function (button, buttonIndex) {
+          button.classList.toggle("active", buttonIndex === index);
+        });
+      }
+
+      function openSuggestions(inputEl) {
+        var listId = inputEl && inputEl.dataset ? inputEl.dataset.listSource : "";
+        var allItems = listValues(listId);
+        var currentValue = String(inputEl.value || "").trim().toLowerCase();
+        var filtered = allItems.filter(function (item) {
+          return !currentValue || item.toLowerCase().indexOf(currentValue) !== -1;
+        }).slice(0, 30);
+        if (!filtered.length || !suggestionPopover) {
+          closeSuggestions();
+          return;
+        }
+        if (activeSuggestionInput && activeSuggestionInput !== inputEl) {
+          setSuggestionFieldState(activeSuggestionInput, false);
+        }
+        activeSuggestionInput = inputEl;
+        setSuggestionFieldState(activeSuggestionInput, true);
+        activeSuggestionItems = filtered;
+        activeSuggestionIndex = -1;
+        suggestionPopover.innerHTML = "";
+        filtered.forEach(function (item, index) {
+          var optionButton = document.createElement("button");
+          optionButton.type = "button";
+          optionButton.className = "suggestion-option";
+          optionButton.setAttribute("role", "option");
+          optionButton.textContent = item;
+          optionButton.addEventListener("mousedown", function (event) {
+            event.preventDefault();
+            applySuggestion(index);
+          });
+          suggestionPopover.appendChild(optionButton);
+        });
+        if (suggestionScrim) {
+          suggestionScrim.classList.add("open");
+          suggestionScrim.setAttribute("aria-hidden", "false");
+        }
+        suggestionPopover.classList.add("open");
+        suggestionPopover.setAttribute("aria-hidden", "false");
+        positionSuggestions(inputEl);
+      }
+
+      function handleSuggestionKeydown(event) {
+        if (!activeSuggestionInput || !suggestionPopover.classList.contains("open")) return;
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          setActiveSuggestion(Math.min(activeSuggestionIndex + 1, activeSuggestionItems.length - 1));
+          return;
+        }
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          setActiveSuggestion(Math.max(activeSuggestionIndex - 1, 0));
+          return;
+        }
+        if (event.key === "Enter" && activeSuggestionIndex >= 0) {
+          event.preventDefault();
+          applySuggestion(activeSuggestionIndex);
+          return;
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeSuggestions();
+        }
+      }
+
+      function attachSuggestionBehavior(el, listId) {
+        if (!el || !listId) return;
+        el.dataset.listSource = listId;
+        el.setAttribute("autocomplete", "off");
+        el.addEventListener("focus", function () {
+          openSuggestions(el);
+        });
+        el.addEventListener("input", function () {
+          openSuggestions(el);
+        });
+        el.addEventListener("keydown", handleSuggestionKeydown);
+        el.addEventListener("blur", function () {
+          setTimeout(function () {
+            if (document.activeElement !== el) closeSuggestions();
+          }, 120);
+        });
+      }
+
+      function input(value, type, list, placeholder) {
+        var el = document.createElement("input");
+        el.type = type || "text";
+        el.value = value;
+        if (placeholder) el.placeholder = placeholder;
+        el.addEventListener("input", refreshLists);
+        attachSuggestionBehavior(el, list);
+        return el;
+      }
+
+      function field(kind, child) {
+        var wrapper = document.createElement("div");
+        wrapper.className = "field field-" + kind;
+        wrapper.appendChild(child);
+        return wrapper;
+      }
+
+      var iconLibrarySystem = {
+        close: { body: "<path fill=\"currentColor\" d=\"M17.414 16L24 9.414L22.586 8L16 14.586L9.414 8L8 9.414L14.586 16L8 22.586L9.414 24L16 17.414L22.586 24L24 22.586z\"/>", width: 32, height: 32 },
+        add: { body: "<path fill=\"currentColor\" d=\"M17 15V8h-2v7H8v2h7v7h2v-7h7v-2z\"/>", width: 32, height: 32 },
+        subtract: { body: "<path fill=\"currentColor\" d=\"M8 15h16v2H8z\"/>", width: 32, height: 32 },
+        information: { body: "<path fill=\"currentColor\" d=\"M17 22v-8h-4v2h2v6h-3v2h8v-2zM16 8a1.5 1.5 0 1 0 1.5 1.5A1.5 1.5 0 0 0 16 8\"/><path fill=\"currentColor\" d=\"M16 30a14 14 0 1 1 14-14a14 14 0 0 1-14 14m0-26a12 12 0 1 0 12 12A12 12 0 0 0 16 4\"/>", width: 32, height: 32 },
+        export: { body: "<path fill=\"currentColor\" d=\"M26 24v4H6v-4H4v4l.008-.005A2 2 0 0 0 6 30h20a2 2 0 0 0 2-2v-4ZM6 12l1.411 1.405L15 5.825V24h2V5.825l7.591 7.58L26 12L16 2z\"/>", width: 32, height: 32 },
+        "trash-can": { body: "<path fill=\"currentColor\" d=\"M12 12h2v12h-2zm6 0h2v12h-2z\"/><path fill=\"currentColor\" d=\"M4 6v2h2v20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8h2V6Zm4 22V8h16v20Zm4-26h8v2h-8z\"/>", width: 32, height: 32 }
+      };
+
+      function setIcon(button, name) {
+        var icon = iconLibrarySystem[name];
+        if (!button || !icon) return;
+        button.innerHTML = "<svg aria-hidden=\"true\" focusable=\"false\" viewBox=\"0 0 " + icon.width + " " + icon.height + "\">" + icon.body + "</svg>";
+        button.dataset.icon = name;
+      }
+
+      function renderHintTipIcons() {
+        Array.prototype.forEach.call(document.querySelectorAll(".hint-tip"), function (tip) {
+          Array.prototype.slice.call(tip.childNodes).forEach(function (node) {
+            if (node.nodeType === 3) tip.removeChild(node);
+          });
+          if (tip.querySelector(".hint-tip-icon")) return;
+          var icon = document.createElement("span");
+          icon.className = "hint-tip-icon";
+          setIcon(icon, "information");
+          tip.insertBefore(icon, tip.firstChild);
+        });
+      }
+
+      function addRemove(row) {
+        var button = createRemoveButton(row);
+        row.appendChild(button);
+      }
+
+      function createRemoveButton(row) {
+        var button = document.createElement("button");
+        button.type = "button";
+        button.className = "icon";
+        setIcon(button, "close");
+        button.title = "Remove row";
+        button.setAttribute("aria-label", "Remove row");
+        button.addEventListener("click", function () {
+          row.parentNode.removeChild(row);
+          refreshLists();
+        });
+        return button;
+      }
+
+      function addPair(container, className, name, value, valueType, list) {
+        var row = document.createElement("div");
+        row.className = "token-row " + className;
+        row.appendChild(field("token", input(name || "", "text", null, "token name")));
+        row.appendChild(field(list ? "ref" : "value", input(value === undefined ? "" : value, valueType || "text", list, list ? "reference" : "value")));
+        addRemove(row);
+        container.appendChild(row);
+      }
+
+      function addFoundationColorRow(container, name, value, valueType) {
+        var row = document.createElement("div");
+        row.className = "token-row cols-2";
+        var nameInput = input(name || "", "text", null, "token name");
+        var valueInput = input(value === undefined ? "" : value, valueType || "text", null, "value");
+        nameInput.addEventListener("input", syncFoundationColorsStore);
+        valueInput.addEventListener("input", syncFoundationColorsStore);
+        row.appendChild(field("token", nameInput));
+        row.appendChild(field("value", valueInput));
+        var removeBtn = createRemoveButton(row);
+        removeBtn.addEventListener("click", syncFoundationColorsStore);
+        row.appendChild(removeBtn);
+        container.appendChild(row);
+      }
+
+      function normalizeColorTokenName(name) {
+        return String(name || "").trim().replace(/^color\./, "");
+      }
+
+      function normalizeBrandColorName(name) {
+        return (name || "brand")
+          .replace(/^color\./, "")
+          .replace(/[^a-zA-Z0-9_.-]+/g, ".")
+          .replace(/\.+/g, ".")
+          .replace(/^\./, "")
+          .replace(/\.$/, "") || "brand";
+      }
+
+      function isNeutralColorToken(name) {
+        return normalizeColorTokenName(name).indexOf("neutral.") === 0;
+      }
+
+      function isStatusColorToken(name) {
+        var packName = brandPackNameFromToken(name);
+        return packName === "info" || packName === "success" || packName === "warning" || packName === "danger";
+      }
+
+      function brandPackNameFromToken(name) {
+        var tokenName = normalizeColorTokenName(name);
+        var match = tokenName.match(/^(.*)\.(100|300|500|700|900)$/);
+        return match && match[1] ? match[1] : "";
+      }
+
+      function readFoundationColorStore() {
+        return readPairs(containers.foundationColors, false);
+      }
+
+      function writeFoundationColorStore(values) {
+        containers.foundationColors.innerHTML = "";
+        Object.keys(values || {}).forEach(function (tokenName) {
+          addPair(containers.foundationColors, "cols-2", tokenName, values[tokenName], "color");
+        });
+      }
+
+      function collectBrandPackNamesFromStore(values) {
+        var names = {};
+        Object.keys(values || {}).forEach(function (tokenName) {
+          var packName = brandPackNameFromToken(tokenName);
+          if (packName && !isNeutralColorToken(tokenName) && !isStatusColorToken(tokenName)) names[packName] = true;
+        });
+        return names;
+      }
+
+      function firstBrandPackName(values) {
+        var names = collectBrandPackNamesFromStore(values);
+        return Object.keys(names)[0] || "brand";
+      }
+
+      function nextAvailableBrandPackName(baseName, values, exemptName) {
+        var cleanBase = normalizeBrandColorName(baseName || "brand");
+        var names = collectBrandPackNamesFromStore(values);
+        if (!names[cleanBase] || cleanBase === exemptName) return cleanBase;
+        var suffix = 2;
+        var candidate = cleanBase + "." + suffix;
+        while (names[candidate] && candidate !== exemptName) {
+          suffix += 1;
+          candidate = cleanBase + "." + suffix;
+        }
+        return candidate;
+      }
+
+      function writeBrandPackScaleInOrder(values, previousName, nextName, baseHex) {
+        var previousPack = normalizeBrandColorName(previousName || nextName);
+        var nextPack = normalizeBrandColorName(nextName || previousPack);
+        var scale = buildToneScaleFromHex(baseHex || "#E8341C");
+        var replaced = false;
+        var nextValues = {};
+        Object.keys(values || {}).forEach(function (tokenName) {
+          var packName = brandPackNameFromToken(tokenName);
+          if (packName === previousPack) {
+            if (!replaced) {
+              toneSteps.forEach(function (step) {
+                nextValues[nextPack + "." + step] = scale[step];
+              });
+              replaced = true;
+            }
+            return;
+          }
+          nextValues[tokenName] = values[tokenName];
+        });
+        if (!replaced) {
+          toneSteps.forEach(function (step) {
+            nextValues[nextPack + "." + step] = scale[step];
+          });
+        }
+        return nextValues;
+      }
+
+      function brandPackDisplayColor(values, name) {
+        var fallback = "";
+        toneSteps.forEach(function (step) {
+          var tokenValue = values[name + "." + step];
+          if (step === 500 && tokenValue) fallback = tokenValue;
+          if (!fallback && tokenValue) fallback = tokenValue;
+        });
+        return fallback || "#E8341C";
+      }
+
+      function ensureNeutralColorsInStore(values) {
+        Object.keys(neutralScale).forEach(function (step) {
+          var tokenName = "neutral." + step;
+          if (!(tokenName in values)) values[tokenName] = neutralScale[step];
+        });
+      }
+
+      function ensureStatusColorsInStore(values) {
+        defaultFoundationStatusColorPacks.forEach(function (pack) {
+          var packName = pack[0];
+          var scale = buildToneScaleFromHex(pack[1]);
+          toneSteps.forEach(function (step) {
+            var tokenName = packName + "." + step;
+            if (!(tokenName in values)) values[tokenName] = scale[step];
+          });
+        });
+      }
+
+      function removeBrandPack(name) {
+        var canonical = readFoundationColorStore();
+        var packName = normalizeBrandColorName(name || selectedBrandPackName);
+        Object.keys(canonical).forEach(function (tokenName) {
+          if (brandPackNameFromToken(tokenName) === packName) delete canonical[tokenName];
+        });
+        var nextName = firstBrandPackName(canonical);
+        if (nextName === "brand" && !collectBrandPackNamesFromStore(canonical).brand) {
+          var scale = buildToneScaleFromHex("#E8341C");
+          toneSteps.forEach(function (step) {
+            canonical["brand." + step] = scale[step];
+          });
+        }
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        nextName = firstBrandPackName(canonical);
+        if (packName === selectedBrandPackName) {
+          updateMainColorReferences(packName, nextName);
+        }
+        setSelectedBrandPack(nextName);
+        refreshLists();
+      }
+
+      function renderBrandPackTabs() {
+        var canonical = readFoundationColorStore();
+        var names = collectBrandPackNamesFromStore(canonical);
+        var orderedNames = Object.keys(names);
+        if (!orderedNames.length) orderedNames = [selectedBrandPackName || "brand"];
+        if (orderedNames.indexOf(selectedBrandPackName) === -1) selectedBrandPackName = orderedNames[0];
+        brandPackTabs.innerHTML = "";
+        orderedNames.forEach(function (name) {
+          var item = document.createElement("div");
+          item.className = "brand-pack-item";
+          var isActive = name === selectedBrandPackName;
+          item.classList.toggle("active", isActive);
+
+          if (isActive) {
+            var nameInput = document.createElement("input");
+            nameInput.type = "text";
+            nameInput.className = "brand-pack-editor-name";
+            nameInput.value = name;
+            nameInput.setAttribute("aria-label", "Brand name");
+            nameInput.addEventListener("input", function () {
+              mainColorNameInput.value = nameInput.value;
+              renderMainColorScale({ preserveBrandPackTabs: true });
+            });
+            item.appendChild(nameInput);
+
+            var colorInput = document.createElement("input");
+            colorInput.type = "color";
+            colorInput.className = "brand-pack-editor-color";
+            colorInput.value = brandPackDisplayColor(canonical, name);
+            colorInput.setAttribute("aria-label", "Brand color");
+            colorInput.addEventListener("input", function () {
+              mainColorValueInput.value = colorInput.value;
+              renderMainColorScale({ preserveBrandPackTabs: true });
+            });
+            item.appendChild(colorInput);
+          } else {
+            var button = document.createElement("button");
+            button.type = "button";
+            button.className = "brand-pack-tab";
+            button.setAttribute("role", "tab");
+            button.setAttribute("aria-selected", "false");
+
+            var swatch = document.createElement("span");
+            swatch.className = "brand-pack-swatch";
+            swatch.style.background = brandPackDisplayColor(canonical, name);
+            swatch.setAttribute("aria-hidden", "true");
+            button.appendChild(swatch);
+
+            var label = document.createElement("span");
+            label.className = "brand-pack-name";
+            label.textContent = name;
+            button.appendChild(label);
+
+            button.addEventListener("click", function () {
+              setSelectedBrandPack(name);
+            });
+            item.appendChild(button);
+          }
+
+          var deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "brand-pack-delete";
+          setIcon(deleteButton, "close");
+          deleteButton.title = "Delete " + name;
+          deleteButton.setAttribute("aria-label", "Delete " + name);
+          deleteButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            removeBrandPack(isActive ? selectedBrandPackName : name);
+          });
+          item.appendChild(deleteButton);
+          brandPackTabs.appendChild(item);
+        });
+        if (addBrandPackButton) brandPackTabs.appendChild(addBrandPackButton);
+      }
+
+      function setSelectedBrandPack(name) {
+        var canonical = readFoundationColorStore();
+        selectedBrandPackName = normalizeBrandColorName(name || firstBrandPackName(canonical));
+        currentMainColorName = selectedBrandPackName;
+        mainColorNameInput.value = selectedBrandPackName;
+        mainColorValueInput.value = canonical[selectedBrandPackName + ".500"] || mainColorValueInput.value || "#E8341C";
+        rebuildVisibleColorListsFromStore();
+      }
+
+      function hexToRgb(hex) {
+        var clean = String(hex || "#000000").replace("#", "");
+        if (clean.length === 3) {
+          clean = clean.split("").map(function (part) { return part + part; }).join("");
+        }
+        var value = /^[0-9a-f]{6}$/i.test(clean) ? clean : "000000";
+        return {
+          r: parseInt(value.slice(0, 2), 16),
+          g: parseInt(value.slice(2, 4), 16),
+          b: parseInt(value.slice(4, 6), 16)
+        };
+      }
+
+      function rgbToHex(rgb) {
+        function channel(value) {
+          return Math.max(0, Math.min(255, Math.round(value))).toString(16).padStart(2, "0");
+        }
+        return ("#" + channel(rgb.r) + channel(rgb.g) + channel(rgb.b)).toUpperCase();
+      }
+
+      function mixColor(a, b, amount) {
+        return {
+          r: a.r + (b.r - a.r) * amount,
+          g: a.g + (b.g - a.g) * amount,
+          b: a.b + (b.b - a.b) * amount
+        };
+      }
+
+      function buildToneScaleFromHex(hex) {
+        var base = hexToRgb(hex);
+        return {
+          100: rgbToHex(mixColor(base, { r: 255, g: 255, b: 255 }, 0.82)),
+          300: rgbToHex(mixColor(base, { r: 255, g: 255, b: 255 }, 0.38)),
+          500: rgbToHex(base),
+          700: rgbToHex(mixColor(base, { r: 0, g: 0, b: 0 }, 0.22)),
+          900: rgbToHex(mixColor(base, { r: 0, g: 0, b: 0 }, 0.46))
+        };
+      }
+
+      function addToneScaleToStore(values, name, baseHex) {
+        var cleanName = normalizeBrandColorName(name || "brand");
+        var scale = buildToneScaleFromHex(baseHex || "#E8341C");
+        toneSteps.forEach(function (step) {
+          values[cleanName + "." + step] = scale[step];
+        });
+      }
+
+      function seedDefaultFoundationColors() {
+        var canonical = {};
+        defaultFoundationColorPacks.forEach(function (pack) {
+          addToneScaleToStore(canonical, pack[0], pack[1]);
+        });
+        defaultFoundationStatusColorPacks.forEach(function (pack) {
+          addToneScaleToStore(canonical, pack[0], pack[1]);
+        });
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        selectedBrandPackName = defaultFoundationColorPacks[0][0];
+        currentMainColorName = selectedBrandPackName;
+        rebuildVisibleColorListsFromStore();
+        refreshLists();
+      }
+
+      function ensureNeutralRows() {
+        if (containers.neutralColors.children.length) return;
+        Object.keys(neutralScale).forEach(function (step) {
+          addFoundationColorRow(containers.neutralColors, "neutral." + step, neutralScale[step], "color");
+        });
+      }
+
+      function syncFoundationColorsStore() {
+        var seen = readFoundationColorStore();
+        Object.keys(seen).forEach(function (tokenName) {
+          if (isNeutralColorToken(tokenName) || isStatusColorToken(tokenName) || brandPackNameFromToken(tokenName)) {
+            delete seen[tokenName];
+          }
+        });
+        [containers.brandColors, containers.neutralColors, containers.statusColors].forEach(function (source) {
+          Array.prototype.forEach.call(source.children, function (row) {
+            var fields = row.querySelectorAll("input");
+            var name = fields[0] ? fields[0].value : "";
+            var value = fields[1] ? fields[1].value : "";
+            var normalizedName = normalizeColorTokenName(name);
+            if (!normalizedName) return;
+            seen[normalizedName] = value;
+          });
+        });
+        ensureNeutralColorsInStore(seen);
+        ensureStatusColorsInStore(seen);
+        writeFoundationColorStore(seen);
+        renderBrandPackTabs();
+        refreshLists();
+      }
+
+      function rebuildVisibleColorListsFromStore(options) {
+        options = options || {};
+        var canonical = readFoundationColorStore();
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        var packNames = collectBrandPackNamesFromStore(canonical);
+        if (!packNames[selectedBrandPackName]) selectedBrandPackName = firstBrandPackName(canonical);
+        currentMainColorName = selectedBrandPackName;
+        mainColorNameInput.value = selectedBrandPackName;
+        if (canonical[selectedBrandPackName + ".500"]) mainColorValueInput.value = canonical[selectedBrandPackName + ".500"];
+        containers.brandColors.innerHTML = "";
+        containers.neutralColors.innerHTML = "";
+        containers.statusColors.innerHTML = "";
+        tonePreview.innerHTML = "";
+        Object.keys(canonical).forEach(function (tokenName) {
+          if (isNeutralColorToken(tokenName)) {
+            addFoundationColorRow(containers.neutralColors, tokenName, canonical[tokenName], "color");
+          } else if (isStatusColorToken(tokenName)) {
+            addFoundationColorRow(containers.statusColors, tokenName, canonical[tokenName], "color");
+          } else {
+            addFoundationColorRow(containers.brandColors, tokenName, canonical[tokenName], "color");
+            var match = tokenName.match(/\.(100|300|500|700|900)$/);
+            if (!match) return;
+            if (brandPackNameFromToken(tokenName) !== selectedBrandPackName) return;
+            var chip = document.createElement("div");
+            chip.className = "tone-chip";
+            chip.style.background = canonical[tokenName];
+            chip.textContent = tokenName + " " + canonical[tokenName];
+            tonePreview.appendChild(chip);
+          }
+        });
+        ensureNeutralRows();
+        setBrandColorsCollapsed(brandColorsCollapsed);
+        if (!options.preserveBrandPackTabs) renderBrandPackTabs();
+      }
+
+      function setBrandColorsCollapsed(collapsed) {
+        brandColorsCollapsed = !!collapsed;
+        containers.brandColors.hidden = brandColorsCollapsed;
+        tonePreview.hidden = brandColorsCollapsed;
+        toggleBrandColorsButton.textContent = brandColorsCollapsed ? "Expand Brand Colors" : "Collapse Brand Colors";
+      }
+
+      function collectBrandPackNames() {
+        return collectBrandPackNamesFromStore(readFoundationColorStore());
+      }
+
+      function renderMainColorScale(options) {
+        options = options || {};
+        var rawName = mainColorNameInput.value.trim();
+        if (!rawName) {
+          containers.brandColors.innerHTML = "";
+          tonePreview.innerHTML = "";
+          return;
+        }
+        var nextBaseHex = rgbToHex(hexToRgb(mainColorValueInput.value || "#E8341C"));
+        var canonical = readFoundationColorStore();
+        var nextName = nextAvailableBrandPackName(rawName, canonical, currentMainColorName);
+        updateMainColorReferences(currentMainColorName, nextName);
+        canonical = writeBrandPackScaleInOrder(canonical, currentMainColorName, nextName, nextBaseHex);
+        currentMainColorName = nextName;
+        selectedBrandPackName = nextName;
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        rebuildVisibleColorListsFromStore({
+          preserveBrandPackTabs: !!options.preserveBrandPackTabs
+        });
+        refreshLists();
+      }
+
+      function updateMainColorReferences(previousName, nextName) {
+        if (!previousName || previousName === nextName) return;
+        var previousPrefix = "color." + previousName + ".";
+        var nextPrefix = "color." + nextName + ".";
+        Array.prototype.forEach.call(containers.semanticColors.querySelectorAll("input"), function (field) {
+          if (field.value.indexOf(previousPrefix) === 0) {
+            field.value = nextPrefix + field.value.slice(previousPrefix.length);
+          }
+        });
+        Array.prototype.forEach.call(containers.semanticText.querySelectorAll("input"), function (field) {
+          if (field.value.indexOf(previousPrefix) === 0) {
+            field.value = nextPrefix + field.value.slice(previousPrefix.length);
+          }
+        });
+      }
+
+      function addTextStyle(values) {
+        var row = document.createElement("div");
+        row.className = "token-row cols-text semantic-text-row";
+        var data = values || ["", "font.family.sans", "font.size.14", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"];
+        if (data.length >= 8) data = [data[0], data[2], data[3], data[4], data[5], data[6], data[7]];
+        row.appendChild(field("token", input(data[0], "text", null, "text token")));
+        row.appendChild(field("ref", input(data[1], "text", "fontFamilyRefs", "family ref")));
+        row.appendChild(field("ref", input(data[2], "text", "fontSizeRefs", "size token ref")));
+        row.appendChild(field("ref", input(data[3], "text", "fontWeightRefs", "weight ref")));
+        row.appendChild(field("ref", input(data[4], "text", "fontLineHeightRefs", "line-height token ref")));
+        row.appendChild(field("ref", input(data[5], "text", "fontLetterSpacingRefs", "letter token ref")));
+        row.appendChild(field("ref", input(data[6], "text", "fontTextTransformRefs", "case ref")));
+        var actions = document.createElement("div");
+        actions.className = "row-actions";
+        var toggleButton = document.createElement("button");
+        toggleButton.type = "button";
+        toggleButton.className = "icon";
+        setIcon(toggleButton, "subtract");
+        toggleButton.title = "Collapse mapping";
+        toggleButton.setAttribute("aria-label", "Collapse mapping");
+        toggleButton.addEventListener("click", function () {
+          var collapsed = row.classList.toggle("row-collapsed");
+          setIcon(toggleButton, collapsed ? "add" : "subtract");
+          toggleButton.title = collapsed ? "Expand mapping" : "Collapse mapping";
+          toggleButton.setAttribute("aria-label", collapsed ? "Expand mapping" : "Collapse mapping");
+        });
+        actions.appendChild(toggleButton);
+        actions.appendChild(createRemoveButton(row));
+        row.appendChild(actions);
+        containers.semanticText.appendChild(row);
+      }
+
+      function extractFontSizeValue(rawRef) {
+        var ref = String(rawRef || "").trim();
+        if (!ref) return Number.NEGATIVE_INFINITY;
+        var explicitNumber = Number(ref);
+        if (!Number.isNaN(explicitNumber)) return explicitNumber;
+        var tail = ref.split(".").pop() || "";
+        var tailNumber = Number(tail);
+        if (!Number.isNaN(tailNumber)) return tailNumber;
+        var match = ref.match(/-?\d+(\.\d+)?/g);
+        if (!match || !match.length) return Number.NEGATIVE_INFINITY;
+        return Number(match[match.length - 1]);
+      }
+
+      function sortSemanticTextRows() {
+        var rows = Array.prototype.slice.call(containers.semanticText.children);
+        rows.sort(function (a, b) {
+          var aFields = a.querySelectorAll("input");
+          var bFields = b.querySelectorAll("input");
+          var aSize = extractFontSizeValue((aFields[3] || {}).value);
+          var bSize = extractFontSizeValue((bFields[3] || {}).value);
+          if (aSize !== bSize) return bSize - aSize;
+          var aName = ((aFields[0] || {}).value || "").trim().toLowerCase();
+          var bName = ((bFields[0] || {}).value || "").trim().toLowerCase();
+          return aName.localeCompare(bName);
+        });
+        rows.forEach(function (row) { containers.semanticText.appendChild(row); });
+      }
+
+      function setSemanticMappingCollapsed(collapsed) {
+        Array.prototype.forEach.call(containers.semanticText.children, function (row) {
+          if (!row.classList || !row.classList.contains("semantic-text-row")) return;
+          row.classList.toggle("row-collapsed", !!collapsed);
+          var toggleButton = row.querySelector(".row-actions .icon");
+          if (!toggleButton) return;
+          setIcon(toggleButton, collapsed ? "add" : "subtract");
+          toggleButton.title = collapsed ? "Expand mapping" : "Collapse mapping";
+          toggleButton.setAttribute("aria-label", collapsed ? "Expand mapping" : "Collapse mapping");
+        });
+        toggleSemanticMappingButton.textContent = collapsed ? "Expand Mapping" : "Collapse Mapping";
+      }
+
+      function resetFields() {
+        Object.keys(containers).forEach(function (key) { containers[key].innerHTML = ""; });
+        currentMainColorName = "brand";
+        selectedBrandPackName = "brand";
+        mainColorNameInput.value = "brand";
+        mainColorValueInput.value = "#E8341C";
+        seedDefaultFoundationColors();
+        defaults.foundationSpacing.forEach(function (row) { addPair(containers.foundationSpacing, "cols-2", row[0], row[1], "number"); });
+        defaults.foundationSize.forEach(function (row) { addPair(containers.foundationSize, "cols-2", row[0], row[1], "number"); });
+        defaults.foundationRadius.forEach(function (row) { addPair(containers.foundationRadius, "cols-2", row[0], row[1], "number"); });
+        defaults.foundationOpacity.forEach(function (row) { addPair(containers.foundationOpacity, "cols-2", row[0], row[1], "number"); });
+        defaults.semanticColor.forEach(function (row) { addPair(containers.semanticColors, "cols-2", row[0], row[1], "text", "colorRefs"); });
+        defaults.semanticSpacing.forEach(function (row) { addPair(containers.semanticSpacing, "cols-2", row[0], row[1], "text", "spaceRefs"); });
+        defaults.semanticSize.forEach(function (row) { addPair(containers.semanticSize, "cols-2", row[0], row[1], "text", "sizeRefs"); });
+        defaults.semanticRadius.forEach(function (row) { addPair(containers.semanticRadius, "cols-2", row[0], row[1], "text", "radiusRefs"); });
+        defaults.semanticOpacity.forEach(function (row) { addPair(containers.semanticOpacity, "cols-2", row[0], row[1], "text", "opacityRefs"); });
+        defaults.semanticShadow.forEach(function (row) { addPair(containers.semanticShadow, "cols-2", row[0], row[1], "text"); });
+        defaults.text.family.forEach(function (row) { addPair(containers.fontFamily, "cols-2", row[0], row[1]); });
+        defaults.text.size.forEach(function (row) { addPair(containers.fontSize, "cols-2", row[0], row[1], "number"); });
+        defaults.text.weight.forEach(function (row) { addPair(containers.fontWeight, "cols-2", row[0], row[1], "number"); });
+        defaults.text.lineHeight.forEach(function (row) { addPair(containers.fontLineHeight, "cols-2", row[0], row[1], "text"); });
+        defaults.text.letterSpacing.forEach(function (row) { addPair(containers.fontLetterSpacing, "cols-2", row[0], row[1], "number"); });
+        defaults.text.textTransform.forEach(function (row) { addPair(containers.fontTextTransform, "cols-2", row[0], row[1]); });
+        defaults.semanticText.forEach(addTextStyle);
+        refreshLists();
+      }
+
+      function readPairs(container, numeric) {
+        var out = {};
+        Array.prototype.forEach.call(container.children, function (row) {
+          var fields = row.querySelectorAll("input");
+          var name = fields[0].value.trim();
+          var value = fields[1].value.trim();
+          if (!name) return;
+          out[name] = numeric ? Number(value || 0) : value;
+        });
+        return out;
+      }
+
+      function readTextStyles() {
+        var out = {};
+        Array.prototype.forEach.call(containers.semanticText.children, function (row) {
+          var fields = row.querySelectorAll("input");
+          var name = fields[0].value.trim();
+          if (!name) return;
+          out[name] = {
+            fontFamily: fields[1].value.trim(),
+            fontSize: fields[2].value.trim(),
+            fontWeight: fields[3].value.trim(),
+            lineHeight: fields[4].value.trim(),
+            letterSpacing: fields[5].value.trim(),
+            textCase: fields[6].value.trim()
+          };
+        });
+        return out;
+      }
+
+      function buildSetup() {
+        return {
+          foundation: {
+            color: readPairs(containers.foundationColors, false),
+            spacing: readPairs(containers.foundationSpacing, true),
+            size: readPairs(containers.foundationSize, true),
+            radius: readPairs(containers.foundationRadius, true),
+            opacity: readPairs(containers.foundationOpacity, true),
+            text: {
+              family: readPairs(containers.fontFamily, false),
+              size: readPairs(containers.fontSize, true),
+              weight: readPairs(containers.fontWeight, true),
+              lineHeight: readPairs(containers.fontLineHeight, false),
+              letterSpacing: readPairs(containers.fontLetterSpacing, true),
+              textTransform: readPairs(containers.fontTextTransform, false)
+            }
+          },
+          semantic: {
+            color: readPairs(containers.semanticColors, false),
+            spacing: readPairs(containers.semanticSpacing, false),
+            size: readPairs(containers.semanticSize, false),
+            radius: readPairs(containers.semanticRadius, false),
+            opacity: readPairs(containers.semanticOpacity, false),
+            shadow: readPairs(containers.semanticShadow, false),
+            text: readTextStyles()
+          }
+        };
+      }
+
+      function currentSessionPayload() {
+        return {
+          setup: buildSetup(),
+          options: options(),
+          activeTab: (document.querySelector("[data-token-tab].active") || {}).getAttribute
+            ? document.querySelector("[data-token-tab].active").getAttribute("data-token-tab")
+            : "color"
+        };
+      }
+
+      function applySessionPayload(payload) {
+        if (!payload || typeof payload !== "object") return;
+        var setup = payload.setup || {};
+        var foundation = setup.foundation || {};
+        var semantic = setup.semantic || {};
+        var text = foundation.text || {};
+        var deprecatedSizeKeys = { "font.size.11": true, "font.size.13": true };
+        var deprecatedLineHeightKeys = {
+          "font.lineHeight.11": true,
+          "font.lineHeight.12": true,
+          "font.lineHeight.13": true,
+          "font.lineHeight.14": true,
+          "font.lineHeight.16": true,
+          "font.lineHeight.21": true,
+          "font.lineHeight.28": true,
+          "font.lineHeight.38": true,
+          "font.lineHeight.51": true,
+          "font.lineHeight.67": true,
+          "font.lineHeight.90": true
+        };
+
+        function normalizeLineHeightRef(ref, fontSizeRef) {
+          var raw = String(ref || "").trim();
+          if (!raw) raw = "";
+          var match = raw.match(/^font\.lineHeight\.(\d+(?:\.\d+)?)$/);
+          if (match) {
+            var sizeValue = Number(match[1]);
+            if (!Number.isNaN(sizeValue)) {
+              if (sizeValue >= 67) return "font.lineHeight.110";
+              if (sizeValue >= 38) return "font.lineHeight.120";
+              if (sizeValue >= 24) return "font.lineHeight.130";
+              return "font.lineHeight.150";
+            }
+          }
+
+          if (raw === "font.lineHeight.110" || raw === "font.lineHeight.120" || raw === "font.lineHeight.130" || raw === "font.lineHeight.150") {
+            return raw;
+          }
+
+          var fontSizeMatch = String(fontSizeRef || "").trim().match(/^font\.size\.(\d+(?:\.\d+)?)$/);
+          var sizeFromFont = fontSizeMatch ? Number(fontSizeMatch[1]) : NaN;
+          if (!Number.isNaN(sizeFromFont)) {
+            if (sizeFromFont >= 67) return "font.lineHeight.110";
+            if (sizeFromFont >= 38) return "font.lineHeight.120";
+            if (sizeFromFont >= 24) return "font.lineHeight.130";
+          }
+          return "font.lineHeight.150";
+        }
+
+        Object.keys(containers).forEach(function (key) { containers[key].innerHTML = ""; });
+        currentMainColorName = "brand";
+        selectedBrandPackName = "brand";
+
+        var foundationColor = foundation.color || {};
+        var colorEntries = Object.keys(foundationColor).map(function (key) { return [key, foundationColor[key]]; });
+        containers.brandColors.innerHTML = "";
+        containers.neutralColors.innerHTML = "";
+        containers.statusColors.innerHTML = "";
+        tonePreview.innerHTML = "";
+        if (colorEntries.length) {
+          var seenColors = {};
+          colorEntries.forEach(function (row) {
+            var tokenName = normalizeColorTokenName(row[0]);
+            if (!tokenName) return;
+            if (seenColors[tokenName]) return;
+            seenColors[tokenName] = row[1];
+          });
+          Object.keys(seenColors).forEach(function (tokenName) {
+            if (isNeutralColorToken(tokenName)) {
+              addFoundationColorRow(containers.neutralColors, tokenName, seenColors[tokenName], "color");
+            } else if (isStatusColorToken(tokenName)) {
+              addFoundationColorRow(containers.statusColors, tokenName, seenColors[tokenName], "color");
+            } else {
+              addFoundationColorRow(containers.brandColors, tokenName, seenColors[tokenName], "color");
+            }
+          });
+        } else {
+          seedDefaultFoundationColors();
+        }
+        ensureNeutralRows();
+        syncFoundationColorsStore();
+        selectedBrandPackName = firstBrandPackName(readFoundationColorStore());
+        setSelectedBrandPack(selectedBrandPackName);
+
+        function fillPairGroup(container, groupValues, fallbackRows, valueType, listId) {
+          var values = groupValues && typeof groupValues === "object" ? Object.assign({}, groupValues) : {};
+          var keys = Object.keys(values);
+          if (!keys.length && Array.isArray(fallbackRows)) {
+            fallbackRows.forEach(function (row) { values[row[0]] = row[1]; });
+            keys = Object.keys(values);
+          }
+          keys.forEach(function (key) {
+            addPair(container, "cols-2", key, values[key], valueType || "text", listId);
+          });
+        }
+
+        fillPairGroup(containers.foundationSpacing, foundation.spacing, defaults.foundationSpacing, "number");
+        fillPairGroup(containers.foundationSize, foundation.size, defaults.foundationSize, "number");
+        fillPairGroup(containers.foundationRadius, foundation.radius, defaults.foundationRadius, "number");
+        fillPairGroup(containers.foundationOpacity, foundation.opacity, defaults.foundationOpacity, "number");
+        fillPairGroup(containers.semanticColors, semantic.color, defaults.semanticColor, "text", "colorRefs");
+        fillPairGroup(containers.semanticSpacing, semantic.spacing, defaults.semanticSpacing, "text", "spaceRefs");
+        fillPairGroup(containers.semanticSize, semantic.size, defaults.semanticSize, "text", "sizeRefs");
+        fillPairGroup(containers.semanticRadius, semantic.radius, defaults.semanticRadius, "text", "radiusRefs");
+        fillPairGroup(containers.semanticOpacity, semantic.opacity, defaults.semanticOpacity, "text", "opacityRefs");
+        fillPairGroup(containers.semanticShadow, semantic.shadow, defaults.semanticShadow, "text");
+        function fillTextGroup(container, groupValues, fallbackRows, valueType) {
+          var values = groupValues && typeof groupValues === "object" ? Object.assign({}, groupValues) : {};
+          if (container === containers.fontSize) {
+            Object.keys(deprecatedSizeKeys).forEach(function (key) { delete values[key]; });
+          }
+          if (container === containers.fontLineHeight) {
+            Object.keys(deprecatedLineHeightKeys).forEach(function (key) { delete values[key]; });
+          }
+          var orderedKeys = [];
+          (fallbackRows || []).forEach(function (row) {
+            var key = row[0];
+            if (!(key in values)) values[key] = row[1];
+            orderedKeys.push(key);
+          });
+          Object.keys(values).forEach(function (key) {
+            if (orderedKeys.indexOf(key) === -1) orderedKeys.push(key);
+          });
+          orderedKeys.forEach(function (key) {
+            addPair(container, "cols-2", key, values[key], valueType || "text");
+          });
+        }
+
+        fillTextGroup(containers.fontFamily, text.family, defaults.text.family);
+        fillTextGroup(containers.fontSize, text.size, defaults.text.size, "number");
+        fillTextGroup(containers.fontWeight, text.weight, defaults.text.weight, "number");
+        fillTextGroup(containers.fontLineHeight, text.lineHeight, defaults.text.lineHeight, "text");
+        fillTextGroup(containers.fontLetterSpacing, text.letterSpacing, defaults.text.letterSpacing, "number");
+        fillTextGroup(containers.fontTextTransform, text.textTransform, defaults.text.textTransform, "text");
+
+        Object.entries(semantic.text || {}).forEach(function (entry) {
+          var name = entry[0];
+          var value = entry[1] || {};
+          var normalizedFontSize = value.fontSize === "font.size.11" || value.fontSize === "font.size.13"
+            ? "font.size.12"
+            : (value.fontSize || "");
+          var normalizedLineHeight = normalizeLineHeightRef(value.lineHeight, value.fontSize);
+          addTextStyle([
+            name,
+            value.fontFamily || "",
+            normalizedFontSize,
+            value.fontWeight || "",
+            normalizedLineHeight,
+            value.letterSpacing || "",
+            value.textCase || ""
+          ]);
+        });
+
+        var opts = payload.options || {};
+        document.getElementById("variables").checked = opts.variables !== false;
+        document.getElementById("styles").checked = opts.styles !== false;
+        document.getElementById("overwrite").checked = opts.overwrite !== false;
+        var paletteInput = document.getElementById("paletteName");
+        if (paletteInput) paletteInput.value = "Foundation";
+        document.getElementById("themeName").value = opts.themeName || "Theme";
+        setMode(opts.modeName || "Light", false);
+
+        if (payload.activeTab) setActiveTokenTab(payload.activeTab);
+        refreshLists();
+      }
+
+      function slugifyFileName(value) {
+        return (value || "session")
+          .toLowerCase()
+          .replace(/[^a-z0-9._-]+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "") || "session";
+      }
+
+      function buildSessionMarkdown(name, payload) {
+        var sessionName = name || "Session";
+        return [
+          "# " + sessionName,
+          "",
+          "Generated by Design System Token Importer.",
+          "",
+          "```json",
+          JSON.stringify(payload, null, 2),
+          "```",
+          ""
+        ].join("\n");
+      }
+
+      function sessionId() {
+        return "session-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+      }
+
+      function readUiFallbackSessions() {
+        try {
+          var raw = window.localStorage.getItem(uiSessionsStorageKey);
+          if (!raw) return [];
+          var parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function writeUiFallbackSessions(sessions) {
+        savedSessions = Array.isArray(sessions) ? sessions : [];
+        try {
+          window.localStorage.setItem(uiSessionsStorageKey, JSON.stringify(savedSessions));
+        } catch (error) {}
+      }
+
+      function setSavedSessions(sessions) {
+        savedSessions = Array.isArray(sessions) ? sessions : [];
+        writeUiFallbackSessions(savedSessions);
+        renderSessionSelect();
+      }
+
+      function renderSessionSelect() {
+        if (!sessionSelect) return;
+        var previousValue = selectedSavedSessionId || sessionSelect.value || "";
+        sessionSelect.innerHTML = "";
+        if (sessionSelectMenu) sessionSelectMenu.innerHTML = "";
+        var placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = savedSessions.length ? "Select saved session..." : "No saved sessions";
+        sessionSelect.appendChild(placeholder);
+        if (sessionSelectButton) sessionSelectButton.textContent = placeholder.textContent;
+
+        var list = null;
+        function appendActionButton(container, label, handler) {
+          var command = document.createElement("button");
+          command.type = "button";
+          command.className = "session-menu-command";
+          command.textContent = label;
+          command.addEventListener("click", function () {
+            setSessionSelectOpen(false);
+            handler();
+          });
+          container.appendChild(command);
+        }
+
+        if (sessionSelectMenu) {
+          var toolbar = document.createElement("div");
+          toolbar.className = "session-menu-toolbar";
+
+          var search = document.createElement("input");
+          search.type = "text";
+          search.className = "session-menu-search";
+          search.placeholder = "Search sessions";
+          toolbar.appendChild(search);
+
+          var actionRow = document.createElement("div");
+          actionRow.className = "session-menu-actions-row";
+          appendActionButton(actionRow, "Import .md", function () {
+            sessionFileInput.click();
+          });
+          appendActionButton(actionRow, "Export current .md", function () {
+            var name = currentSessionName();
+            downloadTextFile(slugifyFileName(name) + ".md", buildSessionMarkdown(name, currentSessionPayload()));
+            setStatus("Current session exported: " + slugifyFileName(name) + ".md", "ok");
+          });
+          toolbar.appendChild(actionRow);
+          sessionSelectMenu.appendChild(toolbar);
+
+          list = document.createElement("span");
+          list.className = "session-menu-list";
+          sessionSelectMenu.appendChild(list);
+
+          search.addEventListener("input", function () {
+            renderSessionMenuList(list, search.value);
+          });
+        }
+
+        savedSessions.forEach(function (session) {
+          var option = document.createElement("option");
+          option.value = session.id;
+          option.textContent = session.name || "Session";
+          sessionSelect.appendChild(option);
+        });
+        if (list) renderSessionMenuList(list, "");
+        if (previousValue && savedSessions.some(function (session) { return session.id === previousValue; })) {
+          sessionSelect.value = previousValue;
+          selectedSavedSessionId = previousValue;
+          var selectedSession = savedSessions.find(function (session) { return session.id === previousValue; });
+          if (sessionSelectButton && selectedSession) sessionSelectButton.textContent = selectedSession.name || "Session";
+        } else {
+          sessionSelect.value = "";
+          selectedSavedSessionId = "";
+        }
+        updateSessionOptionState();
+      }
+
+      function renderSessionMenuList(list, query) {
+        if (!list) return;
+        var normalizedQuery = String(query || "").trim().toLowerCase();
+        list.innerHTML = "";
+        var matches = savedSessions.filter(function (session) {
+          var haystack = [
+            session.name || "",
+            session.fileName || "",
+            session.savedAt || ""
+          ].join(" ").toLowerCase();
+          return !normalizedQuery || haystack.indexOf(normalizedQuery) !== -1;
+        });
+        if (!matches.length) {
+          var empty = document.createElement("div");
+          empty.className = "empty-state";
+          empty.textContent = savedSessions.length ? "No sessions match this search." : "No saved sessions yet.";
+          list.appendChild(empty);
+          return;
+        }
+        matches.forEach(function (session) {
+          var row = document.createElement("div");
+          row.className = "session-menu-row";
+          row.setAttribute("role", "option");
+          row.setAttribute("data-session-id", session.id);
+
+          var infoButton = document.createElement("button");
+          infoButton.type = "button";
+          infoButton.className = "session-select-option";
+          infoButton.setAttribute("data-session-id", session.id);
+          var title = document.createElement("div");
+          title.className = "session-menu-title";
+          title.textContent = session.name || "Session";
+          var meta = document.createElement("div");
+          meta.className = "session-menu-meta";
+          meta.textContent = (session.fileName || slugifyFileName(session.name) + ".md") + (session.savedAt ? " · " + new Date(session.savedAt).toLocaleString() : "");
+          infoButton.appendChild(title);
+          infoButton.appendChild(meta);
+          infoButton.addEventListener("click", function () {
+            setSessionSelectOpen(false);
+            loadSavedSession(session);
+          });
+          row.appendChild(infoButton);
+
+          var actions = document.createElement("span");
+          actions.className = "session-menu-actions";
+          var exportButton = document.createElement("button");
+          exportButton.type = "button";
+          setIcon(exportButton, "export");
+          exportButton.title = "Export " + (session.name || "Session");
+          exportButton.setAttribute("aria-label", "Export " + (session.name || "Session"));
+          exportButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            downloadTextFile(session.fileName || slugifyFileName(session.name) + ".md", session.markdown || buildSessionMarkdown(session.name, session.payload));
+          });
+          var deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          setIcon(deleteButton, "trash-can");
+          deleteButton.title = "Delete " + (session.name || "Session");
+          deleteButton.setAttribute("aria-label", "Delete " + (session.name || "Session"));
+          deleteButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            deleteSavedSession(session.id);
+          });
+          actions.appendChild(exportButton);
+          actions.appendChild(deleteButton);
+          row.appendChild(actions);
+          list.appendChild(row);
+        });
+        updateSessionOptionState();
+      }
+
+      function loadSavedSession(session) {
+        if (!session) return;
+        selectedSavedSessionId = session.id || "";
+        if (sessionSelect) sessionSelect.value = selectedSavedSessionId;
+        if (sessionSelectButton) sessionSelectButton.textContent = session.name || "Session";
+        updateSessionOptionState();
+        applySessionPayload(session.payload || parseSessionMarkdown(session.markdown));
+        setStatus("Session loaded: " + (session.name || "Session"), "ok");
+      }
+
+      function updateSessionOptionState() {
+        if (!sessionSelectMenu) return;
+        Array.prototype.forEach.call(sessionSelectMenu.querySelectorAll("[data-session-id]"), function (item) {
+          item.classList.toggle("active", item.getAttribute("data-session-id") === selectedSavedSessionId);
+        });
+      }
+
+      function setSessionSelectOpen(open) {
+        if (!sessionSelectMenu || !sessionSelectButton) return;
+        sessionSelectMenu.hidden = !open;
+        sessionSelectButton.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+
+      function createSessionRecord(name, payload, markdown) {
+        var sessionName = String(name || "Session").trim() || "Session";
+        return {
+          id: sessionId(),
+          name: sessionName,
+          fileName: slugifyFileName(sessionName) + ".md",
+          savedAt: new Date().toISOString(),
+          payload: payload,
+          markdown: markdown || buildSessionMarkdown(sessionName, payload)
+        };
+      }
+
+      function currentSessionName() {
+        var selectedSession = savedSessions.find(function (session) { return session && session.id === selectedSavedSessionId; });
+        return (selectedSession && selectedSession.name) || "Session";
+      }
+
+      function downloadTextFile(fileName, text) {
+        var blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      function parseSessionMarkdown(markdown) {
+        var text = String(markdown || "");
+        var codeFence = text.match(/```json\s*([\s\S]*?)```/i) || text.match(/```\s*([\s\S]*?)```/);
+        var raw = codeFence ? codeFence[1] : text;
+        return JSON.parse(raw);
+      }
+
+      function saveSessionRecord(record) {
+        var nextSessions = savedSessions.filter(function (item) { return item && item.id !== record.id; });
+        nextSessions.unshift(record);
+        selectedSavedSessionId = record.id;
+        setSavedSessions(nextSessions);
+        parent.postMessage({ pluginMessage: { type: "save-session", session: record } }, "*");
+      }
+
+      function deleteSavedSession(id) {
+        if (selectedSavedSessionId === id) selectedSavedSessionId = "";
+        setSavedSessions(savedSessions.filter(function (item) { return item && item.id !== id; }));
+        parent.postMessage({ pluginMessage: { type: "delete-session", id: id } }, "*");
+      }
+
+      function openSaveModal() {
+        saveModalBackdrop.classList.add("open");
+        saveModalBackdrop.setAttribute("aria-hidden", "false");
+        saveModalNameInput.value = "";
+        setTimeout(function () { saveModalNameInput.focus(); }, 0);
+      }
+
+      function closeSaveModal() {
+        saveModalBackdrop.classList.remove("open");
+        saveModalBackdrop.setAttribute("aria-hidden", "true");
+      }
+
+      function commitSaveSession() {
+        var name = String(saveModalNameInput.value || "").trim();
+        if (!name) {
+          setStatus("Session name is required.", "error");
+          saveModalNameInput.focus();
+          return;
+        }
+        var payload = currentSessionPayload();
+        var record = createSessionRecord(name, payload);
+        saveSessionRecord(record);
+        closeSaveModal();
+        setStatus("Session saved locally: " + record.name, "ok");
+      }
+
+      function fillDatalist(id, values) {
+        var list = document.getElementById(id);
+        list.innerHTML = "";
+        values.forEach(function (value) {
+          var option = document.createElement("option");
+          option.value = value;
+          list.appendChild(option);
+        });
+        if (activeSuggestionInput && activeSuggestionInput.dataset.listSource === id) {
+          openSuggestions(activeSuggestionInput);
+        }
+      }
+
+      function prefixedPairs(container, prefix, legacyPrefix) {
+        var values = [];
+        Array.prototype.forEach.call(container.children, function (row) {
+          var name = row.querySelector("input").value.trim();
+          if (!name) return;
+          if (name.indexOf(prefix) === 0) {
+            values.push(name);
+          } else if (legacyPrefix && name.indexOf(legacyPrefix) === 0) {
+            values.push(prefix + name.slice(legacyPrefix.length));
+          } else {
+            values.push(prefix + name);
+          }
+        });
+        return values;
+      }
+
+      function refreshLists() {
+        var foundationColorRefs = prefixedPairs(containers.foundationColors, "color.");
+        var semanticColorRefs = prefixedPairs(containers.semanticColors, "color.");
+        fillDatalist("colorRefs", foundationColorRefs);
+        fillDatalist("textColorRefs", semanticColorRefs.concat(foundationColorRefs));
+        fillDatalist("spaceRefs", prefixedPairs(containers.semanticSpacing, "space."));
+        fillDatalist("sizeRefs", prefixedPairs(containers.semanticSize, "size."));
+        fillDatalist("radiusRefs", prefixedPairs(containers.semanticRadius, "radius."));
+        fillDatalist("opacityRefs", prefixedPairs(containers.semanticOpacity, "opacity."));
+        fillDatalist("shadowRefs", prefixedPairs(containers.semanticShadow, "shadow."));
+        fillDatalist("fontFamilyRefs", prefixedPairs(containers.fontFamily, "font.family.", "family."));
+        fillDatalist("fontSizeRefs", prefixedPairs(containers.fontSize, "font.size.", "size."));
+        fillDatalist("fontWeightRefs", prefixedPairs(containers.fontWeight, "font.weight.", "weight."));
+        fillDatalist("fontLineHeightRefs", prefixedPairs(containers.fontLineHeight, "font.lineHeight.", "lineHeight."));
+        fillDatalist("fontLetterSpacingRefs", prefixedPairs(containers.fontLetterSpacing, "font.letterSpacing.", "letterSpacing."));
+        fillDatalist("fontTextTransformRefs", prefixedPairs(containers.fontTextTransform, "font.textTransform.", "textTransform."));
+      }
+
+      function options() {
+        var modeInput = document.getElementById("modeName");
+        return {
+          variables: document.getElementById("variables").checked,
+          styles: document.getElementById("styles").checked,
+          overwrite: document.getElementById("overwrite").checked,
+          paletteName: "Foundation",
+          themeName: document.getElementById("themeName").value.trim() || "Theme",
+          modeName: (modeInput && modeInput.value ? modeInput.value.trim() : "Light") || "Light"
+        };
+      }
+
+      function showFeedback(title, message) {
+        if (!feedbackModalBackdrop) return;
+        feedbackModalTitle.textContent = title || "Done";
+        feedbackModalMessage.textContent = message || "Completed.";
+        feedbackModalBackdrop.classList.add("open");
+        feedbackModalBackdrop.setAttribute("aria-hidden", "false");
+      }
+
+      function closeFeedback() {
+        if (!feedbackModalBackdrop) return;
+        feedbackModalBackdrop.classList.remove("open");
+        feedbackModalBackdrop.setAttribute("aria-hidden", "true");
+      }
+
+      function setStatus(message, kind) {
+        if (!status) {
+          if (message) showFeedback(kind === "error" ? "Error" : "Done", message);
+          return;
+        }
+        status.textContent = message || "";
+        status.className = ("status " + (kind || "")).trim();
+      }
+
+      function resizeWindow(width, height) {
+        var nextWidth = Math.max(minWindowWidth, Math.round(Number(width) || currentWindowWidth));
+        var nextHeight = Math.max(minWindowHeight, Math.round(Number(height) || currentWindowHeight));
+        currentWindowWidth = nextWidth;
+        currentWindowHeight = nextHeight;
+        parent.postMessage({
+          pluginMessage: { type: "resize-ui", width: nextWidth, height: nextHeight }
+        }, "*");
+      }
+
+      function startWindowResize(event) {
+        if (!resizeCornerHitarea) return;
+        event.preventDefault();
+        closeSuggestions();
+
+        var pointerId = typeof event.pointerId === "number" ? event.pointerId : null;
+        var startX = event.clientX;
+        var startY = event.clientY;
+        var startWidth = currentWindowWidth || window.innerWidth;
+        var startHeight = currentWindowHeight || window.innerHeight;
+        var usePointerEvents = event.type.indexOf("pointer") === 0;
+        document.body.classList.add("is-resizing");
+        if (pointerId !== null && resizeCornerHitarea.setPointerCapture) {
+          resizeCornerHitarea.setPointerCapture(pointerId);
+        }
+
+        function onMove(moveEvent) {
+          resizeWindow(startWidth + moveEvent.clientX - startX, startHeight + moveEvent.clientY - startY);
+        }
+
+        function onUp(upEvent) {
+          document.body.classList.remove("is-resizing");
+          if (pointerId !== null && resizeCornerHitarea.releasePointerCapture) {
+            try {
+              resizeCornerHitarea.releasePointerCapture(pointerId);
+            } catch (error) {}
+          }
+          document.removeEventListener("pointermove", onMove);
+          document.removeEventListener("pointerup", onUp);
+          document.removeEventListener("pointercancel", onUp);
+          document.removeEventListener("mousemove", onMove);
+          document.removeEventListener("mouseup", onUp);
+          if (upEvent) onMove(upEvent);
+        }
+
+        if (usePointerEvents) {
+          document.addEventListener("pointermove", onMove);
+          document.addEventListener("pointerup", onUp);
+          document.addEventListener("pointercancel", onUp);
+        } else {
+          document.addEventListener("mousemove", onMove);
+          document.addEventListener("mouseup", onUp);
+        }
+      }
+
+      function readUiFallbackDefault() {
+        try {
+          var raw = window.localStorage.getItem(uiDefaultStorageKey);
+          if (!raw) return null;
+          var parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : null;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function writeUiFallbackDefault(payload) {
+        try {
+          window.localStorage.setItem(uiDefaultStorageKey, JSON.stringify(payload));
+        } catch (error) {}
+      }
+
+      mainColorNameInput.addEventListener("input", renderMainColorScale);
+      mainColorValueInput.addEventListener("input", renderMainColorScale);
+      toggleBrandColorsButton.addEventListener("click", function () {
+        setBrandColorsCollapsed(!brandColorsCollapsed);
+      });
+      addBrandPackButton.addEventListener("click", function () {
+        var canonical = readFoundationColorStore();
+        var packName = nextAvailableBrandPackName("brand", canonical);
+        addToneScaleToStore(canonical, packName, mainColorValueInput.value || "#E8341C");
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        setSelectedBrandPack(packName);
+        refreshLists();
+      });
+      if (importDashboardButton) {
+        importDashboardButton.addEventListener("click", function () {
+          fileInput.click();
+        });
+      }
+      document.getElementById("addFoundationSpacing").addEventListener("click", function () { addPair(containers.foundationSpacing, "cols-2", "space.", 0, "number"); refreshLists(); });
+      document.getElementById("addFoundationSize").addEventListener("click", function () { addPair(containers.foundationSize, "cols-2", "size.", 0, "number"); refreshLists(); });
+      document.getElementById("addFoundationRadius").addEventListener("click", function () { addPair(containers.foundationRadius, "cols-2", "radius.", 0, "number"); refreshLists(); });
+      document.getElementById("addFoundationOpacity").addEventListener("click", function () { addPair(containers.foundationOpacity, "cols-2", "opacity.", 0.12, "number"); refreshLists(); });
+      document.getElementById("addSemanticColor").addEventListener("click", function () { addPair(containers.semanticColors, "cols-2", "", "color.brand.500", "text", "colorRefs"); refreshLists(); });
+      document.getElementById("addSemanticSpacing").addEventListener("click", function () { addPair(containers.semanticSpacing, "cols-2", "", "space.16", "text", "spaceRefs"); refreshLists(); });
+      document.getElementById("addSemanticSize").addEventListener("click", function () { addPair(containers.semanticSize, "cols-2", "", "size.40", "text", "sizeRefs"); refreshLists(); });
+      document.getElementById("addSemanticRadius").addEventListener("click", function () { addPair(containers.semanticRadius, "cols-2", "", "radius.md", "text", "radiusRefs"); refreshLists(); });
+      document.getElementById("addSemanticOpacity").addEventListener("click", function () { addPair(containers.semanticOpacity, "cols-2", "", "opacity.12", "text", "opacityRefs"); refreshLists(); });
+      document.getElementById("addSemanticShadow").addEventListener("click", function () { addPair(containers.semanticShadow, "cols-2", "", "0px 4px 12px 0px rgba(18, 21, 27, 0.12)", "text"); refreshLists(); });
+      document.getElementById("addSemanticText").addEventListener("click", function () { addTextStyle(); refreshLists(); });
+      sortSemanticTextButton.addEventListener("click", function () {
+        sortSemanticTextRows();
+        refreshLists();
+      });
+      toggleSemanticMappingButton.addEventListener("click", function () {
+        var rows = Array.prototype.filter.call(containers.semanticText.children, function (row) {
+          return row.classList && row.classList.contains("semantic-text-row");
+        });
+        if (!rows.length) return;
+        var shouldCollapse = rows.some(function (row) { return !row.classList.contains("row-collapsed"); });
+        setSemanticMappingCollapsed(shouldCollapse);
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-add-text]"), function (button) {
+        button.addEventListener("click", function () {
+          var kind = button.getAttribute("data-add-text");
+          var map = { family: containers.fontFamily, size: containers.fontSize, weight: containers.fontWeight, lineHeight: containers.fontLineHeight, letterSpacing: containers.fontLetterSpacing, textTransform: containers.fontTextTransform };
+          var prefixes = { family: "font.family.", size: "font.size.", weight: "font.weight.", lineHeight: "font.lineHeight.", letterSpacing: "font.letterSpacing.", textTransform: "font.textTransform." };
+          var numeric = kind !== "family" && kind !== "textTransform" && kind !== "lineHeight";
+          addPair(map[kind], "cols-2", prefixes[kind] || "", numeric ? 0 : "", numeric ? "number" : "text");
+          refreshLists();
+        });
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-token-tab]"), function (button) {
+        button.addEventListener("click", function () {
+          setActiveTokenTab(button.getAttribute("data-token-tab"));
+        });
+      });
+
+      Array.prototype.forEach.call(document.querySelectorAll("[data-mode-option]"), function (button) {
+        button.addEventListener("click", function () {
+          setMode(button.getAttribute("data-mode-option"), true);
+        });
+      });
+
+      if (resizeCornerHitarea) {
+        if (window.PointerEvent) {
+          resizeCornerHitarea.addEventListener("pointerdown", startWindowResize);
+        } else {
+          resizeCornerHitarea.addEventListener("mousedown", startWindowResize);
+        }
+      }
+
+      window.addEventListener("resize", function () {
+        if (activeSuggestionInput) positionSuggestions(activeSuggestionInput);
+      });
+
+      window.addEventListener("scroll", function () {
+        if (activeSuggestionInput) positionSuggestions(activeSuggestionInput);
+      }, true);
+
+      document.addEventListener("mousedown", function (event) {
+        if (sessionSelectMenu && !sessionSelectMenu.hidden && !sessionSelectMenu.contains(event.target) && event.target !== sessionSelectButton) {
+          setSessionSelectOpen(false);
+        }
+        if (!suggestionPopover || !suggestionPopover.classList.contains("open")) return;
+        if (suggestionPopover.contains(event.target)) return;
+        if (activeSuggestionInput === event.target) return;
+        closeSuggestions();
+      });
+
+      fileInput.addEventListener("change", async function () {
+        var file = fileInput.files && fileInput.files[0];
+        if (!file) return;
+        var text;
+        try {
+          text = await file.text();
+        } catch (error) {
+          setStatus("Could not read file: " + error.message, "error");
+          return;
+        }
+        var tokens;
+        try {
+          tokens = JSON.parse(text);
+        } catch (error) {
+          setStatus("Invalid JSON: " + error.message, "error");
+          return;
+        }
+        generateButton.disabled = true;
+        if (importDashboardButton) importDashboardButton.disabled = true;
+        parent.postMessage({
+          pluginMessage: { type: "import-tokens", tokens: tokens, options: options() }
+        }, "*");
+      });
+
+      resetButton.addEventListener("click", function () {
+        if (pendingDefaultLoadTimer) clearTimeout(pendingDefaultLoadTimer);
+        pendingDefaultLoadTimer = setTimeout(function () {
+          var fallback = readUiFallbackDefault();
+          if (fallback) {
+            applySessionPayload(fallback);
+            setStatus("Default setup loaded.", "ok");
+          } else {
+            resetFields();
+            setStatus("Setup reset.", "ok");
+          }
+        }, 220);
+        parent.postMessage({ pluginMessage: { type: "load-default" } }, "*");
+      });
+
+      cancelButton.addEventListener("click", function () {
+        parent.postMessage({ pluginMessage: { type: "close" } }, "*");
+      });
+
+      saveSessionButton.addEventListener("click", function () {
+        openSaveModal();
+      });
+
+      loadSessionButton.addEventListener("click", function () {
+        sessionFileInput.click();
+      });
+
+      sessionSelect.addEventListener("change", function () {
+        var session = savedSessions.find(function (item) { return item && item.id === sessionSelect.value; });
+        if (session) loadSavedSession(session);
+      });
+
+      sessionSelectButton.addEventListener("click", function () {
+        setSessionSelectOpen(sessionSelectMenu.hidden);
+      });
+
+      setDefaultButton.addEventListener("click", function () {
+        var payload = currentSessionPayload();
+        writeUiFallbackDefault(payload);
+        showFeedback("Done", "Current setup saved as default.");
+        parent.postMessage({ pluginMessage: { type: "save-default", payload: payload } }, "*");
+      });
+
+      sessionFileInput.addEventListener("change", async function () {
+        var file = sessionFileInput.files && sessionFileInput.files[0];
+        if (!file) return;
+        try {
+          var markdown = await file.text();
+          var payload = parseSessionMarkdown(markdown);
+          applySessionPayload(payload);
+          var importedName = (file.name || "imported-session").replace(/\.(md|markdown)$/i, "") || "Imported session";
+          var importedRecord = createSessionRecord(importedName, payload, markdown);
+          saveSessionRecord(importedRecord);
+          selectedSavedSessionId = importedRecord.id;
+          setStatus("Session markdown loaded: " + file.name, "ok");
+        } catch (error) {
+          setStatus("Invalid session markdown: " + (error && error.message ? error.message : String(error)), "error");
+        } finally {
+          sessionFileInput.value = "";
+        }
+      });
+
+      saveModalConfirmButton.addEventListener("click", commitSaveSession);
+      saveModalCancelButton.addEventListener("click", closeSaveModal);
+      saveModalBackdrop.addEventListener("click", function (event) {
+        if (event.target === saveModalBackdrop) closeSaveModal();
+      });
+      saveModalNameInput.addEventListener("keydown", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          commitSaveSession();
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeSaveModal();
+        }
+      });
+      feedbackModalOk.addEventListener("click", closeFeedback);
+      feedbackModalBackdrop.addEventListener("click", function (event) {
+        if (event.target === feedbackModalBackdrop) closeFeedback();
+      });
+
+      generateButton.addEventListener("click", function () {
+        generateButton.disabled = true;
+        if (importDashboardButton) importDashboardButton.disabled = true;
+        parent.postMessage({
+          pluginMessage: { type: "setup-tokens", setup: buildSetup(), options: options() }
+        }, "*");
+      });
+
+      window.onmessage = function (event) {
+        var data = event && event.data ? event.data : null;
+        var message = data && data.pluginMessage ? data.pluginMessage : data;
+        if (!message) return;
+        if (message.type === "window-size") {
+          currentWindowWidth = Math.max(minWindowWidth, Math.round(Number(message.width) || currentWindowWidth));
+          currentWindowHeight = Math.max(minWindowHeight, Math.round(Number(message.height) || currentWindowHeight));
+        }
+        if (message.type === "import-started") setStatus("Generating...");
+        if (message.type === "import-complete") {
+          generateButton.disabled = false;
+          if (importDashboardButton) importDashboardButton.disabled = false;
+          setStatus(message.summary, "ok");
+        }
+        if (message.type === "import-error") {
+          generateButton.disabled = false;
+          if (importDashboardButton) importDashboardButton.disabled = false;
+          setStatus(message.error, "error");
+        }
+        if (message.type === "save-default-complete") {
+          setStatus("Current setup saved as default.", "ok");
+        }
+        if (message.type === "save-default-error") {
+          setStatus(message.error || "Could not save default.", "error");
+        }
+        if (message.type === "load-default-complete") {
+          if (pendingDefaultLoadTimer) clearTimeout(pendingDefaultLoadTimer);
+          if (message.payload && typeof message.payload === "object") {
+            applySessionPayload(message.payload);
+            setStatus("Default setup loaded.", "ok");
+          } else {
+            var fallbackPayload = readUiFallbackDefault();
+            if (fallbackPayload) {
+              applySessionPayload(fallbackPayload);
+              setStatus("Default setup loaded.", "ok");
+            } else {
+              resetFields();
+              setStatus("Setup reset.", "ok");
+            }
+          }
+        }
+        if (message.type === "load-default-error") {
+          if (pendingDefaultLoadTimer) clearTimeout(pendingDefaultLoadTimer);
+          var fallbackPayload = readUiFallbackDefault();
+          if (fallbackPayload) {
+            applySessionPayload(fallbackPayload);
+            setStatus("Default setup loaded.", "ok");
+            return;
+          }
+          resetFields();
+          setStatus(message.error || "Could not load default; reset to built-in setup.", "error");
+        }
+        if (message.type === "load-sessions-complete") {
+          setSavedSessions(message.sessions || []);
+        }
+        if (message.type === "load-sessions-error") {
+          setSavedSessions(readUiFallbackSessions());
+          setStatus(message.error || "Could not load saved sessions.", "error");
+        }
+        if (message.type === "save-session-complete") {
+          setSavedSessions(message.sessions || savedSessions);
+        }
+        if (message.type === "save-session-error") {
+          setStatus(message.error || "Could not save session.", "error");
+        }
+        if (message.type === "delete-session-complete") {
+          setSavedSessions(message.sessions || savedSessions);
+        }
+        if (message.type === "delete-session-error") {
+          setStatus(message.error || "Could not delete session.", "error");
+        }
+      };
+
+      setIcon(addBrandPackButton, "add");
+      renderHintTipIcons();
+      resetFields();
+      setSavedSessions(readUiFallbackSessions());
+      setActiveTokenTab("color");
+      setMode("Light", false);
+      setSemanticMappingCollapsed(false);
+      var initialFallbackDefault = readUiFallbackDefault();
+      if (initialFallbackDefault) applySessionPayload(initialFallbackDefault);
+      parent.postMessage({ pluginMessage: { type: "load-sessions" } }, "*");
+      parent.postMessage({ pluginMessage: { type: "load-default" } }, "*");
+</script>
+
+  </body>
+</html>
