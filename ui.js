@@ -147,6 +147,438 @@ var defaults = {
       var pendingDefaultLoadTimer = null;
       var availableFontFamilies = [];
       var availableFontStylesByFamily = {};
+
+      // ── CUSTOM COLOR PICKER LOGIC ─────────────────────────────
+      var customColorPicker = document.getElementById("customColorPicker");
+      var cpBrandNameInput = document.getElementById("cpBrandNameInput");
+      var cpBrandDeleteBtn = document.getElementById("cpBrandDeleteBtn");
+      var cpCanvasBg = document.getElementById("cpCanvasBg");
+      var cpCanvasHandle = document.getElementById("cpCanvasHandle");
+      var cpCanvasArea = document.getElementById("cpCanvasArea");
+      var cpEyedropper = document.getElementById("cpEyedropper");
+      var cpHueTrack = document.getElementById("cpHueTrack");
+      var cpHueHandle = document.getElementById("cpHueHandle");
+      var cpAlphaTrack = document.getElementById("cpAlphaTrack");
+      var cpAlphaOverlay = document.getElementById("cpAlphaOverlay");
+      var cpAlphaHandle = document.getElementById("cpAlphaHandle");
+      var cpFormatSelect = document.getElementById("cpFormatSelect");
+      var cpChannelsContainer = document.getElementById("cpChannels");
+
+      var cpState = {
+        h: 0,
+        s: 100,
+        v: 100,
+        alpha: 1,
+        format: "HEX",
+        hex: "#FF0000",
+        r: 255,
+        g: 0,
+        b: 0
+      };
+
+      var cpActiveTarget = null;
+      var cpCallbacks = {};
+
+      function hsvToRgb(h, s, v) {
+        s /= 100; v /= 100;
+        var c = v * s;
+        var x = c * (1 - Math.abs((h / 60) % 2 - 1));
+        var m = v - c;
+        var r = 0, g = 0, b = 0;
+        if (0 <= h && h < 60) {
+          r = c; g = x; b = 0;
+        } else if (60 <= h && h < 120) {
+          r = x; g = c; b = 0;
+        } else if (120 <= h && h < 180) {
+          r = 0; g = c; b = x;
+        } else if (180 <= h && h < 240) {
+          r = 0; g = x; b = c;
+        } else if (240 <= h && h < 300) {
+          r = x; g = 0; b = c;
+        } else if (300 <= h && h < 360) {
+          r = c; g = 0; b = x;
+        }
+        return {
+          r: Math.round((r + m) * 255),
+          g: Math.round((g + m) * 255),
+          b: Math.round((b + m) * 255)
+        };
+      }
+
+      function rgbToHsv(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, v = max;
+        var d = max - min;
+        s = max === 0 ? 0 : d / max;
+        if (max === min) {
+          h = 0;
+        } else {
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        return {
+          h: Math.round(h * 360),
+          s: Math.round(s * 100),
+          v: Math.round(v * 100)
+        };
+      }
+
+      function rgbToHsl(r, g, b) {
+        r /= 255; g /= 255; b /= 255;
+        var max = Math.max(r, g, b), min = Math.min(r, g, b);
+        var h, s, l = (max + min) / 2;
+        if (max === min) {
+          h = s = 0;
+        } else {
+          var d = max - min;
+          s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+          switch (max) {
+            case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+            case g: h = (b - r) / d + 2; break;
+            case b: h = (r - g) / d + 4; break;
+          }
+          h /= 6;
+        }
+        return {
+          h: Math.round(h * 360),
+          s: Math.round(s * 100),
+          l: Math.round(l * 100)
+        };
+      }
+
+      function hslToRgb(h, s, l) {
+        h /= 360; s /= 100; l /= 100;
+        var r, g, b;
+        if (s === 0) {
+          r = g = b = l;
+        } else {
+          function hue2rgb(p, q, t) {
+            if (t < 0) t += 1;
+            if (t > 1) t -= 1;
+            if (t < 1/6) return p + (q - p) * 6 * t;
+            if (t < 1/2) return q;
+            if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+            return p;
+          }
+          var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+          var p = 2 * l - q;
+          r = hue2rgb(p, q, h + 1/3);
+          g = hue2rgb(p, q, h);
+          b = hue2rgb(p, q, h - 1/3);
+        }
+        return {
+          r: Math.round(r * 255),
+          g: Math.round(g * 255),
+          b: Math.round(b * 255)
+        };
+      }
+
+      function updateColorPickerFromHSV() {
+        var baseRgb = hsvToRgb(cpState.h, 100, 100);
+        cpCanvasBg.style.backgroundColor = 'rgb(' + baseRgb.r + ',' + baseRgb.g + ',' + baseRgb.b + ')';
+        cpCanvasHandle.style.left = cpState.s + '%';
+        cpCanvasHandle.style.top = (100 - cpState.v) + '%';
+        cpHueHandle.style.left = (cpState.h / 360) * 100 + '%';
+        
+        var rgb = hsvToRgb(cpState.h, cpState.s, cpState.v);
+        cpState.r = rgb.r;
+        cpState.g = rgb.g;
+        cpState.b = rgb.b;
+        cpState.hex = rgbToHex(rgb);
+        
+        cpAlphaHandle.style.left = cpState.alpha * 100 + '%';
+        cpAlphaOverlay.style.background = 'linear-gradient(to right, rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 0), rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ', 1))';
+        
+        renderChannelsInputs();
+        
+        if (cpCallbacks.onColorChange) {
+          var colorValue = cpState.alpha < 1 ? 'rgba(' + rgb.r + ',' + rgb.g + ',' + rgb.b + ',' + cpState.alpha + ')' : cpState.hex;
+          cpCallbacks.onColorChange(colorValue);
+        }
+      }
+
+      function renderChannelsInputs() {
+        var format = cpState.format;
+        var html = "";
+        if (format === "HEX") {
+          html = '<input type="text" class="cp-channel-input cp-hex-input" value="' + cpState.hex + '" style="font-family: monospace; text-transform: uppercase;" aria-label="HEX code" />';
+        } else if (format === "RGB") {
+          html = '<input type="number" class="cp-channel-input cp-r-input" min="0" max="255" value="' + cpState.r + '" aria-label="Red" title="Red" />' +
+                 '<input type="number" class="cp-channel-input cp-g-input" min="0" max="255" value="' + cpState.g + '" aria-label="Green" title="Green" />' +
+                 '<input type="number" class="cp-channel-input cp-b-input" min="0" max="255" value="' + cpState.b + '" aria-label="Blue" title="Blue" />' +
+                 '<input type="number" class="cp-channel-input cp-a-input" min="0" max="100" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />';
+        } else if (format === "HSL") {
+          var hsl = rgbToHsl(cpState.r, cpState.g, cpState.b);
+          html = '<input type="number" class="cp-channel-input cp-h-input" min="0" max="360" value="' + hsl.h + '" aria-label="Hue" title="Hue" />' +
+                 '<input type="number" class="cp-channel-input cp-s-input" min="0" max="100" value="' + hsl.s + '" aria-label="Saturation" title="Saturation" />' +
+                 '<input type="number" class="cp-channel-input cp-l-input" min="0" max="100" value="' + hsl.l + '" aria-label="Lightness" title="Lightness" />' +
+                 '<input type="number" class="cp-channel-input cp-a-input" min="0" max="100" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />' +
+                 '<span class="cp-percent-symbol">%</span>';
+        }
+        cpChannelsContainer.innerHTML = html;
+        attachChannelInputListeners();
+      }
+
+      function attachChannelInputListeners() {
+        var format = cpState.format;
+        if (format === "HEX") {
+          var inputHex = cpChannelsContainer.querySelector(".cp-hex-input");
+          inputHex.addEventListener("change", function () {
+            var val = inputHex.value.trim();
+            if (!val.startsWith("#")) val = "#" + val;
+            if (/^#[0-9a-f]{6}$/i.test(val)) {
+              var rgb = hexToRgb(val);
+              var hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+              cpState.h = hsv.h;
+              cpState.s = hsv.s;
+              cpState.v = hsv.v;
+              cpState.hex = val.toUpperCase();
+              updateColorPickerFromHSV();
+            }
+          });
+        } else if (format === "RGB") {
+          var rIn = cpChannelsContainer.querySelector(".cp-r-input");
+          var gIn = cpChannelsContainer.querySelector(".cp-g-input");
+          var bIn = cpChannelsContainer.querySelector(".cp-b-input");
+          var aIn = cpChannelsContainer.querySelector(".cp-a-input");
+          
+          var onRgbChange = function () {
+            var r = Math.max(0, Math.min(255, parseInt(rIn.value) || 0));
+            var g = Math.max(0, Math.min(255, parseInt(gIn.value) || 0));
+            var b = Math.max(0, Math.min(255, parseInt(bIn.value) || 0));
+            var a = Math.max(0, Math.min(100, parseInt(aIn.value) || 0)) / 100;
+            var hsv = rgbToHsv(r, g, b);
+            cpState.h = hsv.h;
+            cpState.s = hsv.s;
+            cpState.v = hsv.v;
+            cpState.alpha = a;
+            updateColorPickerFromHSV();
+          };
+          
+          rIn.addEventListener("change", onRgbChange);
+          gIn.addEventListener("change", onRgbChange);
+          bIn.addEventListener("change", onRgbChange);
+          aIn.addEventListener("change", onRgbChange);
+        } else if (format === "HSL") {
+          var hIn = cpChannelsContainer.querySelector(".cp-h-input");
+          var sIn = cpChannelsContainer.querySelector(".cp-s-input");
+          var lIn = cpChannelsContainer.querySelector(".cp-l-input");
+          var aIn = cpChannelsContainer.querySelector(".cp-a-input");
+          
+          var onHslChange = function () {
+            var h = Math.max(0, Math.min(360, parseInt(hIn.value) || 0));
+            var s = Math.max(0, Math.min(100, parseInt(sIn.value) || 0));
+            var l = Math.max(0, Math.min(100, parseInt(lIn.value) || 0));
+            var a = Math.max(0, Math.min(100, parseInt(aIn.value) || 0)) / 100;
+            var rgb = hslToRgb(h, s, l);
+            var hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+            cpState.h = hsv.h;
+            cpState.s = hsv.s;
+            cpState.v = hsv.v;
+            cpState.alpha = a;
+            updateColorPickerFromHSV();
+          };
+          
+          hIn.addEventListener("change", onHslChange);
+          sIn.addEventListener("change", onHslChange);
+          lIn.addEventListener("change", onHslChange);
+          aIn.addEventListener("change", onHslChange);
+        }
+      }
+
+      function openCustomColorPicker(config) {
+        cpActiveTarget = config.anchor;
+        cpCallbacks = config;
+        
+        var normalizedColor = config.color || "#E8341C";
+        if (normalizedColor.indexOf("rgba") === 0) {
+          var match = normalizedColor.match(/rgba?\(\s*([\d.]+)\s*,\s*([\d.]+)\s*,\s*([\d.]+)(?:\s*,\s*([\d.]+))?\s*\)/i);
+          if (match) {
+            var r = parseInt(match[1]) || 0;
+            var g = parseInt(match[2]) || 0;
+            var b = parseInt(match[3]) || 0;
+            var a = match[4] !== undefined ? parseFloat(match[4]) : 1;
+            var hsv = rgbToHsv(r, g, b);
+            cpState.h = hsv.h;
+            cpState.s = hsv.s;
+            cpState.v = hsv.v;
+            cpState.alpha = a;
+          }
+        } else {
+          var rgb = hexToRgb(normalizedColor);
+          var hsv = rgbToHsv(rgb.r, rgb.g, rgb.b);
+          cpState.h = hsv.h;
+          cpState.s = hsv.s;
+          cpState.v = hsv.v;
+          cpState.alpha = config.alpha !== undefined ? config.alpha : 1;
+        }
+
+        cpState.format = cpState.format || "HEX";
+        cpFormatSelect.value = cpState.format;
+
+        var header = document.getElementById("cpHeader");
+        if (config.showNameEditor) {
+          header.style.display = "flex";
+          var nameInput = document.getElementById("cpBrandNameInput");
+          nameInput.value = config.name || "";
+          nameInput.oninput = function() {
+            if (config.onNameChange) config.onNameChange(nameInput.value);
+          };
+          var deleteBtn = document.getElementById("cpBrandDeleteBtn");
+          deleteBtn.onclick = function() {
+            if (config.onDelete) {
+              config.onDelete();
+              closeCustomColorPicker();
+            }
+          };
+        } else {
+          header.style.display = "none";
+        }
+
+        updateColorPickerFromHSV();
+        
+        var rect = config.anchor.getBoundingClientRect();
+        var left = rect.left + window.scrollX;
+        var top = rect.bottom + window.scrollY + 6;
+        var cpWidth = 240;
+        if (left + cpWidth > window.innerWidth - 12) {
+          left = window.innerWidth - cpWidth - 12;
+        }
+        customColorPicker.style.left = left + "px";
+        customColorPicker.style.top = top + "px";
+        customColorPicker.style.display = "block";
+
+        document.addEventListener("mousedown", onCpClickOutside);
+      }
+
+      function onCpClickOutside(e) {
+        if (!customColorPicker || customColorPicker.style.display === "none") return;
+        if (customColorPicker.contains(e.target) || (cpActiveTarget && cpActiveTarget.contains(e.target))) {
+          return;
+        }
+        closeCustomColorPicker();
+      }
+
+      function closeCustomColorPicker() {
+        if (customColorPicker) {
+          customColorPicker.style.display = "none";
+        }
+        document.removeEventListener("mousedown", onCpClickOutside);
+        cpActiveTarget = null;
+        cpCallbacks = {};
+      }
+
+      function initCustomColorPickerDrag() {
+        var isDraggingCanvas = false;
+        var isDraggingHue = false;
+        var isDraggingAlpha = false;
+
+        function updateCanvasFromCoords(clientX, clientY) {
+          var rect = cpCanvasArea.getBoundingClientRect();
+          var x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+          var y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+          cpState.s = Math.round((x / rect.width) * 100);
+          cpState.v = Math.round((1 - y / rect.height) * 100);
+          updateColorPickerFromHSV();
+        }
+
+        function updateHueFromCoords(clientX) {
+          var rect = cpHueTrack.getBoundingClientRect();
+          var x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+          cpState.h = Math.round((x / rect.width) * 360);
+          if (cpState.h === 360) cpState.h = 0;
+          updateColorPickerFromHSV();
+        }
+
+        function updateAlphaFromCoords(clientX) {
+          var rect = cpAlphaTrack.getBoundingClientRect();
+          var x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+          cpState.alpha = parseFloat((x / rect.width).toFixed(2));
+          updateColorPickerFromHSV();
+        }
+
+        cpCanvasArea.addEventListener("mousedown", function (e) {
+          isDraggingCanvas = true;
+          updateCanvasFromCoords(e.clientX, e.clientY);
+        });
+
+        cpHueTrack.addEventListener("mousedown", function (e) {
+          isDraggingHue = true;
+          updateHueFromCoords(e.clientX);
+        });
+
+        cpAlphaTrack.addEventListener("mousedown", function (e) {
+          isDraggingAlpha = true;
+          updateAlphaFromCoords(e.clientX);
+        });
+
+        window.addEventListener("mousemove", function (e) {
+          if (isDraggingCanvas) updateCanvasFromCoords(e.clientX, e.clientY);
+          if (isDraggingHue) updateHueFromCoords(e.clientX);
+          if (isDraggingAlpha) updateAlphaFromCoords(e.clientX);
+        });
+
+        window.addEventListener("mouseup", function () {
+          isDraggingCanvas = false;
+          isDraggingHue = false;
+          isDraggingAlpha = false;
+        });
+
+        // Touch support
+        cpCanvasArea.addEventListener("touchstart", function (e) {
+          isDraggingCanvas = true;
+          updateCanvasFromCoords(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+
+        cpHueTrack.addEventListener("touchstart", function (e) {
+          isDraggingHue = true;
+          updateHueFromCoords(e.touches[0].clientX);
+        }, { passive: true });
+
+        cpAlphaTrack.addEventListener("touchstart", function (e) {
+          isDraggingAlpha = true;
+          updateAlphaFromCoords(e.touches[0].clientX);
+        }, { passive: true });
+
+        window.addEventListener("touchmove", function (e) {
+          if (isDraggingCanvas) updateCanvasFromCoords(e.touches[0].clientX, e.touches[0].clientY);
+          if (isDraggingHue) updateHueFromCoords(e.touches[0].clientX);
+          if (isDraggingAlpha) updateAlphaFromCoords(e.touches[0].clientX);
+        });
+
+        window.addEventListener("touchend", function () {
+          isDraggingCanvas = false;
+          isDraggingHue = false;
+          isDraggingAlpha = false;
+        });
+      }
+
+      function initCustomColorPicker() {
+        if (!customColorPicker) return;
+        if (cpFormatSelect) {
+          cpFormatSelect.addEventListener("change", function () {
+            cpState.format = cpFormatSelect.value;
+            renderChannelsInputs();
+          });
+        }
+        if (cpEyedropper) {
+          if (!window.EyeDropper) {
+            cpEyedropper.style.display = "none";
+          } else {
+            setIcon(cpEyedropper, "eyedropper");
+          }
+        }
+        if (cpBrandDeleteBtn) {
+          setIcon(cpBrandDeleteBtn, "close");
+        }
+        initCustomColorPickerDrag();
+      }
+      // ──────────────────────────────────────────────────────────
       var toneSteps = [100, 300, 500, 700, 900];
       var defaultFoundationColorPacks = [
         ["brand", "#E8341C"]
@@ -884,13 +1316,47 @@ var defaults = {
 
       function addFoundationColorRow(container, name, value, valueType) {
         var row = document.createElement("div");
-        row.className = "token-row cols-2";
+        row.className = "token-row cols-color-mapping";
         var nameInput = input(name || "", "text", null, "token name");
-        var valueInput = input(value === undefined ? "" : value, valueType || "text", null, "value");
+        var valueInput = input(value === undefined ? "" : value, "text", null, "value");
+        
+        var swatch = document.createElement("span");
+        swatch.className = "color-mapping-swatch";
+        swatch.style.background = valueInput.value || "transparent";
+        swatch.style.cursor = "pointer";
+        
+        swatch.addEventListener("click", function (event) {
+          event.stopPropagation();
+          openCustomColorPicker({
+            anchor: swatch,
+            color: valueInput.value,
+            showNameEditor: false,
+            onColorChange: function (newColor) {
+              valueInput.value = newColor;
+              swatch.style.background = newColor;
+              syncFoundationColorsStore();
+            }
+          });
+        });
+        
         nameInput.addEventListener("input", syncFoundationColorsStore);
-        valueInput.addEventListener("input", syncFoundationColorsStore);
+        valueInput.addEventListener("input", function() {
+          swatch.style.background = valueInput.value || "transparent";
+          syncFoundationColorsStore();
+        });
+        
         row.appendChild(field("token", nameInput));
+        
+        var swatchWrapper = document.createElement("div");
+        swatchWrapper.className = "field swatch-field";
+        swatchWrapper.style.display = "flex";
+        swatchWrapper.style.justifyContent = "center";
+        swatchWrapper.style.alignItems = "center";
+        swatchWrapper.appendChild(swatch);
+        row.appendChild(swatchWrapper);
+        
         row.appendChild(field("value", valueInput));
+        
         var removeBtn = createRemoveButton(row);
         removeBtn.addEventListener("click", syncFoundationColorsStore);
         row.appendChild(removeBtn);
@@ -1056,62 +1522,40 @@ var defaults = {
           item.classList.toggle("active", isActive);
 
           if (isActive) {
-            var nameInput = document.createElement("input");
-            nameInput.type = "text";
-            nameInput.className = "brand-pack-editor-name";
-            nameInput.value = name;
-            nameInput.setAttribute("aria-label", "Brand name");
-            nameInput.addEventListener("input", function () {
-              mainColorNameInput.value = nameInput.value;
-              renderMainColorScale({ preserveBrandPackTabs: true });
+            item.style.backgroundColor = brandPackDisplayColor(canonical, name);
+            item.title = name + " (Click to edit)";
+            item.setAttribute("aria-label", name + " pack");
+            item.addEventListener("click", function (event) {
+              event.stopPropagation();
+              openCustomColorPicker({
+                anchor: item,
+                color: brandPackDisplayColor(canonical, name),
+                showNameEditor: true,
+                name: name,
+                onNameChange: function (newName) {
+                  mainColorNameInput.value = newName;
+                  renderMainColorScale({ preserveBrandPackTabs: true });
+                },
+                onColorChange: function (newColor) {
+                  mainColorValueInput.value = newColor;
+                  renderMainColorScale({ preserveBrandPackTabs: true });
+                  item.style.backgroundColor = newColor;
+                },
+                onDelete: function () {
+                  removeBrandPack(name);
+                }
+              });
             });
-            item.appendChild(nameInput);
-
-            var colorInput = document.createElement("input");
-            colorInput.type = "color";
-            colorInput.className = "brand-pack-editor-color color-mapping-swatch";
-            colorInput.value = brandPackDisplayColor(canonical, name);
-            colorInput.setAttribute("aria-label", "Brand color");
-            colorInput.addEventListener("input", function () {
-              mainColorValueInput.value = colorInput.value;
-              renderMainColorScale({ preserveBrandPackTabs: true });
-            });
-            item.appendChild(colorInput);
           } else {
-            var button = document.createElement("button");
-            button.type = "button";
-            button.className = "brand-pack-tab";
-            button.setAttribute("role", "tab");
-            button.setAttribute("aria-selected", "false");
-
-            var swatch = document.createElement("span");
-            swatch.className = "brand-pack-swatch";
-            swatch.style.background = brandPackDisplayColor(canonical, name);
-            swatch.setAttribute("aria-hidden", "true");
-            button.appendChild(swatch);
-
-            var label = document.createElement("span");
-            label.className = "brand-pack-name";
-            label.textContent = name;
-            button.appendChild(label);
-
-            button.addEventListener("click", function () {
+            item.style.backgroundColor = brandPackDisplayColor(canonical, name);
+            item.title = name + " (Click to activate)";
+            item.setAttribute("aria-label", name + " pack");
+            item.style.cursor = "pointer";
+            item.addEventListener("click", function () {
               setSelectedBrandPack(name);
             });
-            item.appendChild(button);
           }
 
-          var deleteButton = document.createElement("button");
-          deleteButton.type = "button";
-          deleteButton.className = "brand-pack-delete";
-          setIcon(deleteButton, "close");
-          deleteButton.title = "Delete " + name;
-          deleteButton.setAttribute("aria-label", "Delete " + name);
-          deleteButton.addEventListener("click", function (event) {
-            event.stopPropagation();
-            removeBrandPack(isActive ? selectedBrandPackName : name);
-          });
-          item.appendChild(deleteButton);
           brandPackTabs.appendChild(item);
         });
         if (addBrandPackButton) brandPackTabs.appendChild(addBrandPackButton);
@@ -1171,6 +1615,31 @@ var defaults = {
         toneSteps.forEach(function (step) {
           values[cleanName + "." + step] = scale[step];
         });
+      }
+
+      function insertBrandPackInStoreAfter(values, activePackName, newPackName, baseHex) {
+        var cleanActive = normalizeBrandColorName(activePackName);
+        var cleanNew = normalizeBrandColorName(newPackName);
+        var scale = buildToneScaleFromHex(baseHex || "#E8341C");
+        var nextValues = {};
+        var inserted = false;
+        
+        Object.keys(values || {}).forEach(function (key) {
+          nextValues[key] = values[key];
+          if (key === cleanActive + ".900" && !inserted) {
+            toneSteps.forEach(function (step) {
+              nextValues[cleanNew + "." + step] = scale[step];
+            });
+            inserted = true;
+          }
+        });
+        
+        if (!inserted) {
+          toneSteps.forEach(function (step) {
+            nextValues[cleanNew + "." + step] = scale[step];
+          });
+        }
+        return nextValues;
       }
 
       function seedDefaultFoundationColors() {
@@ -2213,7 +2682,7 @@ var defaults = {
       addBrandPackButton.addEventListener("click", function () {
         var canonical = readFoundationColorStore();
         var packName = nextAvailableBrandPackName("brand", canonical);
-        addToneScaleToStore(canonical, packName, mainColorValueInput.value || "#E8341C");
+        canonical = insertBrandPackInStoreAfter(canonical, selectedBrandPackName, packName, mainColorValueInput.value || "#E8341C");
         ensureNeutralColorsInStore(canonical);
         ensureStatusColorsInStore(canonical);
         writeFoundationColorStore(canonical);
@@ -2507,6 +2976,7 @@ var defaults = {
         }
       };
 
+      initCustomColorPicker();
       setIcon(addBrandPackButton, "add");
       setSaveMenuOpen(false);
       setIcon(loadSessionButton.querySelector(".button-icon"), "import");
