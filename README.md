@@ -38,11 +38,16 @@ The plugin starts with defaults copied from the app's color, text, and spacing t
 
 - Uses Figma Variables collections and modes for generated token values.
 - Uses Figma variable aliases for theme references. Theme tokens map directly from Foundation primitive variables.
-- Uses scoped variables so picker results stay relevant, for example text colors use text-fill scope and typography numbers use font-size, line-height, or letter-spacing scopes.
+- Uses scoped variables so picker results stay relevant:
+  - Text colors are scoped to text-fill, and typography numbers use font-size, line-height, or letter-spacing scopes.
+  - Semantic spacing tokens (`space.inline.*`, `space.stack.*`, etc.) are scoped specifically to the Auto Layout `GAP` scope (which covers both gap and padding).
+  - Semantic size tokens (`size.control.*`, `size.dialog.*`, `size.layout.*`) are scoped specifically to the `WIDTH_HEIGHT` scope (making them assignable only to width and height layout fields).
+  - All Foundation primitive tokens (such as `space.*`, `size.*`, `radius.*`, `opacity.*`) are assigned empty scopes `[]`, which completely hides them from all Figma property pickers and edit inputs, leaving the design panels clean and limited only to semantic design tokens.
+- Letter spacing foundation tokens are parsed as percentages (supporting both `%` and `px` formats, with `px` dynamically converted based on the text style font size). Generated text styles use the `PERCENT` unit for letter spacing instead of being forced to `PIXELS` (achieved by omitting the variable binding since Figma only supports binding variables to letter spacing in `PIXELS`).
 - Uses local paint and text style APIs to update existing styles by name instead of duplicating them.
 - Uses `figma.clientStorage` for plugin window size persistence because browser `localStorage` is unavailable in Figma plugin UI data URLs.
 - Supports `Set as default` to store the current setup/options in `figma.clientStorage`; `Reset` loads this saved default when available.
-- Supports saved sessions in `figma.clientStorage`, plus Markdown import/export for each session. Use the Session dropdown to load a saved setup, `Save session` to add the current setup to the saved list, `Sessions` to manage saved sessions, `Import .md` to import a Markdown session, and `Export .md` to download the current setup.
+- Supports saved sessions in `figma.clientStorage` and automatically triggers a local browser download of the session's `.md` file whenever a session is created or updated, ensuring configurations are safely stored on your local disk. Use the Session dropdown to load a saved setup, `Save session` to add the current setup to the saved list, `Sessions` to manage saved sessions, `Import .md` to import a Markdown session, and `Export .md` to download the current setup.
 
 ## Input Sections
 
@@ -92,6 +97,11 @@ Use size tokens for fixed component dimensions, not spacing between things:
 - `size.icon.*`: icon box sizes.
 - `size.touch.*`: minimum touch target sizes.
 - `size.avatar.*`: avatar dimensions.
+- `size.dialog.width.*`: modal/dialog widths, following standard T-shirt sizes.
+- `size.dialog.maxHeight.*`: modal/dialog maximum heights to handle viewport vertical scrolling constraints.
+- `size.layout.header.height`: top navigation/header scaffolding height.
+- `size.layout.sidebar.width`: main navigation/sidebar scaffolding width.
+- `size.layout.drawer.width`: drawer/side sheet container width.
 
 ## Generated Setup Shape
 
@@ -115,7 +125,9 @@ Use size tokens for fixed component dimensions, not spacing between things:
     "size": {
       "size.32": 32,
       "size.40": 40,
-      "size.48": 48
+      "size.48": 48,
+      "size.320": 320,
+      "size.560": 560
     },
     "radius": {
       "radius.sm": 4,
@@ -147,7 +159,9 @@ Use size tokens for fixed component dimensions, not spacing between things:
     "size": {
       "control.sm": "size.32",
       "control.md": "size.40",
-      "control.lg": "size.48"
+      "control.lg": "size.48",
+      "dialog.width.xs": "size.320",
+      "dialog.width.md": "size.560"
     },
     "radius": {
       "control.sm": "radius.sm",

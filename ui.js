@@ -1,10 +1,13 @@
 var defaults = {
         foundationSpacing: [["space.0", 0], ["space.2", 2], ["space.4", 4], ["space.6", 6], ["space.8", 8], ["space.12", 12], ["space.16", 16], ["space.20", 20], ["space.24", 24], ["space.32", 32], ["space.40", 40], ["space.48", 48], ["space.56", 56], ["space.64", 64], ["space.72", 72], ["space.80", 80]],
+        foundationSize: [["size.0", 0], ["size.16", 16], ["size.20", 20], ["size.24", 24], ["size.32", 32], ["size.36", 36], ["size.40", 40], ["size.44", 44], ["size.48", 48], ["size.56", 56], ["size.64", 64], ["size.240", 240], ["size.280", 280], ["size.320", 320], ["size.400", 400], ["size.480", 480], ["size.560", 560], ["size.640", 640], ["size.800", 800], ["size.960", 960]],
+        foundationRadius: [["radius.sm", 4], ["radius.md", 8], ["radius.lg", 16]],
+        foundationOpacity: [["opacity.0", 0], ["opacity.8", 0.08], ["opacity.12", 0.12], ["opacity.16", 0.16], ["opacity.38", 0.38], ["opacity.60", 0.6], ["opacity.80", 0.8], ["opacity.100", 1]],
         text: {
           family: [["font.family.sans", "Inter"], ["font.family.serif", "Georgia"], ["font.family.mono", "JetBrains Mono"]],
           size: [["font.size.12", 12], ["font.size.14", 14], ["font.size.16", 16], ["font.size.21", 21], ["font.size.28", 28], ["font.size.38", 38], ["font.size.51", 51], ["font.size.67", 67], ["font.size.90", 90]],
           weight: [["font.weight.light", 300], ["font.weight.regular", 400], ["font.weight.medium", 500], ["font.weight.semibold", 600], ["font.weight.bold", 700]],
-          lineHeight: [["font.lineHeight.12", "18px"], ["font.lineHeight.14", "21px"], ["font.lineHeight.16", "24px"], ["font.lineHeight.21", "30px"], ["font.lineHeight.28", "38px"], ["font.lineHeight.38", "50px"], ["font.lineHeight.51", "64px"], ["font.lineHeight.67", "82px"], ["font.lineHeight.90", "108px"]],
+          lineHeight: [["font.lineHeight.110", 1.1], ["font.lineHeight.120", 1.2], ["font.lineHeight.130", 1.3], ["font.lineHeight.150", 1.5]],
           letterSpacing: [["font.letterSpacing.tight", -2], ["font.letterSpacing.default", 0], ["font.letterSpacing.wide", 2]],
           textTransform: [["font.textTransform.none", "none"], ["font.textTransform.uppercase", "uppercase"]]
         },
@@ -18,38 +21,75 @@ var defaults = {
           ["border.strong", "color.neutral.500"], ["border.brand", "color.brand.500"],
           ["action.primary.bg.default", "color.brand.500"],
           ["action.primary.text.default", "color.neutral.0"],
-          ["focus.ring", "color.brand.300"]
+          ["focus.ring", "color.brand.300"],
+          ["status.info.text", "color.info.700"], ["status.info.bg", "color.info.100"],
+          ["status.info.border", "color.info.300"], ["status.info.icon", "color.info.500"],
+          ["status.success.text", "color.success.700"], ["status.success.bg", "color.success.100"],
+          ["status.success.border", "color.success.300"], ["status.success.icon", "color.success.500"],
+          ["status.warning.text", "color.warning.700"], ["status.warning.bg", "color.warning.100"],
+          ["status.warning.border", "color.warning.300"], ["status.warning.icon", "color.warning.500"],
+          ["status.danger.text", "color.danger.700"], ["status.danger.bg", "color.danger.100"],
+          ["status.danger.border", "color.danger.300"], ["status.danger.icon", "color.danger.500"]
         ],
         semanticSpacing: [
-          ["none", "space.0"], ["micro", "space.2"],
           ["inline.xs", "space.4"], ["inline.sm", "space.8"], ["inline.md", "space.16"], ["inline.lg", "space.24"],
           ["stack.xs", "space.4"], ["stack.sm", "space.8"], ["stack.md", "space.16"], ["stack.lg", "space.24"],
-          ["inset.xs", "space.12"], ["inset.sm", "space.16"], ["inset.md", "space.24"], ["inset.lg", "space.32"],
-          ["layout.section", "space.40"], ["layout.page", "space.64"]
+          ["inset.xs", "space.8"], ["inset.sm", "space.12"], ["inset.md", "space.16"], ["inset.lg", "space.24"],
+          ["layout.section", "space.40"], ["layout.page", "space.64"],
+          ["control.xs", "space.4"], ["control.sm", "space.8"], ["control.md", "space.12"]
+        ],
+        semanticSize: [
+          ["control.sm", "size.32"], ["control.md", "size.40"], ["control.lg", "size.48"],
+          ["icon.sm", "size.16"], ["icon.md", "size.20"], ["icon.lg", "size.24"],
+          ["touch.min", "size.44"], ["avatar.sm", "size.32"], ["avatar.md", "size.40"], ["avatar.lg", "size.56"],
+          ["dialog.width.xs", "size.320"], ["dialog.width.sm", "size.400"], ["dialog.width.md", "size.560"], ["dialog.width.lg", "size.800"], ["dialog.width.xl", "size.960"],
+          ["dialog.maxHeight.sm", "size.480"], ["dialog.maxHeight.md", "size.640"], ["dialog.maxHeight.lg", "size.800"],
+          ["layout.header.height", "size.64"], ["layout.sidebar.width", "size.240"], ["layout.drawer.width", "size.320"]
+        ],
+        semanticRadius: [
+          ["sm", "radius.sm"], ["md", "radius.md"], ["lg", "radius.lg"]
+        ],
+        semanticOpacity: [
+          ["state.hover", "opacity.8"], ["state.focus", "opacity.12"], ["state.pressed", "opacity.12"], ["state.dragged", "opacity.16"], ["state.disabled", "opacity.38"], ["overlay.scrim", "opacity.60"], ["content.subtle", "opacity.80"], ["content.default", "opacity.100"]
+        ],
+        semanticShadow: [
+          ["sm", "0px 1px 2px 0px rgba(18, 21, 27, 0.08)"],
+          ["md", "0px 4px 12px 0px rgba(18, 21, 27, 0.12)"],
+          ["lg", "0px 12px 32px 0px rgba(18, 21, 27, 0.18)"]
         ],
         semanticText: [
-          ["display.l", "color.text.primary", "font.family.serif", "font.size.90", "font.weight.regular", "font.lineHeight.90", "font.letterSpacing.tight", "font.textTransform.none"],
-          ["headline.l", "color.text.primary", "font.family.sans", "font.size.38", "font.weight.semibold", "font.lineHeight.38", "font.letterSpacing.default", "font.textTransform.none"],
-          ["headline.m", "color.text.primary", "font.family.sans", "font.size.28", "font.weight.semibold", "font.lineHeight.28", "font.letterSpacing.default", "font.textTransform.none"],
-          ["headline.s", "color.text.primary", "font.family.sans", "font.size.21", "font.weight.semibold", "font.lineHeight.21", "font.letterSpacing.default", "font.textTransform.none"],
-          ["title.l", "color.text.primary", "font.family.sans", "font.size.21", "font.weight.semibold", "font.lineHeight.21", "font.letterSpacing.default", "font.textTransform.none"],
-          ["title.m", "color.text.primary", "font.family.sans", "font.size.16", "font.weight.semibold", "font.lineHeight.16", "font.letterSpacing.default", "font.textTransform.none"],
-          ["title.s", "color.text.primary", "font.family.sans", "font.size.14", "font.weight.semibold", "font.lineHeight.14", "font.letterSpacing.default", "font.textTransform.none"],
-          ["body.l", "color.text.secondary", "font.family.sans", "font.size.16", "font.weight.regular", "font.lineHeight.16", "font.letterSpacing.default", "font.textTransform.none"],
-          ["body.m", "color.text.secondary", "font.family.sans", "font.size.14", "font.weight.regular", "font.lineHeight.14", "font.letterSpacing.default", "font.textTransform.none"],
-          ["body.s", "color.text.secondary", "font.family.sans", "font.size.12", "font.weight.regular", "font.lineHeight.12", "font.letterSpacing.default", "font.textTransform.none"],
-          ["button.m", "color.text.inverse", "font.family.sans", "font.size.14", "font.weight.medium", "font.lineHeight.14", "font.letterSpacing.default", "font.textTransform.none"],
-          ["button.s", "color.text.inverse", "font.family.sans", "font.size.12", "font.weight.medium", "font.lineHeight.12", "font.letterSpacing.default", "font.textTransform.none"],
-          ["label.m", "color.text.primary", "font.family.sans", "font.size.12", "font.weight.medium", "font.lineHeight.12", "font.letterSpacing.default", "font.textTransform.none"],
-          ["caption.s", "color.text.tertiary", "font.family.sans", "font.size.12", "font.weight.regular", "font.lineHeight.12", "font.letterSpacing.default", "font.textTransform.none"]
+          ["display.l", "font.family.serif", "font.size.90", "font.weight.regular", "font.lineHeight.110", "font.letterSpacing.tight", "font.textTransform.none"],
+          ["headline.l", "font.family.sans", "font.size.38", "font.weight.semibold", "font.lineHeight.120", "font.letterSpacing.default", "font.textTransform.none"],
+          ["headline.m", "font.family.sans", "font.size.28", "font.weight.semibold", "font.lineHeight.130", "font.letterSpacing.default", "font.textTransform.none"],
+          ["headline.s", "font.family.sans", "font.size.21", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["title.l", "font.family.sans", "font.size.21", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["title.m", "font.family.sans", "font.size.16", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["title.s", "font.family.sans", "font.size.14", "font.weight.semibold", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["body.l", "font.family.sans", "font.size.16", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["body.m", "font.family.sans", "font.size.14", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["body.s", "font.family.sans", "font.size.12", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["button.m", "font.family.sans", "font.size.14", "font.weight.medium", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["button.s", "font.family.sans", "font.size.12", "font.weight.medium", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["label.m", "font.family.sans", "font.size.12", "font.weight.medium", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"],
+          ["caption.s", "font.family.sans", "font.size.12", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"]
         ]
       };
 
       var containers = {
+        brandColors: document.getElementById("brandColors"),
+        neutralColors: document.getElementById("neutralColors"),
+        statusColors: document.getElementById("statusColors"),
         foundationColors: document.getElementById("foundationColors"),
         foundationSpacing: document.getElementById("foundationSpacing"),
+        foundationSize: document.getElementById("foundationSize"),
+        foundationRadius: document.getElementById("foundationRadius"),
+        foundationOpacity: document.getElementById("foundationOpacity"),
         semanticColors: document.getElementById("semanticColors"),
         semanticSpacing: document.getElementById("semanticSpacing"),
+        semanticSize: document.getElementById("semanticSize"),
+        semanticRadius: document.getElementById("semanticRadius"),
+        semanticOpacity: document.getElementById("semanticOpacity"),
+        semanticShadow: document.getElementById("semanticShadow"),
         semanticText: document.getElementById("semanticText"),
         fontFamily: document.getElementById("fontFamily"),
         fontSize: document.getElementById("fontSize"),
@@ -66,13 +106,22 @@ var defaults = {
       var resetButton = document.getElementById("reset");
       var cancelButton = document.getElementById("cancel");
       var status = document.getElementById("status");
-      var widthInput = document.getElementById("windowWidth");
-      var heightInput = document.getElementById("windowHeight");
-      var resizeCornerHitarea = document.getElementById("resizeCornerHitarea");
+      var brandPackTabs = document.getElementById("brandPackTabs");
+      var addBrandPackButton = document.getElementById("addBrandPack");
       var mainColorNameInput = document.getElementById("mainColorName");
       var mainColorValueInput = document.getElementById("mainColorValue");
+      var toggleBrandColorsButton = document.getElementById("toggleBrandColors");
+      var sessionSelect = document.getElementById("sessionSelect");
+      var sessionSelectButton = document.getElementById("sessionSelectButton");
+      var sessionSelectMenu = document.getElementById("sessionSelectMenu");
       var saveSessionButton = document.getElementById("saveSession");
+      var saveMenu = document.getElementById("saveMenu");
+      var saveAsNewSessionButton = document.getElementById("saveAsNewSession");
+      var saveCurrentSessionButton = document.getElementById("saveCurrentSession");
       var loadSessionButton = document.getElementById("loadSession");
+      var importMenu = document.getElementById("importMenu");
+      var importSessionMarkdownButton = document.getElementById("importSessionMarkdown");
+      var importSessionJsonButton = document.getElementById("importSessionJson");
       var setDefaultButton = document.getElementById("setDefault");
       var sortSemanticTextButton = document.getElementById("sortSemanticText");
       var toggleSemanticMappingButton = document.getElementById("toggleSemanticMapping");
@@ -84,9 +133,106 @@ var defaults = {
       var saveModalNameInput = document.getElementById("saveModalName");
       var saveModalConfirmButton = document.getElementById("saveModalConfirm");
       var saveModalCancelButton = document.getElementById("saveModalCancel");
-      var currentWindowWidth = 760;
-      var currentWindowHeight = 760;
+      var suggestionScrim = document.getElementById("suggestionScrim");
+      var suggestionPopover = document.getElementById("suggestionPopover");
+      var resizeCornerHitarea = document.getElementById("resizeCornerHitarea");
+      var minWindowWidth = 360;
+      var minWindowHeight = 320;
+      var currentWindowWidth = Math.max(minWindowWidth, Math.round(window.innerWidth || 1080));
+      var currentWindowHeight = Math.max(minWindowHeight, Math.round(window.innerHeight || 960));
+      var uiDefaultStorageKey = "tokenPluginDefaultSetupFallback";
+      var uiSessionsStorageKey = "tokenPluginSavedSessionsFallback";
+      var savedSessions = [];
+      var selectedSavedSessionId = "";
+      var pendingDefaultLoadTimer = null;
+      var availableFontFamilies = [];
+      var availableFontStylesByFamily = {};
       var toneSteps = [100, 300, 500, 700, 900];
+      var defaultFoundationColorPacks = [
+        ["brand", "#E8341C"]
+      ];
+      var defaultFoundationStatusColorPacks = [
+        ["info", "#2563EB"],
+        ["success", "#16A34A"],
+        ["warning", "#D97706"],
+        ["danger", "#DC2626"]
+      ];
+      var activeSuggestionInput = null;
+      var activeSuggestionItems = [];
+      var activeSuggestionIndex = -1;
+      var semanticColorModes = { Light: {}, Dark: {} };
+      var semanticColorModePacks = {
+        Light: {
+          "text.primary": "color.neutral.900",
+          "text.secondary": "color.neutral.700",
+          "text.tertiary": "color.neutral.500",
+          "text.inverse": "color.neutral.0",
+          "text.link": "color.brand.500",
+          "bg.canvas": "color.brand.100",
+          "bg.surface": "color.neutral.0",
+          "bg.surface.subtle": "color.neutral.50",
+          "bg.inverse": "color.neutral.900",
+          "bg.brand": "color.brand.500",
+          "border.default": "color.neutral.200",
+          "border.subtle": "color.neutral.100",
+          "border.strong": "color.neutral.500",
+          "border.brand": "color.brand.500",
+          "action.primary.bg.default": "color.brand.500",
+          "action.primary.text.default": "color.neutral.0",
+          "focus.ring": "color.brand.300",
+          "status.info.text": "color.info.700",
+          "status.info.bg": "color.info.100",
+          "status.info.border": "color.info.300",
+          "status.info.icon": "color.info.500",
+          "status.success.text": "color.success.700",
+          "status.success.bg": "color.success.100",
+          "status.success.border": "color.success.300",
+          "status.success.icon": "color.success.500",
+          "status.warning.text": "color.warning.700",
+          "status.warning.bg": "color.warning.100",
+          "status.warning.border": "color.warning.300",
+          "status.warning.icon": "color.warning.500",
+          "status.danger.text": "color.danger.700",
+          "status.danger.bg": "color.danger.100",
+          "status.danger.border": "color.danger.300",
+          "status.danger.icon": "color.danger.500"
+        },
+        Dark: {
+          "text.primary": "color.neutral.0",
+          "text.secondary": "color.neutral.100",
+          "text.tertiary": "color.neutral.300",
+          "text.inverse": "color.neutral.900",
+          "text.link": "color.brand.300",
+          "bg.canvas": "color.neutral.1000",
+          "bg.surface": "color.neutral.900",
+          "bg.surface.subtle": "color.neutral.700",
+          "bg.inverse": "color.neutral.0",
+          "bg.brand": "color.brand.500",
+          "border.default": "color.neutral.700",
+          "border.subtle": "color.neutral.500",
+          "border.strong": "color.neutral.300",
+          "border.brand": "color.brand.300",
+          "action.primary.bg.default": "color.brand.500",
+          "action.primary.text.default": "color.neutral.0",
+          "focus.ring": "color.brand.300",
+          "status.info.text": "color.info.300",
+          "status.info.bg": "color.info.900",
+          "status.info.border": "color.info.700",
+          "status.info.icon": "color.info.300",
+          "status.success.text": "color.success.300",
+          "status.success.bg": "color.success.900",
+          "status.success.border": "color.success.700",
+          "status.success.icon": "color.success.300",
+          "status.warning.text": "color.warning.300",
+          "status.warning.bg": "color.warning.900",
+          "status.warning.border": "color.warning.700",
+          "status.warning.icon": "color.warning.300",
+          "status.danger.text": "color.danger.300",
+          "status.danger.bg": "color.danger.900",
+          "status.danger.border": "color.danger.700",
+          "status.danger.icon": "color.danger.300"
+        }
+      };
       var neutralScale = {
         "0": "#FFFFFF",
         "50": "#F7F7F8",
@@ -99,6 +245,8 @@ var defaults = {
         "1000": "#12151B"
       };
       var currentMainColorName = "brand";
+      var selectedBrandPackName = "brand";
+      var brandColorsCollapsed = false;
 
       function setActiveTokenTab(category) {
         Array.prototype.forEach.call(document.querySelectorAll("[data-token-tab]"), function (button) {
@@ -109,13 +257,507 @@ var defaults = {
         });
       }
 
+      function setMode(mode, applyPack) {
+        storeCurrentSemanticColorMode();
+        var nextMode = mode === "Dark" ? "Dark" : "Light";
+        var modeInput = document.getElementById("modeName");
+        if (modeInput) modeInput.value = nextMode;
+        Array.prototype.forEach.call(document.querySelectorAll("[data-mode-option]"), function (button) {
+          button.classList.toggle("active", button.getAttribute("data-mode-option") === nextMode);
+        });
+        if (applyPack) {
+          applySemanticColorPack(nextMode);
+          return;
+        }
+        renderSemanticColorMode(nextMode);
+        refreshLists();
+      }
+
+      function getSelectedGenerationModes() {
+        var modes = [];
+        var lightCheckbox = document.getElementById("generateLightMode");
+        var darkCheckbox = document.getElementById("generateDarkMode");
+        if (lightCheckbox && lightCheckbox.checked) modes.push("Light");
+        if (darkCheckbox && darkCheckbox.checked) modes.push("Dark");
+        return modes.length ? modes : ["Light"];
+      }
+
+      function setSelectedGenerationModes(modeNames) {
+        var nextModes = Array.isArray(modeNames) && modeNames.length
+          ? modeNames
+          : ["Light", "Dark"];
+        var allowed = {};
+        nextModes.forEach(function (modeName) {
+          if (modeName === "Light" || modeName === "Dark") allowed[modeName] = true;
+        });
+        var lightCheckbox = document.getElementById("generateLightMode");
+        var darkCheckbox = document.getElementById("generateDarkMode");
+        if (lightCheckbox) lightCheckbox.checked = !!allowed.Light;
+        if (darkCheckbox) darkCheckbox.checked = !!allowed.Dark;
+        if ((!lightCheckbox || !lightCheckbox.checked) && (!darkCheckbox || !darkCheckbox.checked) && lightCheckbox) {
+          lightCheckbox.checked = true;
+        }
+      }
+
+      function bindGenerationModeCheckboxes() {
+        ["generateLightMode", "generateDarkMode"].forEach(function (id) {
+          var input = document.getElementById(id);
+          if (!input) return;
+          input.addEventListener("change", function () {
+            var lightCheckbox = document.getElementById("generateLightMode");
+            var darkCheckbox = document.getElementById("generateDarkMode");
+            if ((lightCheckbox && lightCheckbox.checked) || (darkCheckbox && darkCheckbox.checked)) return;
+            input.checked = true;
+          });
+        });
+      }
+
+      function applySemanticColorPack(mode) {
+        var pack = semanticColorModePacks[mode];
+        if (!pack) return;
+        var nextValues = {};
+        Object.keys(readSemanticColorNames()).forEach(function (semanticName) {
+          nextValues[semanticName] = pack[semanticName] || "";
+        });
+        semanticColorModes[mode] = nextValues;
+        syncOtherSemanticColorMode(mode);
+        if (getCurrentMode() === mode) renderSemanticColorMode(mode);
+        refreshLists();
+      }
+
+      function getCurrentMode() {
+        var modeInput = document.getElementById("modeName");
+        return modeInput && modeInput.value === "Dark" ? "Dark" : "Light";
+      }
+
+      function readSemanticColorNames() {
+        var names = {};
+        Array.prototype.forEach.call(containers.semanticColors.children, function (row) {
+          var fields = row.querySelectorAll("input");
+          var name = fields[0] && fields[0].value ? fields[0].value.trim() : "";
+          if (!name) return;
+          names[name] = true;
+        });
+        return names;
+      }
+
+      function readSemanticColorPairs() {
+        return readPairs(containers.semanticColors, false);
+      }
+
+      function orderedSemanticColorKeys(values) {
+        var order = [];
+        var seen = {};
+        defaults.semanticColor.forEach(function (row) {
+          if (!values || values[row[0]] === undefined || seen[row[0]]) return;
+          seen[row[0]] = true;
+          order.push(row[0]);
+        });
+        Object.keys(values || {}).forEach(function (key) {
+          if (seen[key]) return;
+          seen[key] = true;
+          order.push(key);
+        });
+        return order;
+      }
+
+      function renderSemanticColorMode(mode) {
+        var values = semanticColorModes[mode] || {};
+        containers.semanticColors.innerHTML = "";
+        var groups = {
+          Text: [],
+          Background: [],
+          Border: [],
+          Action: [],
+          Focus: [],
+          Status: [],
+          Other: []
+        };
+        orderedSemanticColorKeys(values).forEach(function (key) {
+          if (key.indexOf("text.") === 0) {
+            groups.Text.push(key);
+          } else if (key.indexOf("bg.") === 0) {
+            groups.Background.push(key);
+          } else if (key.indexOf("border.") === 0) {
+            groups.Border.push(key);
+          } else if (key.indexOf("action.") === 0) {
+            groups.Action.push(key);
+          } else if (key.indexOf("focus.") === 0) {
+            groups.Focus.push(key);
+          } else if (key.indexOf("status.") === 0) {
+            groups.Status.push(key);
+          } else {
+            groups.Other.push(key);
+          }
+        });
+        Object.entries(groups).forEach(function (entry) {
+          var groupName = entry[0];
+          var keys = entry[1];
+          if (!keys.length) return;
+          var heading = document.createElement("h3");
+          heading.className = "subsection-title semantic-group-title";
+          heading.textContent = groupName;
+          containers.semanticColors.appendChild(heading);
+          keys.forEach(function (key) {
+            addSemanticColorPair(containers.semanticColors, key, values[key]);
+          });
+        });
+      }
+
+      function renderSemanticSpacing(spacingValues) {
+        var values = spacingValues && typeof spacingValues === "object" ? spacingValues : {};
+        containers.semanticSpacing.innerHTML = "";
+        var groups = {
+          Inline: [],
+          Stack: [],
+          Inset: [],
+          Layout: [],
+          Control: [],
+          Other: []
+        };
+        Object.keys(values).forEach(function (key) {
+          if (key.indexOf("inline.") === 0) {
+            groups.Inline.push(key);
+          } else if (key.indexOf("stack.") === 0) {
+            groups.Stack.push(key);
+          } else if (key.indexOf("inset.") === 0) {
+            groups.Inset.push(key);
+          } else if (key.indexOf("layout.") === 0) {
+            groups.Layout.push(key);
+          } else if (key.indexOf("control.") === 0) {
+            groups.Control.push(key);
+          } else {
+            groups.Other.push(key);
+          }
+        });
+        Object.entries(groups).forEach(function (entry) {
+          var groupName = entry[0];
+          var keys = entry[1];
+          if (!keys.length) return;
+          var heading = document.createElement("h3");
+          heading.className = "subsection-title semantic-group-title";
+          heading.textContent = groupName + " Spacing";
+          containers.semanticSpacing.appendChild(heading);
+          keys.forEach(function (key) {
+            addPair(containers.semanticSpacing, "cols-2", key, values[key], "text", "spaceRefs");
+          });
+        });
+      }
+
+      function renderSemanticSize(sizeValues) {
+        var values = sizeValues && typeof sizeValues === "object" ? sizeValues : {};
+        containers.semanticSize.innerHTML = "";
+        var groups = {
+          Control: [],
+          Icon: [],
+          Touch: [],
+          Avatar: [],
+          Dialog: [],
+          Layout: [],
+          Other: []
+        };
+        Object.keys(values).forEach(function (key) {
+          if (key.indexOf("control.") === 0) {
+            groups.Control.push(key);
+          } else if (key.indexOf("icon.") === 0) {
+            groups.Icon.push(key);
+          } else if (key.indexOf("touch.") === 0) {
+            groups.Touch.push(key);
+          } else if (key.indexOf("avatar.") === 0) {
+            groups.Avatar.push(key);
+          } else if (key.indexOf("dialog.") === 0) {
+            groups.Dialog.push(key);
+          } else if (key.indexOf("layout.") === 0) {
+            groups.Layout.push(key);
+          } else {
+            groups.Other.push(key);
+          }
+        });
+        Object.entries(groups).forEach(function (entry) {
+          var groupName = entry[0];
+          var keys = entry[1];
+          if (!keys.length) return;
+          var heading = document.createElement("h3");
+          heading.className = "subsection-title semantic-group-title";
+          heading.textContent = groupName + " Sizes";
+          containers.semanticSize.appendChild(heading);
+          keys.forEach(function (key) {
+            addPair(containers.semanticSize, "cols-2", key, values[key], "text", "sizeRefs");
+          });
+        });
+      }
+
+      function syncOtherSemanticColorMode(sourceMode) {
+        var targetMode = sourceMode === "Dark" ? "Light" : "Dark";
+        var sourceValues = semanticColorModes[sourceMode] || {};
+        var targetValues = semanticColorModes[targetMode] || {};
+        var pack = semanticColorModePacks[targetMode] || {};
+        var nextTargetValues = {};
+
+        Object.keys(sourceValues).forEach(function (name) {
+          if (targetValues[name] !== undefined) {
+            nextTargetValues[name] = targetValues[name];
+          } else if (pack[name] !== undefined) {
+            nextTargetValues[name] = pack[name];
+          } else {
+            nextTargetValues[name] = sourceValues[name];
+          }
+        });
+
+        semanticColorModes[targetMode] = nextTargetValues;
+      }
+
+      function storeCurrentSemanticColorMode() {
+        semanticColorModes[getCurrentMode()] = readSemanticColorPairs();
+        syncOtherSemanticColorMode(getCurrentMode());
+      }
+
+      function normalizeSemanticColorModes(colorValues) {
+        var normalized = { Light: {}, Dark: {} };
+        var entries = colorValues && typeof colorValues === "object" ? colorValues : {};
+
+        Object.entries(entries).forEach(function (entry) {
+          var name = entry[0];
+          var value = entry[1];
+          if (value && typeof value === "object" && !Array.isArray(value)) {
+            normalized.Light[name] = value.Light !== undefined
+              ? value.Light
+              : (semanticColorModePacks.Light[name] !== undefined ? semanticColorModePacks.Light[name] : "");
+            normalized.Dark[name] = value.Dark !== undefined
+              ? value.Dark
+              : (semanticColorModePacks.Dark[name] !== undefined ? semanticColorModePacks.Dark[name] : normalized.Light[name]);
+            return;
+          }
+          normalized.Light[name] = value;
+          normalized.Dark[name] = semanticColorModePacks.Dark[name] !== undefined ? semanticColorModePacks.Dark[name] : value;
+        });
+
+        defaults.semanticColor.forEach(function (row) {
+          var name = row[0];
+          var defaultVal = row[1];
+          if (normalized.Light[name] === undefined) {
+            normalized.Light[name] = semanticColorModePacks.Light[name] !== undefined ? semanticColorModePacks.Light[name] : defaultVal;
+          }
+          if (normalized.Dark[name] === undefined) {
+            normalized.Dark[name] = semanticColorModePacks.Dark[name] !== undefined ? semanticColorModePacks.Dark[name] : normalized.Light[name];
+          }
+        });
+
+        return normalized;
+      }
+
+      function listValues(id) {
+        var list = id ? document.getElementById(id) : null;
+        if (!list) return [];
+        return Array.prototype.map.call(list.querySelectorAll("option"), function (option) {
+          return option.value;
+        });
+      }
+
+      function setSuggestionFieldState(inputEl, active) {
+        if (!inputEl || !inputEl.parentNode) return;
+        inputEl.parentNode.classList.toggle("suggestion-active", !!active);
+      }
+
+      function closeSuggestions() {
+        if (activeSuggestionInput) setSuggestionFieldState(activeSuggestionInput, false);
+        activeSuggestionInput = null;
+        activeSuggestionItems = [];
+        activeSuggestionIndex = -1;
+        if (suggestionScrim) {
+          suggestionScrim.classList.remove("open");
+          suggestionScrim.setAttribute("aria-hidden", "true");
+        }
+        if (!suggestionPopover) return;
+        suggestionPopover.innerHTML = "";
+        suggestionPopover.classList.remove("open");
+        suggestionPopover.setAttribute("aria-hidden", "true");
+      }
+
+      function setImportMenuOpen(open) {
+        if (!importMenu || !loadSessionButton) return;
+        var nextOpen = !!open;
+        importMenu.hidden = !nextOpen;
+        loadSessionButton.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+      }
+
+      function setSaveMenuOpen(open) {
+        if (!saveMenu || !saveSessionButton) return;
+        var nextOpen = !!open;
+        saveMenu.hidden = !nextOpen;
+        saveSessionButton.setAttribute("aria-expanded", nextOpen ? "true" : "false");
+      }
+
+      async function readSelectedFileText(file) {
+        return await file.text();
+      }
+
+      async function importTokensJsonFile(file) {
+        var text = await readSelectedFileText(file);
+        var tokens = JSON.parse(text);
+        generateButton.disabled = true;
+        if (importDashboardButton) importDashboardButton.disabled = true;
+        parent.postMessage({
+          pluginMessage: { type: "import-tokens", tokens: tokens, options: options() }
+        }, "*");
+      }
+
+      async function importSessionMarkdownFile(file) {
+        var markdown = await readSelectedFileText(file);
+        var payload = parseSessionMarkdown(markdown);
+        applySessionPayload(payload);
+        var importedName = (file.name || "imported-session").replace(/\.(md|markdown)$/i, "") || "Imported session";
+        var importedRecord = createSessionRecord(importedName, payload, markdown);
+        saveSessionRecord(importedRecord);
+        selectedSavedSessionId = importedRecord.id;
+        setStatus("Session markdown loaded: " + file.name, "ok");
+      }
+
+      async function handleSessionImportFile(file) {
+        var fileName = String(file && file.name || "");
+        var mimeType = String(file && file.type || "");
+        var isJson = /\.json$/i.test(fileName) || /\bjson\b/i.test(mimeType);
+        if (isJson) {
+          try {
+            await importTokensJsonFile(file);
+          } catch (error) {
+            setStatus("Invalid JSON: " + (error && error.message ? error.message : String(error)), "error");
+          }
+          return;
+        }
+        try {
+          await importSessionMarkdownFile(file);
+        } catch (error) {
+          setStatus("Invalid session markdown: " + (error && error.message ? error.message : String(error)), "error");
+        }
+      }
+
+      function positionSuggestions(inputEl) {
+        if (!suggestionPopover || !inputEl) return;
+        var rect = inputEl.getBoundingClientRect();
+        var gap = 6;
+        var width = Math.min(Math.max(rect.width, 220), window.innerWidth - 24);
+        var top = rect.bottom + gap;
+        var maxHeight = 240;
+        if (top + maxHeight > window.innerHeight - 12) {
+          top = Math.max(12, rect.top - maxHeight - gap);
+        }
+        suggestionPopover.style.width = width + "px";
+        suggestionPopover.style.left = Math.min(rect.left, window.innerWidth - width - 12) + "px";
+        suggestionPopover.style.top = top + "px";
+      }
+
+      function applySuggestion(index) {
+        if (!activeSuggestionInput || index < 0 || index >= activeSuggestionItems.length) return;
+        activeSuggestionInput.value = activeSuggestionItems[index];
+        activeSuggestionInput.dispatchEvent(new Event("input", { bubbles: true }));
+        closeSuggestions();
+      }
+
+      function setActiveSuggestion(index) {
+        activeSuggestionIndex = index;
+        Array.prototype.forEach.call(suggestionPopover.querySelectorAll(".suggestion-option"), function (button, buttonIndex) {
+          button.classList.toggle("active", buttonIndex === index);
+        });
+      }
+
+      function openSuggestions(inputEl) {
+        var listId = inputEl && inputEl.dataset ? inputEl.dataset.listSource : "";
+        var allItems = listValues(listId);
+        var currentValue = String(inputEl.value || "").trim().toLowerCase();
+        var filtered = allItems.filter(function (item) {
+          return !currentValue || item.toLowerCase().indexOf(currentValue) !== -1;
+        }).slice(0, 30);
+        if (!filtered.length || !suggestionPopover) {
+          closeSuggestions();
+          return;
+        }
+        if (activeSuggestionInput && activeSuggestionInput !== inputEl) {
+          setSuggestionFieldState(activeSuggestionInput, false);
+        }
+        activeSuggestionInput = inputEl;
+        setSuggestionFieldState(activeSuggestionInput, true);
+        activeSuggestionItems = filtered;
+        activeSuggestionIndex = -1;
+        suggestionPopover.innerHTML = "";
+        filtered.forEach(function (item, index) {
+          var optionButton = document.createElement("button");
+          optionButton.type = "button";
+          optionButton.className = "suggestion-option";
+          optionButton.setAttribute("role", "option");
+          optionButton.textContent = item;
+          optionButton.addEventListener("mousedown", function (event) {
+            event.preventDefault();
+            applySuggestion(index);
+          });
+          suggestionPopover.appendChild(optionButton);
+        });
+        if (suggestionScrim) {
+          suggestionScrim.classList.add("open");
+          suggestionScrim.setAttribute("aria-hidden", "false");
+        }
+        suggestionPopover.classList.add("open");
+        suggestionPopover.setAttribute("aria-hidden", "false");
+        positionSuggestions(inputEl);
+      }
+
+      function handleSuggestionKeydown(event) {
+        if (!activeSuggestionInput || !suggestionPopover.classList.contains("open")) return;
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          setActiveSuggestion(Math.min(activeSuggestionIndex + 1, activeSuggestionItems.length - 1));
+          return;
+        }
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          setActiveSuggestion(Math.max(activeSuggestionIndex - 1, 0));
+          return;
+        }
+        if (event.key === "Enter" && activeSuggestionIndex >= 0) {
+          event.preventDefault();
+          applySuggestion(activeSuggestionIndex);
+          return;
+        }
+        if (event.key === "Escape") {
+          event.preventDefault();
+          closeSuggestions();
+        }
+      }
+
+      function attachSuggestionBehavior(el, listId) {
+        if (!el || !listId) return;
+        el.dataset.listSource = listId;
+        el.setAttribute("autocomplete", "off");
+        el.addEventListener("focus", function () {
+          openSuggestions(el);
+        });
+        el.addEventListener("input", function () {
+          openSuggestions(el);
+        });
+        el.addEventListener("keydown", handleSuggestionKeydown);
+        el.addEventListener("blur", function () {
+          setTimeout(function () {
+            if (document.activeElement !== el) closeSuggestions();
+          }, 120);
+        });
+      }
+
       function input(value, type, list, placeholder) {
         var el = document.createElement("input");
         el.type = type || "text";
         el.value = value;
         if (placeholder) el.placeholder = placeholder;
-        if (list) el.setAttribute("list", list);
+        if (el.type === "color") {
+          el.className = "color-mapping-swatch";
+        }
         el.addEventListener("input", refreshLists);
+        attachSuggestionBehavior(el, list);
+        return el;
+      }
+
+      function fontFamilyInput(value) {
+        var el = input(value === undefined ? "" : value, "text", "fontFamilyNames", "font family");
+        el.setAttribute("spellcheck", "false");
         return el;
       }
 
@@ -129,7 +771,15 @@ var defaults = {
       var iconLibrarySystem = {
         close: { body: "<path fill=\"currentColor\" d=\"M17.414 16L24 9.414L22.586 8L16 14.586L9.414 8L8 9.414L14.586 16L8 22.586L9.414 24L16 17.414L22.586 24L24 22.586z\"/>", width: 32, height: 32 },
         add: { body: "<path fill=\"currentColor\" d=\"M17 15V8h-2v7H8v2h7v7h2v-7h7v-2z\"/>", width: 32, height: 32 },
-        subtract: { body: "<path fill=\"currentColor\" d=\"M8 15h16v2H8z\"/>", width: 32, height: 32 }
+        subtract: { body: "<path fill=\"currentColor\" d=\"M8 15h16v2H8z\"/>", width: 32, height: 32 },
+        import: { body: "<path fill=\"currentColor\" d=\"M15 4h2v12.17l3.59-3.58L22 14l-6 6l-6-6l1.41-1.41L15 16.17z\"/><path fill=\"currentColor\" d=\"M6 22h20v2H6z\"/>", width: 32, height: 32 },
+        information: { body: "<path fill=\"currentColor\" d=\"M17 22v-8h-4v2h2v6h-3v2h8v-2zM16 8a1.5 1.5 0 1 0 1.5 1.5A1.5 1.5 0 0 0 16 8\"/><path fill=\"currentColor\" d=\"M16 30a14 14 0 1 1 14-14a14 14 0 0 1-14 14m0-26a12 12 0 1 0 12 12A12 12 0 0 0 16 4\"/>", width: 32, height: 32 },
+        export: { body: "<path fill=\"currentColor\" d=\"M26 24v4H6v-4H4v4l.008-.005A2 2 0 0 0 6 30h20a2 2 0 0 0 2-2v-4ZM6 12l1.411 1.405L15 5.825V24h2V5.825l7.591 7.58L26 12L16 2z\"/>", width: 32, height: 32 },
+        "trash-can": { body: "<path fill=\"currentColor\" d=\"M12 12h2v12h-2zm6 0h2v12h-2z\"/><path fill=\"currentColor\" d=\"M4 6v2h2v20a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8h2V6Zm4 22V8h16v20Zm4-26h8v2h-8z\"/>", width: 32, height: 32 },
+        "sort-ascending": { body: "<path fill=\"currentColor\" d=\"M12 28v-2h4v2zm-4-5v-2h8v2zm-4-5v-2h12v2zm-2-5v-2h16v2zm22 1V6.83l-2.59 2.58L20 8l5-5l5 5l-1.41 1.41L26 6.83V14z\"/>", width: 32, height: 32 },
+        "sort-descending": { body: "<path fill=\"currentColor\" d=\"M12 10v2h4v-2zm-4 5v2h8v-2zm-4 5v2h12v-2zm-2 5v2h16v-2zm22-1V6.83l-2.59 2.58L20 8l5-5l5 5l-1.41 1.41L26 6.83V24z\"/>", width: 32, height: 32 },
+        "collapse-all": { body: "<path fill=\"currentColor\" d=\"M28 22H18v-2h10zm0-6H18v-2h10zM28 4H4v2h24zm0 6H4v2h24zM4 22h10v-2H4zm0 4h10v-2H4zm8-7l-4 4l-4-4l1.41-1.41L8 20.17V16h2v4.17l2.59-2.58z\"/>", width: 32, height: 32 },
+        "expand-all": { body: "<path fill=\"currentColor\" d=\"M28 22H18v-2h10zm0-6H18v-2h10zM28 4H4v2h24zm0 6H4v2h24zM4 22h10v-2H4zm0 4h10v-2H4zM8 12l4-4l4 4l-1.41 1.41L12 11.83l-2.59 2.58z\"/>", width: 32, height: 32 }
       };
 
       function setIcon(button, name) {
@@ -137,6 +787,19 @@ var defaults = {
         if (!button || !icon) return;
         button.innerHTML = "<svg aria-hidden=\"true\" focusable=\"false\" viewBox=\"0 0 " + icon.width + " " + icon.height + "\">" + icon.body + "</svg>";
         button.dataset.icon = name;
+      }
+
+      function renderHintTipIcons() {
+        Array.prototype.forEach.call(document.querySelectorAll(".hint-tip"), function (tip) {
+          Array.prototype.slice.call(tip.childNodes).forEach(function (node) {
+            if (node.nodeType === 3) tip.removeChild(node);
+          });
+          if (tip.querySelector(".hint-tip-icon")) return;
+          var icon = document.createElement("span");
+          icon.className = "hint-tip-icon";
+          setIcon(icon, "information");
+          tip.insertBefore(icon, tip.firstChild);
+        });
       }
 
       function addRemove(row) {
@@ -167,6 +830,302 @@ var defaults = {
         container.appendChild(row);
       }
 
+      function getFoundationColorHex(ref) {
+        var normalizedName = normalizeColorTokenName(ref);
+        var store = readFoundationColorStore();
+        return store[normalizedName] || "";
+      }
+
+      function addSemanticColorPair(container, name, value) {
+        var row = document.createElement("div");
+        row.className = "token-row cols-color-mapping";
+        var nameInput = input(name || "", "text", null, "token name");
+        var valInput = input(value === undefined ? "" : value, "text", "colorRefs", "reference");
+        var swatch = document.createElement("span");
+        swatch.className = "color-mapping-swatch";
+        swatch.style.background = getFoundationColorHex(valInput.value) || "transparent";
+        valInput.addEventListener("input", function () {
+          swatch.style.background = getFoundationColorHex(valInput.value) || "transparent";
+        });
+        row.appendChild(field("token", nameInput));
+        var swatchWrapper = document.createElement("div");
+        swatchWrapper.className = "field swatch-field";
+        swatchWrapper.style.display = "flex";
+        swatchWrapper.style.justifyContent = "center";
+        swatchWrapper.style.alignItems = "center";
+        swatchWrapper.appendChild(swatch);
+        row.appendChild(swatchWrapper);
+        row.appendChild(field("ref", valInput));
+        addRemove(row);
+        container.appendChild(row);
+      }
+
+      function updateAllSemanticColorSwatches() {
+        var store = readFoundationColorStore();
+        Array.prototype.forEach.call(containers.semanticColors.querySelectorAll(".token-row.cols-color-mapping"), function (row) {
+          var valInput = row.querySelector(".field-ref input");
+          var swatch = row.querySelector(".color-mapping-swatch");
+          if (valInput && swatch) {
+            var ref = valInput.value.trim();
+            var normalizedName = normalizeColorTokenName(ref);
+            swatch.style.background = store[normalizedName] || "transparent";
+          }
+        });
+      }
+
+      function addFontFamilyPair(container, name, value) {
+        var row = document.createElement("div");
+        row.className = "token-row cols-2";
+        row.appendChild(field("token", input(name || "", "text", null, "token name")));
+        row.appendChild(field("value", fontFamilyInput(value)));
+        addRemove(row);
+        container.appendChild(row);
+      }
+
+      function addFoundationColorRow(container, name, value, valueType) {
+        var row = document.createElement("div");
+        row.className = "token-row cols-2";
+        var nameInput = input(name || "", "text", null, "token name");
+        var valueInput = input(value === undefined ? "" : value, valueType || "text", null, "value");
+        nameInput.addEventListener("input", syncFoundationColorsStore);
+        valueInput.addEventListener("input", syncFoundationColorsStore);
+        row.appendChild(field("token", nameInput));
+        row.appendChild(field("value", valueInput));
+        var removeBtn = createRemoveButton(row);
+        removeBtn.addEventListener("click", syncFoundationColorsStore);
+        row.appendChild(removeBtn);
+        container.appendChild(row);
+      }
+
+      function normalizeColorTokenName(name) {
+        return String(name || "").trim().replace(/^color\./, "");
+      }
+
+      function normalizeBrandColorName(name) {
+        return (name || "brand")
+          .replace(/^color\./, "")
+          .replace(/[^a-zA-Z0-9_.-]+/g, ".")
+          .replace(/\.+/g, ".")
+          .replace(/^\./, "")
+          .replace(/\.$/, "") || "brand";
+      }
+
+      function isNeutralColorToken(name) {
+        return normalizeColorTokenName(name).indexOf("neutral.") === 0;
+      }
+
+      function isStatusColorToken(name) {
+        var packName = brandPackNameFromToken(name);
+        return packName === "info" || packName === "success" || packName === "warning" || packName === "danger";
+      }
+
+      function brandPackNameFromToken(name) {
+        var tokenName = normalizeColorTokenName(name);
+        var match = tokenName.match(/^(.*)\.(100|300|500|700|900)$/);
+        return match && match[1] ? match[1] : "";
+      }
+
+      function readFoundationColorStore() {
+        return readPairs(containers.foundationColors, false);
+      }
+
+      function writeFoundationColorStore(values) {
+        containers.foundationColors.innerHTML = "";
+        Object.keys(values || {}).forEach(function (tokenName) {
+          addPair(containers.foundationColors, "cols-2", tokenName, values[tokenName], "color");
+        });
+      }
+
+      function collectBrandPackNamesFromStore(values) {
+        var names = {};
+        Object.keys(values || {}).forEach(function (tokenName) {
+          var packName = brandPackNameFromToken(tokenName);
+          if (packName && !isNeutralColorToken(tokenName) && !isStatusColorToken(tokenName)) names[packName] = true;
+        });
+        return names;
+      }
+
+      function firstBrandPackName(values) {
+        var names = collectBrandPackNamesFromStore(values);
+        return Object.keys(names)[0] || "brand";
+      }
+
+      function nextAvailableBrandPackName(baseName, values, exemptName) {
+        var cleanBase = normalizeBrandColorName(baseName || "brand");
+        var names = collectBrandPackNamesFromStore(values);
+        if (!names[cleanBase] || cleanBase === exemptName) return cleanBase;
+        var suffix = 2;
+        var candidate = cleanBase + "." + suffix;
+        while (names[candidate] && candidate !== exemptName) {
+          suffix += 1;
+          candidate = cleanBase + "." + suffix;
+        }
+        return candidate;
+      }
+
+      function writeBrandPackScaleInOrder(values, previousName, nextName, baseHex) {
+        var previousPack = normalizeBrandColorName(previousName || nextName);
+        var nextPack = normalizeBrandColorName(nextName || previousPack);
+        var scale = buildToneScaleFromHex(baseHex || "#E8341C");
+        var replaced = false;
+        var nextValues = {};
+        Object.keys(values || {}).forEach(function (tokenName) {
+          var packName = brandPackNameFromToken(tokenName);
+          if (packName === previousPack) {
+            if (!replaced) {
+              toneSteps.forEach(function (step) {
+                nextValues[nextPack + "." + step] = scale[step];
+              });
+              replaced = true;
+            }
+            return;
+          }
+          nextValues[tokenName] = values[tokenName];
+        });
+        if (!replaced) {
+          toneSteps.forEach(function (step) {
+            nextValues[nextPack + "." + step] = scale[step];
+          });
+        }
+        return nextValues;
+      }
+
+      function brandPackDisplayColor(values, name) {
+        var fallback = "";
+        toneSteps.forEach(function (step) {
+          var tokenValue = values[name + "." + step];
+          if (step === 500 && tokenValue) fallback = tokenValue;
+          if (!fallback && tokenValue) fallback = tokenValue;
+        });
+        return fallback || "#E8341C";
+      }
+
+      function ensureNeutralColorsInStore(values) {
+        Object.keys(neutralScale).forEach(function (step) {
+          var tokenName = "neutral." + step;
+          if (!(tokenName in values)) values[tokenName] = neutralScale[step];
+        });
+      }
+
+      function ensureStatusColorsInStore(values) {
+        defaultFoundationStatusColorPacks.forEach(function (pack) {
+          var packName = pack[0];
+          var scale = buildToneScaleFromHex(pack[1]);
+          toneSteps.forEach(function (step) {
+            var tokenName = packName + "." + step;
+            if (!(tokenName in values)) values[tokenName] = scale[step];
+          });
+        });
+      }
+
+      function removeBrandPack(name) {
+        var canonical = readFoundationColorStore();
+        var packName = normalizeBrandColorName(name || selectedBrandPackName);
+        Object.keys(canonical).forEach(function (tokenName) {
+          if (brandPackNameFromToken(tokenName) === packName) delete canonical[tokenName];
+        });
+        var nextName = firstBrandPackName(canonical);
+        if (nextName === "brand" && !collectBrandPackNamesFromStore(canonical).brand) {
+          var scale = buildToneScaleFromHex("#E8341C");
+          toneSteps.forEach(function (step) {
+            canonical["brand." + step] = scale[step];
+          });
+        }
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        nextName = firstBrandPackName(canonical);
+        if (packName === selectedBrandPackName) {
+          updateMainColorReferences(packName, nextName);
+        }
+        setSelectedBrandPack(nextName);
+        refreshLists();
+      }
+
+      function renderBrandPackTabs() {
+        var canonical = readFoundationColorStore();
+        var names = collectBrandPackNamesFromStore(canonical);
+        var orderedNames = Object.keys(names);
+        if (!orderedNames.length) orderedNames = [selectedBrandPackName || "brand"];
+        if (orderedNames.indexOf(selectedBrandPackName) === -1) selectedBrandPackName = orderedNames[0];
+        brandPackTabs.innerHTML = "";
+        orderedNames.forEach(function (name) {
+          var item = document.createElement("div");
+          item.className = "brand-pack-item";
+          var isActive = name === selectedBrandPackName;
+          item.classList.toggle("active", isActive);
+
+          if (isActive) {
+            var nameInput = document.createElement("input");
+            nameInput.type = "text";
+            nameInput.className = "brand-pack-editor-name";
+            nameInput.value = name;
+            nameInput.setAttribute("aria-label", "Brand name");
+            nameInput.addEventListener("input", function () {
+              mainColorNameInput.value = nameInput.value;
+              renderMainColorScale({ preserveBrandPackTabs: true });
+            });
+            item.appendChild(nameInput);
+
+            var colorInput = document.createElement("input");
+            colorInput.type = "color";
+            colorInput.className = "brand-pack-editor-color color-mapping-swatch";
+            colorInput.value = brandPackDisplayColor(canonical, name);
+            colorInput.setAttribute("aria-label", "Brand color");
+            colorInput.addEventListener("input", function () {
+              mainColorValueInput.value = colorInput.value;
+              renderMainColorScale({ preserveBrandPackTabs: true });
+            });
+            item.appendChild(colorInput);
+          } else {
+            var button = document.createElement("button");
+            button.type = "button";
+            button.className = "brand-pack-tab";
+            button.setAttribute("role", "tab");
+            button.setAttribute("aria-selected", "false");
+
+            var swatch = document.createElement("span");
+            swatch.className = "brand-pack-swatch";
+            swatch.style.background = brandPackDisplayColor(canonical, name);
+            swatch.setAttribute("aria-hidden", "true");
+            button.appendChild(swatch);
+
+            var label = document.createElement("span");
+            label.className = "brand-pack-name";
+            label.textContent = name;
+            button.appendChild(label);
+
+            button.addEventListener("click", function () {
+              setSelectedBrandPack(name);
+            });
+            item.appendChild(button);
+          }
+
+          var deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "brand-pack-delete";
+          setIcon(deleteButton, "close");
+          deleteButton.title = "Delete " + name;
+          deleteButton.setAttribute("aria-label", "Delete " + name);
+          deleteButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            removeBrandPack(isActive ? selectedBrandPackName : name);
+          });
+          item.appendChild(deleteButton);
+          brandPackTabs.appendChild(item);
+        });
+        if (addBrandPackButton) brandPackTabs.appendChild(addBrandPackButton);
+      }
+
+      function setSelectedBrandPack(name) {
+        var canonical = readFoundationColorStore();
+        selectedBrandPackName = normalizeBrandColorName(name || firstBrandPackName(canonical));
+        currentMainColorName = selectedBrandPackName;
+        mainColorNameInput.value = selectedBrandPackName;
+        mainColorValueInput.value = canonical[selectedBrandPackName + ".500"] || mainColorValueInput.value || "#E8341C";
+        rebuildVisibleColorListsFromStore();
+      }
+
       function hexToRgb(hex) {
         var clean = String(hex || "#000000").replace("#", "");
         if (clean.length === 3) {
@@ -195,8 +1154,8 @@ var defaults = {
         };
       }
 
-      function buildMainColorScale() {
-        var base = hexToRgb(mainColorValueInput.value);
+      function buildToneScaleFromHex(hex) {
+        var base = hexToRgb(hex);
         return {
           100: rgbToHex(mixColor(base, { r: 255, g: 255, b: 255 }, 0.82)),
           300: rgbToHex(mixColor(base, { r: 255, g: 255, b: 255 }, 0.38)),
@@ -206,22 +1165,119 @@ var defaults = {
         };
       }
 
-      function renderMainColorScale() {
-        var colorName = (mainColorNameInput.value.trim() || "brand")
-          .replace(/^color\./, "")
-          .replace(/[^a-zA-Z0-9_.-]+/g, ".")
-          .replace(/\.+/g, ".")
-          .replace(/^\./, "")
-          .replace(/\.$/, "") || "brand";
-        var scale = buildMainColorScale();
-        updateMainColorReferences(currentMainColorName, colorName);
-        currentMainColorName = colorName;
-        containers.foundationColors.innerHTML = "";
+      function addToneScaleToStore(values, name, baseHex) {
+        var cleanName = normalizeBrandColorName(name || "brand");
+        var scale = buildToneScaleFromHex(baseHex || "#E8341C");
         toneSteps.forEach(function (step) {
-          addPair(containers.foundationColors, "cols-2", colorName + "." + step, scale[step], "color");
+          values[cleanName + "." + step] = scale[step];
         });
+      }
+
+      function seedDefaultFoundationColors() {
+        var canonical = {};
+        defaultFoundationColorPacks.forEach(function (pack) {
+          addToneScaleToStore(canonical, pack[0], pack[1]);
+        });
+        defaultFoundationStatusColorPacks.forEach(function (pack) {
+          addToneScaleToStore(canonical, pack[0], pack[1]);
+        });
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        selectedBrandPackName = defaultFoundationColorPacks[0][0];
+        currentMainColorName = selectedBrandPackName;
+        rebuildVisibleColorListsFromStore();
+        refreshLists();
+      }
+
+      function ensureNeutralRows() {
+        if (containers.neutralColors.children.length) return;
         Object.keys(neutralScale).forEach(function (step) {
-          addPair(containers.foundationColors, "cols-2", "neutral." + step, neutralScale[step], "color");
+          addFoundationColorRow(containers.neutralColors, "neutral." + step, neutralScale[step], "color");
+        });
+      }
+
+      function syncFoundationColorsStore() {
+        var seen = readFoundationColorStore();
+        Object.keys(seen).forEach(function (tokenName) {
+          if (isNeutralColorToken(tokenName) || isStatusColorToken(tokenName) || brandPackNameFromToken(tokenName)) {
+            delete seen[tokenName];
+          }
+        });
+        [containers.brandColors, containers.neutralColors, containers.statusColors].forEach(function (source) {
+          Array.prototype.forEach.call(source.children, function (row) {
+            var fields = row.querySelectorAll("input");
+            var name = fields[0] ? fields[0].value : "";
+            var value = fields[1] ? fields[1].value : "";
+            var normalizedName = normalizeColorTokenName(name);
+            if (!normalizedName) return;
+            seen[normalizedName] = value;
+          });
+        });
+        ensureNeutralColorsInStore(seen);
+        ensureStatusColorsInStore(seen);
+        writeFoundationColorStore(seen);
+        renderBrandPackTabs();
+        refreshLists();
+      }
+
+      function rebuildVisibleColorListsFromStore(options) {
+        options = options || {};
+        var canonical = readFoundationColorStore();
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        var packNames = collectBrandPackNamesFromStore(canonical);
+        if (!packNames[selectedBrandPackName]) selectedBrandPackName = firstBrandPackName(canonical);
+        currentMainColorName = selectedBrandPackName;
+        mainColorNameInput.value = selectedBrandPackName;
+        if (canonical[selectedBrandPackName + ".500"]) mainColorValueInput.value = canonical[selectedBrandPackName + ".500"];
+        containers.brandColors.innerHTML = "";
+        containers.neutralColors.innerHTML = "";
+        containers.statusColors.innerHTML = "";
+        Object.keys(canonical).forEach(function (tokenName) {
+          if (isNeutralColorToken(tokenName)) {
+            addFoundationColorRow(containers.neutralColors, tokenName, canonical[tokenName], "color");
+          } else if (isStatusColorToken(tokenName)) {
+            addFoundationColorRow(containers.statusColors, tokenName, canonical[tokenName], "color");
+          } else {
+            addFoundationColorRow(containers.brandColors, tokenName, canonical[tokenName], "color");
+          }
+        });
+        ensureNeutralRows();
+        setBrandColorsCollapsed(brandColorsCollapsed);
+        if (!options.preserveBrandPackTabs) renderBrandPackTabs();
+      }
+
+      function setBrandColorsCollapsed(collapsed) {
+        brandColorsCollapsed = !!collapsed;
+        containers.brandColors.hidden = brandColorsCollapsed;
+        toggleBrandColorsButton.textContent = brandColorsCollapsed ? "Expand Brand Colors" : "Collapse Brand Colors";
+      }
+
+      function collectBrandPackNames() {
+        return collectBrandPackNamesFromStore(readFoundationColorStore());
+      }
+
+      function renderMainColorScale(options) {
+        options = options || {};
+        var rawName = mainColorNameInput.value.trim();
+        if (!rawName) {
+          containers.brandColors.innerHTML = "";
+          return;
+        }
+        var nextBaseHex = rgbToHex(hexToRgb(mainColorValueInput.value || "#E8341C"));
+        var canonical = readFoundationColorStore();
+        var nextName = nextAvailableBrandPackName(rawName, canonical, currentMainColorName);
+        updateMainColorReferences(currentMainColorName, nextName);
+        canonical = writeBrandPackScaleInOrder(canonical, currentMainColorName, nextName, nextBaseHex);
+        currentMainColorName = nextName;
+        selectedBrandPackName = nextName;
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        rebuildVisibleColorListsFromStore({
+          preserveBrandPackTabs: !!options.preserveBrandPackTabs
         });
         refreshLists();
       }
@@ -245,15 +1301,15 @@ var defaults = {
       function addTextStyle(values) {
         var row = document.createElement("div");
         row.className = "token-row cols-text semantic-text-row";
-        var data = values || ["", "color.text.primary", "font.family.sans", "font.size.14", "font.weight.regular", "font.lineHeight.14", "font.letterSpacing.default", "font.textTransform.none"];
+        var data = values || ["", "font.family.sans", "font.size.14", "font.weight.regular", "font.lineHeight.150", "font.letterSpacing.default", "font.textTransform.none"];
+        if (data.length >= 8) data = [data[0], data[2], data[3], data[4], data[5], data[6], data[7]];
         row.appendChild(field("token", input(data[0], "text", null, "text token")));
-        row.appendChild(field("ref", input(data[1], "text", "textColorRefs", "color ref")));
-        row.appendChild(field("ref", input(data[2], "text", "fontFamilyRefs", "family ref")));
-        row.appendChild(field("ref", input(data[3], "text", "fontSizeRefs", "size token ref")));
-        row.appendChild(field("ref", input(data[4], "text", "fontWeightRefs", "weight ref")));
-        row.appendChild(field("ref", input(data[5], "text", "fontLineHeightRefs", "line-height token ref")));
-        row.appendChild(field("ref", input(data[6], "text", "fontLetterSpacingRefs", "letter token ref")));
-        row.appendChild(field("ref", input(data[7], "text", "fontTextTransformRefs", "case ref")));
+        row.appendChild(field("ref", input(data[1], "text", "fontFamilyRefs", "family ref")));
+        row.appendChild(field("ref", input(data[2], "text", "fontSizeRefs", "size token ref")));
+        row.appendChild(field("ref", input(data[3], "text", "fontWeightRefs", "weight ref")));
+        row.appendChild(field("ref", input(data[4], "text", "fontLineHeightRefs", "line-height token ref")));
+        row.appendChild(field("ref", input(data[5], "text", "fontLetterSpacingRefs", "letter token ref")));
+        row.appendChild(field("ref", input(data[6], "text", "fontTextTransformRefs", "case ref")));
         var actions = document.createElement("div");
         actions.className = "row-actions";
         var toggleButton = document.createElement("button");
@@ -287,19 +1343,40 @@ var defaults = {
         return Number(match[match.length - 1]);
       }
 
+      var semanticTextSortOrder = "desc";
+
       function sortSemanticTextRows() {
         var rows = Array.prototype.slice.call(containers.semanticText.children);
+        var isAsc = semanticTextSortOrder === "asc";
         rows.sort(function (a, b) {
           var aFields = a.querySelectorAll("input");
           var bFields = b.querySelectorAll("input");
-          var aSize = extractFontSizeValue((aFields[3] || {}).value);
-          var bSize = extractFontSizeValue((bFields[3] || {}).value);
-          if (aSize !== bSize) return bSize - aSize;
+          var aSize = extractFontSizeValue((aFields[2] || {}).value);
+          var bSize = extractFontSizeValue((bFields[2] || {}).value);
+          if (aSize !== bSize) {
+            return isAsc ? aSize - bSize : bSize - aSize;
+          }
           var aName = ((aFields[0] || {}).value || "").trim().toLowerCase();
           var bName = ((bFields[0] || {}).value || "").trim().toLowerCase();
-          return aName.localeCompare(bName);
+          return isAsc ? aName.localeCompare(bName) : bName.localeCompare(aName);
         });
         rows.forEach(function (row) { containers.semanticText.appendChild(row); });
+
+        if (isAsc) {
+          semanticTextSortOrder = "desc";
+          if (sortSemanticTextButton) {
+            setIcon(sortSemanticTextButton, "sort-descending");
+            sortSemanticTextButton.title = "Sort font size ascending";
+            sortSemanticTextButton.setAttribute("aria-label", "Sort font size ascending");
+          }
+        } else {
+          semanticTextSortOrder = "asc";
+          if (sortSemanticTextButton) {
+            setIcon(sortSemanticTextButton, "sort-ascending");
+            sortSemanticTextButton.title = "Sort font size descending";
+            sortSemanticTextButton.setAttribute("aria-label", "Sort font size descending");
+          }
+        }
       }
 
       function setSemanticMappingCollapsed(collapsed) {
@@ -312,32 +1389,50 @@ var defaults = {
           toggleButton.title = collapsed ? "Expand mapping" : "Collapse mapping";
           toggleButton.setAttribute("aria-label", collapsed ? "Expand mapping" : "Collapse mapping");
         });
-        toggleSemanticMappingButton.textContent = collapsed ? "Expand Mapping" : "Collapse Mapping";
+        setIcon(toggleSemanticMappingButton, collapsed ? "expand-all" : "collapse-all");
+        toggleSemanticMappingButton.title = collapsed ? "Expand mapping" : "Collapse mapping";
+        toggleSemanticMappingButton.setAttribute("aria-label", collapsed ? "Expand mapping" : "Collapse mapping");
       }
 
       function resetFields() {
         Object.keys(containers).forEach(function (key) { containers[key].innerHTML = ""; });
         currentMainColorName = "brand";
+        selectedBrandPackName = "brand";
         mainColorNameInput.value = "brand";
         mainColorValueInput.value = "#E8341C";
-        renderMainColorScale();
+        seedDefaultFoundationColors();
         defaults.foundationSpacing.forEach(function (row) { addPair(containers.foundationSpacing, "cols-2", row[0], row[1], "number"); });
-        defaults.semanticColor.forEach(function (row) { addPair(containers.semanticColors, "cols-2", row[0], row[1], "text", "colorRefs"); });
-        defaults.semanticSpacing.forEach(function (row) { addPair(containers.semanticSpacing, "cols-2", row[0], row[1], "text", "spaceRefs"); });
-        defaults.text.family.forEach(function (row) { addPair(containers.fontFamily, "cols-2", row[0], row[1]); });
+        defaults.foundationSize.forEach(function (row) { addPair(containers.foundationSize, "cols-2", row[0], row[1], "number"); });
+        defaults.foundationRadius.forEach(function (row) { addPair(containers.foundationRadius, "cols-2", row[0], row[1], "number"); });
+        defaults.foundationOpacity.forEach(function (row) { addPair(containers.foundationOpacity, "cols-2", row[0], row[1], "number"); });
+        semanticColorModes = normalizeSemanticColorModes({});
+        setSelectedGenerationModes(["Light", "Dark"]);
+        renderSemanticColorMode("Light");
+        var spacingMap = {};
+        defaults.semanticSpacing.forEach(function (row) { spacingMap[row[0]] = row[1]; });
+        renderSemanticSpacing(spacingMap);
+
+        var sizeMap = {};
+        defaults.semanticSize.forEach(function (row) { sizeMap[row[0]] = row[1]; });
+        renderSemanticSize(sizeMap);
+        defaults.semanticRadius.forEach(function (row) { addPair(containers.semanticRadius, "cols-2", row[0], row[1], "text", "radiusRefs"); });
+        defaults.semanticOpacity.forEach(function (row) { addPair(containers.semanticOpacity, "cols-2", row[0], row[1], "text", "opacityRefs"); });
+        defaults.semanticShadow.forEach(function (row) { addPair(containers.semanticShadow, "cols-2", row[0], row[1], "text"); });
+        defaults.text.family.forEach(function (row) { addFontFamilyPair(containers.fontFamily, row[0], row[1]); });
         defaults.text.size.forEach(function (row) { addPair(containers.fontSize, "cols-2", row[0], row[1], "number"); });
         defaults.text.weight.forEach(function (row) { addPair(containers.fontWeight, "cols-2", row[0], row[1], "number"); });
         defaults.text.lineHeight.forEach(function (row) { addPair(containers.fontLineHeight, "cols-2", row[0], row[1], "text"); });
         defaults.text.letterSpacing.forEach(function (row) { addPair(containers.fontLetterSpacing, "cols-2", row[0], row[1], "number"); });
         defaults.text.textTransform.forEach(function (row) { addPair(containers.fontTextTransform, "cols-2", row[0], row[1]); });
         defaults.semanticText.forEach(addTextStyle);
-        renderMainColorScale();
+        refreshLists();
       }
 
       function readPairs(container, numeric) {
         var out = {};
         Array.prototype.forEach.call(container.children, function (row) {
           var fields = row.querySelectorAll("input");
+          if (fields.length < 2) return;
           var name = fields[0].value.trim();
           var value = fields[1].value.trim();
           if (!name) return;
@@ -353,23 +1448,41 @@ var defaults = {
           var name = fields[0].value.trim();
           if (!name) return;
           out[name] = {
-            color: fields[1].value.trim(),
-            fontFamily: fields[2].value.trim(),
-            fontSize: fields[3].value.trim(),
-            fontWeight: fields[4].value.trim(),
-            lineHeight: fields[5].value.trim(),
-            letterSpacing: fields[6].value.trim(),
-            textCase: fields[7].value.trim()
+            fontFamily: fields[1].value.trim(),
+            fontSize: fields[2].value.trim(),
+            fontWeight: fields[3].value.trim(),
+            lineHeight: fields[4].value.trim(),
+            letterSpacing: fields[5].value.trim(),
+            textCase: fields[6].value.trim()
           };
         });
         return out;
       }
 
       function buildSetup() {
+        storeCurrentSemanticColorMode();
+        var semanticColor = {};
+        var semanticColorNames = {};
+        Object.keys(semanticColorModes.Light || {}).forEach(function (name) { semanticColorNames[name] = true; });
+        Object.keys(semanticColorModes.Dark || {}).forEach(function (name) { semanticColorNames[name] = true; });
+        Object.keys(semanticColorNames).forEach(function (name) {
+          semanticColor[name] = {
+            Light: semanticColorModes.Light && semanticColorModes.Light[name] !== undefined ? semanticColorModes.Light[name] : "",
+            Dark: semanticColorModes.Dark && semanticColorModes.Dark[name] !== undefined ? semanticColorModes.Dark[name] : (
+              semanticColorModePacks.Dark[name] !== undefined
+                ? semanticColorModePacks.Dark[name]
+                : (semanticColorModes.Light && semanticColorModes.Light[name] !== undefined ? semanticColorModes.Light[name] : "")
+            )
+          };
+        });
+
         return {
           foundation: {
             color: readPairs(containers.foundationColors, false),
             spacing: readPairs(containers.foundationSpacing, true),
+            size: readPairs(containers.foundationSize, true),
+            radius: readPairs(containers.foundationRadius, true),
+            opacity: readPairs(containers.foundationOpacity, true),
             text: {
               family: readPairs(containers.fontFamily, false),
               size: readPairs(containers.fontSize, true),
@@ -380,8 +1493,12 @@ var defaults = {
             }
           },
           semantic: {
-            color: readPairs(containers.semanticColors, false),
+            color: semanticColor,
             spacing: readPairs(containers.semanticSpacing, false),
+            size: readPairs(containers.semanticSize, false),
+            radius: readPairs(containers.semanticRadius, false),
+            opacity: readPairs(containers.semanticOpacity, false),
+            shadow: readPairs(containers.semanticShadow, false),
             text: readTextStyles()
           }
         };
@@ -403,50 +1520,194 @@ var defaults = {
         var foundation = setup.foundation || {};
         var semantic = setup.semantic || {};
         var text = foundation.text || {};
+        var deprecatedSizeKeys = { "font.size.11": true, "font.size.13": true };
+        var deprecatedLineHeightKeys = {
+          "font.lineHeight.11": true,
+          "font.lineHeight.12": true,
+          "font.lineHeight.13": true,
+          "font.lineHeight.14": true,
+          "font.lineHeight.16": true,
+          "font.lineHeight.21": true,
+          "font.lineHeight.28": true,
+          "font.lineHeight.38": true,
+          "font.lineHeight.51": true,
+          "font.lineHeight.67": true,
+          "font.lineHeight.90": true
+        };
+
+        function normalizeLineHeightRef(ref, fontSizeRef) {
+          var raw = String(ref || "").trim();
+          if (!raw) raw = "";
+          var match = raw.match(/^font\.lineHeight\.(\d+(?:\.\d+)?)$/);
+          if (match) {
+            var sizeValue = Number(match[1]);
+            if (!Number.isNaN(sizeValue)) {
+              if (sizeValue >= 67) return "font.lineHeight.110";
+              if (sizeValue >= 38) return "font.lineHeight.120";
+              if (sizeValue >= 24) return "font.lineHeight.130";
+              return "font.lineHeight.150";
+            }
+          }
+
+          if (raw === "font.lineHeight.110" || raw === "font.lineHeight.120" || raw === "font.lineHeight.130" || raw === "font.lineHeight.150") {
+            return raw;
+          }
+
+          var fontSizeMatch = String(fontSizeRef || "").trim().match(/^font\.size\.(\d+(?:\.\d+)?)$/);
+          var sizeFromFont = fontSizeMatch ? Number(fontSizeMatch[1]) : NaN;
+          if (!Number.isNaN(sizeFromFont)) {
+            if (sizeFromFont >= 67) return "font.lineHeight.110";
+            if (sizeFromFont >= 38) return "font.lineHeight.120";
+            if (sizeFromFont >= 24) return "font.lineHeight.130";
+          }
+          return "font.lineHeight.150";
+        }
 
         Object.keys(containers).forEach(function (key) { containers[key].innerHTML = ""; });
+        currentMainColorName = "brand";
+        selectedBrandPackName = "brand";
 
         var foundationColor = foundation.color || {};
         var colorEntries = Object.keys(foundationColor).map(function (key) { return [key, foundationColor[key]]; });
+        containers.brandColors.innerHTML = "";
+        containers.neutralColors.innerHTML = "";
+        containers.statusColors.innerHTML = "";
         if (colorEntries.length) {
-          colorEntries.forEach(function (row) { addPair(containers.foundationColors, "cols-2", row[0], row[1], "color"); });
+          var seenColors = {};
+          colorEntries.forEach(function (row) {
+            var tokenName = normalizeColorTokenName(row[0]);
+            if (!tokenName) return;
+            if (seenColors[tokenName]) return;
+            seenColors[tokenName] = row[1];
+          });
+          Object.keys(seenColors).forEach(function (tokenName) {
+            if (isNeutralColorToken(tokenName)) {
+              addFoundationColorRow(containers.neutralColors, tokenName, seenColors[tokenName], "color");
+            } else if (isStatusColorToken(tokenName)) {
+              addFoundationColorRow(containers.statusColors, tokenName, seenColors[tokenName], "color");
+            } else {
+              addFoundationColorRow(containers.brandColors, tokenName, seenColors[tokenName], "color");
+            }
+          });
         } else {
-          renderMainColorScale();
+          seedDefaultFoundationColors();
+        }
+        ensureNeutralRows();
+        syncFoundationColorsStore();
+        selectedBrandPackName = firstBrandPackName(readFoundationColorStore());
+        setSelectedBrandPack(selectedBrandPackName);
+
+        function fillPairGroup(container, groupValues, fallbackRows, valueType, listId) {
+          var values = groupValues && typeof groupValues === "object" ? Object.assign({}, groupValues) : {};
+          var orderedKeys = [];
+          (fallbackRows || []).forEach(function (row) {
+            var key = row[0];
+            if (!(key in values)) values[key] = row[1];
+            orderedKeys.push(key);
+          });
+          Object.keys(values).forEach(function (key) {
+            if (orderedKeys.indexOf(key) === -1) orderedKeys.push(key);
+          });
+
+          if (container === containers.semanticSpacing) {
+            renderSemanticSpacing(values);
+          } else if (container === containers.semanticSize) {
+            renderSemanticSize(values);
+          } else {
+            orderedKeys.forEach(function (key) {
+              addPair(container, "cols-2", key, values[key], valueType || "text", listId);
+            });
+          }
         }
 
-        Object.entries(foundation.spacing || {}).forEach(function (row) { addPair(containers.foundationSpacing, "cols-2", row[0], row[1], "number"); });
-        Object.entries(semantic.color || {}).forEach(function (row) { addPair(containers.semanticColors, "cols-2", row[0], row[1], "text", "colorRefs"); });
-        Object.entries(semantic.spacing || {}).forEach(function (row) { addPair(containers.semanticSpacing, "cols-2", row[0], row[1], "text", "spaceRefs"); });
-        Object.entries(text.family || {}).forEach(function (row) { addPair(containers.fontFamily, "cols-2", row[0], row[1]); });
-        Object.entries(text.size || {}).forEach(function (row) { addPair(containers.fontSize, "cols-2", row[0], row[1], "number"); });
-        Object.entries(text.weight || {}).forEach(function (row) { addPair(containers.fontWeight, "cols-2", row[0], row[1], "number"); });
-        Object.entries(text.lineHeight || {}).forEach(function (row) { addPair(containers.fontLineHeight, "cols-2", row[0], row[1], "text"); });
-        Object.entries(text.letterSpacing || {}).forEach(function (row) { addPair(containers.fontLetterSpacing, "cols-2", row[0], row[1], "number"); });
-        Object.entries(text.textTransform || {}).forEach(function (row) { addPair(containers.fontTextTransform, "cols-2", row[0], row[1], "text"); });
+        fillPairGroup(containers.foundationSpacing, foundation.spacing, defaults.foundationSpacing, "number");
+        fillPairGroup(containers.foundationSize, foundation.size, defaults.foundationSize, "number");
+        fillPairGroup(containers.foundationRadius, foundation.radius, defaults.foundationRadius, "number");
+        fillPairGroup(containers.foundationOpacity, foundation.opacity, defaults.foundationOpacity, "number");
+        semanticColorModes = normalizeSemanticColorModes(semantic.color);
+        renderSemanticColorMode(getCurrentMode());
+        fillPairGroup(containers.semanticSpacing, semantic.spacing, defaults.semanticSpacing, "text", "spaceRefs");
+        fillPairGroup(containers.semanticSize, semantic.size, defaults.semanticSize, "text", "sizeRefs");
+        fillPairGroup(containers.semanticRadius, semantic.radius, defaults.semanticRadius, "text", "radiusRefs");
+        fillPairGroup(containers.semanticOpacity, semantic.opacity, defaults.semanticOpacity, "text", "opacityRefs");
+        fillPairGroup(containers.semanticShadow, semantic.shadow, defaults.semanticShadow, "text");
+        function fillTextGroup(container, groupValues, fallbackRows, valueType) {
+          var values = groupValues && typeof groupValues === "object" ? Object.assign({}, groupValues) : {};
+          if (container === containers.fontSize) {
+            Object.keys(deprecatedSizeKeys).forEach(function (key) { delete values[key]; });
+          }
+          if (container === containers.fontLineHeight) {
+            Object.keys(deprecatedLineHeightKeys).forEach(function (key) { delete values[key]; });
+          }
+          var orderedKeys = [];
+          (fallbackRows || []).forEach(function (row) {
+            var key = row[0];
+            if (!(key in values)) values[key] = row[1];
+            orderedKeys.push(key);
+          });
+          Object.keys(values).forEach(function (key) {
+            if (orderedKeys.indexOf(key) === -1) orderedKeys.push(key);
+          });
+          orderedKeys.forEach(function (key) {
+            if (container === containers.fontFamily) {
+              addFontFamilyPair(container, key, values[key]);
+            } else {
+              addPair(container, "cols-2", key, values[key], valueType || "text");
+            }
+          });
+        }
 
-        Object.entries(semantic.text || {}).forEach(function (entry) {
-          var name = entry[0];
-          var value = entry[1] || {};
-          addTextStyle([
-            name,
-            value.color || "",
-            value.fontFamily || "",
-            value.fontSize || "",
-            value.fontWeight || "",
-            value.lineHeight || "",
-            value.letterSpacing || "",
-            value.textCase || ""
-          ]);
+        fillTextGroup(containers.fontFamily, text.family, defaults.text.family);
+        fillTextGroup(containers.fontSize, text.size, defaults.text.size, "number");
+        fillTextGroup(containers.fontWeight, text.weight, defaults.text.weight, "number");
+        fillTextGroup(containers.fontLineHeight, text.lineHeight, defaults.text.lineHeight, "text");
+        fillTextGroup(containers.fontLetterSpacing, text.letterSpacing, defaults.text.letterSpacing, "number");
+        fillTextGroup(containers.fontTextTransform, text.textTransform, defaults.text.textTransform, "text");
+
+        var loadedTextStyles = semantic.text || {};
+        var textStyleKeys = Object.keys(loadedTextStyles);
+        var orderedTextKeys = [];
+        (defaults.semanticText || []).forEach(function (row) {
+          var name = row[0];
+          orderedTextKeys.push(name);
+        });
+        textStyleKeys.forEach(function (name) {
+          if (orderedTextKeys.indexOf(name) === -1) orderedTextKeys.push(name);
+        });
+
+        orderedTextKeys.forEach(function (name) {
+          var value = loadedTextStyles[name];
+          if (value) {
+            var normalizedFontSize = value.fontSize === "font.size.11" || value.fontSize === "font.size.13"
+              ? "font.size.12"
+              : (value.fontSize || "");
+            var normalizedLineHeight = normalizeLineHeightRef(value.lineHeight, value.fontSize);
+            addTextStyle([
+              name,
+              value.fontFamily || "",
+              normalizedFontSize,
+              value.fontWeight || "",
+              normalizedLineHeight,
+              value.letterSpacing || "",
+              value.textCase || ""
+            ]);
+          } else {
+            var defaultRow = defaults.semanticText.find(function (r) { return r[0] === name; });
+            if (defaultRow) {
+              addTextStyle(defaultRow);
+            }
+          }
         });
 
         var opts = payload.options || {};
         document.getElementById("variables").checked = opts.variables !== false;
         document.getElementById("styles").checked = opts.styles !== false;
         document.getElementById("overwrite").checked = opts.overwrite !== false;
-        document.getElementById("paletteName").value = opts.paletteName || "Foundation";
+        var paletteInput = document.getElementById("paletteName");
+        if (paletteInput) paletteInput.value = "Foundation";
         document.getElementById("themeName").value = opts.themeName || "Theme";
-        document.getElementById("modeName").value = opts.modeName || "Light";
-        document.getElementById("stylePrefix").value = opts.stylePrefix || "";
+        setSelectedGenerationModes(opts.modeNames || (opts.modeName ? [opts.modeName] : ["Light", "Dark"]));
+        setMode(opts.modeName || "Light", false);
 
         if (payload.activeTab) setActiveTokenTab(payload.activeTab);
         refreshLists();
@@ -474,6 +1735,222 @@ var defaults = {
         ].join("\n");
       }
 
+      function sessionId() {
+        return "session-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+      }
+
+      function readUiFallbackSessions() {
+        try {
+          var raw = window.localStorage.getItem(uiSessionsStorageKey);
+          if (!raw) return [];
+          var parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (error) {
+          return [];
+        }
+      }
+
+      function writeUiFallbackSessions(sessions) {
+        savedSessions = Array.isArray(sessions) ? sessions : [];
+        try {
+          window.localStorage.setItem(uiSessionsStorageKey, JSON.stringify(savedSessions));
+        } catch (error) {}
+      }
+
+      function setSavedSessions(sessions) {
+        savedSessions = Array.isArray(sessions) ? sessions : [];
+        writeUiFallbackSessions(savedSessions);
+        renderSessionSelect();
+      }
+
+      function renderSessionSelect() {
+        if (!sessionSelect) return;
+        var previousValue = selectedSavedSessionId || sessionSelect.value || "";
+        sessionSelect.innerHTML = "";
+        if (sessionSelectMenu) sessionSelectMenu.innerHTML = "";
+        var placeholder = document.createElement("option");
+        placeholder.value = "";
+        placeholder.textContent = savedSessions.length ? "Select saved session..." : "No saved sessions";
+        sessionSelect.appendChild(placeholder);
+        if (sessionSelectButton) sessionSelectButton.textContent = placeholder.textContent;
+
+        var list = null;
+        function appendActionButton(container, label, handler) {
+          var command = document.createElement("button");
+          command.type = "button";
+          command.className = "session-menu-command";
+          command.textContent = label;
+          command.addEventListener("click", function () {
+            setSessionSelectOpen(false);
+            handler();
+          });
+          container.appendChild(command);
+        }
+
+        if (sessionSelectMenu) {
+          var toolbar = document.createElement("div");
+          toolbar.className = "session-menu-toolbar";
+
+          var search = document.createElement("input");
+          search.type = "text";
+          search.className = "session-menu-search";
+          search.placeholder = "Search sessions";
+          toolbar.appendChild(search);
+          sessionSelectMenu.appendChild(toolbar);
+
+          list = document.createElement("span");
+          list.className = "session-menu-list";
+          sessionSelectMenu.appendChild(list);
+
+          search.addEventListener("input", function () {
+            renderSessionMenuList(list, search.value);
+          });
+        }
+
+        savedSessions.forEach(function (session) {
+          var option = document.createElement("option");
+          option.value = session.id;
+          option.textContent = session.name || "Session";
+          sessionSelect.appendChild(option);
+        });
+        if (list) renderSessionMenuList(list, "");
+        if (previousValue && savedSessions.some(function (session) { return session.id === previousValue; })) {
+          sessionSelect.value = previousValue;
+          selectedSavedSessionId = previousValue;
+          var selectedSession = savedSessions.find(function (session) { return session.id === previousValue; });
+          if (sessionSelectButton && selectedSession) sessionSelectButton.textContent = selectedSession.name || "Session";
+        } else {
+          sessionSelect.value = "";
+          selectedSavedSessionId = "";
+        }
+        updateSessionOptionState();
+      }
+
+      function renderSessionMenuList(list, query) {
+        if (!list) return;
+        var normalizedQuery = String(query || "").trim().toLowerCase();
+        list.innerHTML = "";
+        var matches = savedSessions.filter(function (session) {
+          var haystack = [
+            session.name || "",
+            session.fileName || "",
+            session.savedAt || ""
+          ].join(" ").toLowerCase();
+          return !normalizedQuery || haystack.indexOf(normalizedQuery) !== -1;
+        });
+        if (!matches.length) {
+          var empty = document.createElement("div");
+          empty.className = "empty-state";
+          empty.textContent = savedSessions.length ? "No sessions match this search." : "No saved sessions yet.";
+          list.appendChild(empty);
+          return;
+        }
+        matches.forEach(function (session) {
+          var row = document.createElement("div");
+          row.className = "session-menu-row";
+          row.setAttribute("role", "option");
+          row.setAttribute("data-session-id", session.id);
+
+          var infoButton = document.createElement("button");
+          infoButton.type = "button";
+          infoButton.className = "session-select-option";
+          infoButton.setAttribute("data-session-id", session.id);
+          var title = document.createElement("div");
+          title.className = "session-menu-title";
+          title.textContent = session.name || "Session";
+          var meta = document.createElement("div");
+          meta.className = "session-menu-meta";
+          meta.textContent = (session.fileName || slugifyFileName(session.name) + ".md") + (session.savedAt ? " · " + new Date(session.savedAt).toLocaleString() : "");
+          infoButton.appendChild(title);
+          infoButton.appendChild(meta);
+          infoButton.addEventListener("click", function () {
+            setSessionSelectOpen(false);
+            loadSavedSession(session);
+          });
+          row.appendChild(infoButton);
+
+          var actions = document.createElement("span");
+          actions.className = "session-menu-actions";
+          var exportMarkdownButton = document.createElement("button");
+          exportMarkdownButton.type = "button";
+          setIcon(exportMarkdownButton, "export");
+          exportMarkdownButton.title = "Export " + (session.name || "Session") + " as .md";
+          exportMarkdownButton.setAttribute("aria-label", "Export " + (session.name || "Session") + " as .md");
+          exportMarkdownButton.innerHTML += "<span class=\"session-menu-action-label\">.md</span>";
+          exportMarkdownButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            downloadTextFile(session.fileName || slugifyFileName(session.name) + ".md", session.markdown || buildSessionMarkdown(session.name, session.payload));
+          });
+          var exportJsonButton = document.createElement("button");
+          exportJsonButton.type = "button";
+          setIcon(exportJsonButton, "export");
+          exportJsonButton.title = "Export " + (session.name || "Session") + " as .json";
+          exportJsonButton.setAttribute("aria-label", "Export " + (session.name || "Session") + " as .json");
+          exportJsonButton.innerHTML += "<span class=\"session-menu-action-label\">.json</span>";
+          exportJsonButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            downloadTextFile(slugifyFileName(session.name || "session") + ".json", JSON.stringify(session.payload || {}, null, 2) + "\n");
+          });
+          var deleteButton = document.createElement("button");
+          deleteButton.type = "button";
+          deleteButton.className = "session-menu-icon-only";
+          setIcon(deleteButton, "trash-can");
+          deleteButton.title = "Delete " + (session.name || "Session");
+          deleteButton.setAttribute("aria-label", "Delete " + (session.name || "Session"));
+          deleteButton.addEventListener("click", function (event) {
+            event.stopPropagation();
+            deleteSavedSession(session.id);
+          });
+          actions.appendChild(exportMarkdownButton);
+          actions.appendChild(exportJsonButton);
+          actions.appendChild(deleteButton);
+          row.appendChild(actions);
+          list.appendChild(row);
+        });
+        updateSessionOptionState();
+      }
+
+      function loadSavedSession(session) {
+        if (!session) return;
+        selectedSavedSessionId = session.id || "";
+        if (sessionSelect) sessionSelect.value = selectedSavedSessionId;
+        if (sessionSelectButton) sessionSelectButton.textContent = session.name || "Session";
+        updateSessionOptionState();
+        applySessionPayload(session.payload || parseSessionMarkdown(session.markdown));
+        setStatus("Session loaded: " + (session.name || "Session"), "ok");
+      }
+
+      function updateSessionOptionState() {
+        if (saveCurrentSessionButton) saveCurrentSessionButton.disabled = !selectedSavedSessionId;
+        if (!sessionSelectMenu) return;
+        Array.prototype.forEach.call(sessionSelectMenu.querySelectorAll("[data-session-id]"), function (item) {
+          item.classList.toggle("active", item.getAttribute("data-session-id") === selectedSavedSessionId);
+        });
+      }
+
+      function setSessionSelectOpen(open) {
+        if (!sessionSelectMenu || !sessionSelectButton) return;
+        sessionSelectMenu.hidden = !open;
+        sessionSelectButton.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+
+      function createSessionRecord(name, payload, markdown) {
+        var sessionName = String(name || "Session").trim() || "Session";
+        return {
+          id: sessionId(),
+          name: sessionName,
+          fileName: slugifyFileName(sessionName) + ".md",
+          savedAt: new Date().toISOString(),
+          payload: payload,
+          markdown: markdown || buildSessionMarkdown(sessionName, payload)
+        };
+      }
+
+      function currentSessionName() {
+        var selectedSession = savedSessions.find(function (session) { return session && session.id === selectedSavedSessionId; });
+        return (selectedSession && selectedSession.name) || "Session";
+      }
+
       function downloadTextFile(fileName, text) {
         var blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
         var url = URL.createObjectURL(blob);
@@ -491,6 +1968,41 @@ var defaults = {
         var codeFence = text.match(/```json\s*([\s\S]*?)```/i) || text.match(/```\s*([\s\S]*?)```/);
         var raw = codeFence ? codeFence[1] : text;
         return JSON.parse(raw);
+      }
+
+      function saveSessionRecord(record) {
+        var nextSessions = savedSessions.filter(function (item) { return item && item.id !== record.id; });
+        nextSessions.unshift(record);
+        selectedSavedSessionId = record.id;
+        setSavedSessions(nextSessions);
+        parent.postMessage({ pluginMessage: { type: "save-session", session: record } }, "*");
+      }
+
+      function saveCurrentSessionRecord() {
+        var selectedSession = savedSessions.find(function (session) { return session && session.id === selectedSavedSessionId; });
+        if (!selectedSession) {
+          openSaveModal();
+          setStatus("Choose a saved session or use Save as new.", "error");
+          return;
+        }
+        var payload = currentSessionPayload();
+        var record = {
+          id: selectedSession.id,
+          name: selectedSession.name,
+          fileName: selectedSession.fileName || slugifyFileName(selectedSession.name) + ".md",
+          savedAt: new Date().toISOString(),
+          payload: payload,
+          markdown: buildSessionMarkdown(selectedSession.name, payload)
+        };
+        saveSessionRecord(record);
+        downloadTextFile(record.fileName, record.markdown);
+        setStatus("Session updated: " + record.name, "ok");
+      }
+
+      function deleteSavedSession(id) {
+        if (selectedSavedSessionId === id) selectedSavedSessionId = "";
+        setSavedSessions(savedSessions.filter(function (item) { return item && item.id !== id; }));
+        parent.postMessage({ pluginMessage: { type: "delete-session", id: id } }, "*");
       }
 
       function openSaveModal() {
@@ -512,11 +2024,12 @@ var defaults = {
           saveModalNameInput.focus();
           return;
         }
-        var fileName = slugifyFileName(name) + ".md";
-        var markdown = buildSessionMarkdown(name, currentSessionPayload());
-        downloadTextFile(fileName, markdown);
+        var payload = currentSessionPayload();
+        var record = createSessionRecord(name, payload);
+        saveSessionRecord(record);
         closeSaveModal();
-        setStatus("Session markdown saved: " + fileName, "ok");
+        downloadTextFile(record.fileName || slugifyFileName(record.name) + ".md", record.markdown || buildSessionMarkdown(record.name, record.payload));
+        setStatus("Session saved locally: " + record.name, "ok");
       }
 
       function fillDatalist(id, values) {
@@ -527,12 +2040,31 @@ var defaults = {
           option.value = value;
           list.appendChild(option);
         });
+        if (activeSuggestionInput && activeSuggestionInput.dataset.listSource === id) {
+          openSuggestions(activeSuggestionInput);
+        }
+      }
+
+      function applyAvailableFonts(message) {
+        var families = Array.isArray(message && message.families) ? message.families.slice() : [];
+        families = families
+          .map(function (family) { return String(family || "").trim(); })
+          .filter(Boolean)
+          .filter(function (family, index, items) { return items.indexOf(family) === index; })
+          .sort(function (a, b) { return a.localeCompare(b); });
+        availableFontFamilies = families;
+        availableFontStylesByFamily = message && message.stylesByFamily && typeof message.stylesByFamily === "object"
+          ? message.stylesByFamily
+          : {};
+        fillDatalist("fontFamilyNames", availableFontFamilies);
       }
 
       function prefixedPairs(container, prefix, legacyPrefix) {
         var values = [];
         Array.prototype.forEach.call(container.children, function (row) {
-          var name = row.querySelector("input").value.trim();
+          var inputEl = row.querySelector("input");
+          if (!inputEl) return;
+          var name = inputEl.value.trim();
           if (!name) return;
           if (name.indexOf(prefix) === 0) {
             values.push(name);
@@ -551,23 +2083,30 @@ var defaults = {
         fillDatalist("colorRefs", foundationColorRefs);
         fillDatalist("textColorRefs", semanticColorRefs.concat(foundationColorRefs));
         fillDatalist("spaceRefs", prefixedPairs(containers.semanticSpacing, "space."));
+        fillDatalist("sizeRefs", prefixedPairs(containers.semanticSize, "size."));
+        fillDatalist("radiusRefs", prefixedPairs(containers.semanticRadius, "radius."));
+        fillDatalist("opacityRefs", prefixedPairs(containers.semanticOpacity, "opacity."));
+        fillDatalist("shadowRefs", prefixedPairs(containers.semanticShadow, "shadow."));
+        fillDatalist("fontFamilyNames", availableFontFamilies);
         fillDatalist("fontFamilyRefs", prefixedPairs(containers.fontFamily, "font.family.", "family."));
         fillDatalist("fontSizeRefs", prefixedPairs(containers.fontSize, "font.size.", "size."));
         fillDatalist("fontWeightRefs", prefixedPairs(containers.fontWeight, "font.weight.", "weight."));
         fillDatalist("fontLineHeightRefs", prefixedPairs(containers.fontLineHeight, "font.lineHeight.", "lineHeight."));
         fillDatalist("fontLetterSpacingRefs", prefixedPairs(containers.fontLetterSpacing, "font.letterSpacing.", "letterSpacing."));
         fillDatalist("fontTextTransformRefs", prefixedPairs(containers.fontTextTransform, "font.textTransform.", "textTransform."));
+        updateAllSemanticColorSwatches();
       }
 
       function options() {
+        var modeInput = document.getElementById("modeName");
         return {
           variables: document.getElementById("variables").checked,
           styles: document.getElementById("styles").checked,
           overwrite: document.getElementById("overwrite").checked,
-          paletteName: document.getElementById("paletteName").value.trim() || "Foundation",
+          paletteName: "Foundation",
           themeName: document.getElementById("themeName").value.trim() || "Theme",
-          modeName: document.getElementById("modeName").value.trim() || "Light",
-          stylePrefix: document.getElementById("stylePrefix").value.trim()
+          modeNames: getSelectedGenerationModes(),
+          modeName: (modeInput && modeInput.value ? modeInput.value.trim() : "Light") || "Light"
         };
       }
 
@@ -595,26 +2134,111 @@ var defaults = {
       }
 
       function resizeWindow(width, height) {
-        var nextWidth = Math.max(1, Number(width) || 760);
-        var nextHeight = Math.max(1, Number(height) || 760);
+        var nextWidth = Math.max(minWindowWidth, Math.round(Number(width) || currentWindowWidth));
+        var nextHeight = Math.max(minWindowHeight, Math.round(Number(height) || currentWindowHeight));
         currentWindowWidth = nextWidth;
         currentWindowHeight = nextHeight;
-        widthInput.value = nextWidth;
-        heightInput.value = nextHeight;
         parent.postMessage({
           pluginMessage: { type: "resize-ui", width: nextWidth, height: nextHeight }
         }, "*");
       }
 
+      function startWindowResize(event) {
+        if (!resizeCornerHitarea) return;
+        event.preventDefault();
+        closeSuggestions();
+
+        var pointerId = typeof event.pointerId === "number" ? event.pointerId : null;
+        var startX = event.clientX;
+        var startY = event.clientY;
+        var startWidth = currentWindowWidth || window.innerWidth;
+        var startHeight = currentWindowHeight || window.innerHeight;
+        var usePointerEvents = event.type.indexOf("pointer") === 0;
+        document.body.classList.add("is-resizing");
+        if (pointerId !== null && resizeCornerHitarea.setPointerCapture) {
+          resizeCornerHitarea.setPointerCapture(pointerId);
+        }
+
+        function onMove(moveEvent) {
+          resizeWindow(startWidth + moveEvent.clientX - startX, startHeight + moveEvent.clientY - startY);
+        }
+
+        function onUp(upEvent) {
+          document.body.classList.remove("is-resizing");
+          if (pointerId !== null && resizeCornerHitarea.releasePointerCapture) {
+            try {
+              resizeCornerHitarea.releasePointerCapture(pointerId);
+            } catch (error) {}
+          }
+          document.removeEventListener("pointermove", onMove);
+          document.removeEventListener("pointerup", onUp);
+          document.removeEventListener("pointercancel", onUp);
+          document.removeEventListener("mousemove", onMove);
+          document.removeEventListener("mouseup", onUp);
+          if (upEvent) onMove(upEvent);
+        }
+
+        if (usePointerEvents) {
+          document.addEventListener("pointermove", onMove);
+          document.addEventListener("pointerup", onUp);
+          document.addEventListener("pointercancel", onUp);
+        } else {
+          document.addEventListener("mousemove", onMove);
+          document.addEventListener("mouseup", onUp);
+        }
+      }
+
+      function readUiFallbackDefault() {
+        try {
+          var raw = window.localStorage.getItem(uiDefaultStorageKey);
+          if (!raw) return null;
+          var parsed = JSON.parse(raw);
+          return parsed && typeof parsed === "object" ? parsed : null;
+        } catch (error) {
+          return null;
+        }
+      }
+
+      function writeUiFallbackDefault(payload) {
+        try {
+          window.localStorage.setItem(uiDefaultStorageKey, JSON.stringify(payload));
+        } catch (error) {}
+      }
+
       mainColorNameInput.addEventListener("input", renderMainColorScale);
       mainColorValueInput.addEventListener("input", renderMainColorScale);
-      importDashboardButton.addEventListener("click", function () {
-        fileInput.click();
+      toggleBrandColorsButton.addEventListener("click", function () {
+        setBrandColorsCollapsed(!brandColorsCollapsed);
       });
+      addBrandPackButton.addEventListener("click", function () {
+        var canonical = readFoundationColorStore();
+        var packName = nextAvailableBrandPackName("brand", canonical);
+        addToneScaleToStore(canonical, packName, mainColorValueInput.value || "#E8341C");
+        ensureNeutralColorsInStore(canonical);
+        ensureStatusColorsInStore(canonical);
+        writeFoundationColorStore(canonical);
+        setSelectedBrandPack(packName);
+        refreshLists();
+      });
+      if (importDashboardButton) {
+        importDashboardButton.addEventListener("click", function () {
+          fileInput.click();
+        });
+      }
       document.getElementById("addFoundationSpacing").addEventListener("click", function () { addPair(containers.foundationSpacing, "cols-2", "space.", 0, "number"); refreshLists(); });
-      document.getElementById("addSemanticColor").addEventListener("click", function () { addPair(containers.semanticColors, "cols-2", "", "color.brand.500", "text", "colorRefs"); refreshLists(); });
+      document.getElementById("addFoundationSize").addEventListener("click", function () { addPair(containers.foundationSize, "cols-2", "size.", 0, "number"); refreshLists(); });
+      document.getElementById("addFoundationRadius").addEventListener("click", function () { addPair(containers.foundationRadius, "cols-2", "radius.", 0, "number"); refreshLists(); });
+      document.getElementById("addFoundationOpacity").addEventListener("click", function () { addPair(containers.foundationOpacity, "cols-2", "opacity.", 0.12, "number"); refreshLists(); });
+      document.getElementById("addSemanticColor").addEventListener("click", function () { addSemanticColorPair(containers.semanticColors, "", "color.brand.500"); refreshLists(); });
       document.getElementById("addSemanticSpacing").addEventListener("click", function () { addPair(containers.semanticSpacing, "cols-2", "", "space.16", "text", "spaceRefs"); refreshLists(); });
+      document.getElementById("addSemanticSize").addEventListener("click", function () { addPair(containers.semanticSize, "cols-2", "", "size.40", "text", "sizeRefs"); refreshLists(); });
+      document.getElementById("addSemanticRadius").addEventListener("click", function () { addPair(containers.semanticRadius, "cols-2", "", "radius.md", "text", "radiusRefs"); refreshLists(); });
+      document.getElementById("addSemanticOpacity").addEventListener("click", function () { addPair(containers.semanticOpacity, "cols-2", "", "opacity.12", "text", "opacityRefs"); refreshLists(); });
+      document.getElementById("addSemanticShadow").addEventListener("click", function () { addPair(containers.semanticShadow, "cols-2", "", "0px 4px 12px 0px rgba(18, 21, 27, 0.12)", "text"); refreshLists(); });
       document.getElementById("addSemanticText").addEventListener("click", function () { addTextStyle(); refreshLists(); });
+      bindGenerationModeCheckboxes();
+      setIcon(sortSemanticTextButton, "sort-ascending");
+      setIcon(toggleSemanticMappingButton, "collapse-all");
       sortSemanticTextButton.addEventListener("click", function () {
         sortSemanticTextRows();
         refreshLists();
@@ -634,7 +2258,11 @@ var defaults = {
           var map = { family: containers.fontFamily, size: containers.fontSize, weight: containers.fontWeight, lineHeight: containers.fontLineHeight, letterSpacing: containers.fontLetterSpacing, textTransform: containers.fontTextTransform };
           var prefixes = { family: "font.family.", size: "font.size.", weight: "font.weight.", lineHeight: "font.lineHeight.", letterSpacing: "font.letterSpacing.", textTransform: "font.textTransform." };
           var numeric = kind !== "family" && kind !== "textTransform" && kind !== "lineHeight";
-          addPair(map[kind], "cols-2", prefixes[kind] || "", numeric ? 0 : "", numeric ? "number" : "text");
+          if (kind === "family") {
+            addFontFamilyPair(map[kind], prefixes[kind] || "", "");
+          } else {
+            addPair(map[kind], "cols-2", prefixes[kind] || "", numeric ? 0 : "", numeric ? "number" : "text");
+          }
           refreshLists();
         });
       });
@@ -645,59 +2273,68 @@ var defaults = {
         });
       });
 
-      widthInput.addEventListener("change", function () {
-        resizeWindow(widthInput.value, heightInput.value);
+      Array.prototype.forEach.call(document.querySelectorAll("[data-mode-option]"), function (button) {
+        button.addEventListener("click", function () {
+          setMode(button.getAttribute("data-mode-option"), false);
+        });
       });
 
-      heightInput.addEventListener("change", function () {
-        resizeWindow(widthInput.value, heightInput.value);
+      if (resizeCornerHitarea) {
+        if (window.PointerEvent) {
+          resizeCornerHitarea.addEventListener("pointerdown", startWindowResize);
+        } else {
+          resizeCornerHitarea.addEventListener("mousedown", startWindowResize);
+        }
+      }
+
+      window.addEventListener("resize", function () {
+        if (activeSuggestionInput) positionSuggestions(activeSuggestionInput);
       });
 
-      resizeCornerHitarea.addEventListener("mousedown", function (event) {
-        event.preventDefault();
-        var startX = event.clientX;
-        var startY = event.clientY;
-        var startWidth = currentWindowWidth;
-        var startHeight = currentWindowHeight;
+      window.addEventListener("scroll", function () {
+        if (activeSuggestionInput) positionSuggestions(activeSuggestionInput);
+      }, true);
 
-        function onMove(moveEvent) {
-          resizeWindow(startWidth + moveEvent.clientX - startX, startHeight + moveEvent.clientY - startY);
+      document.addEventListener("mousedown", function (event) {
+        if (sessionSelectMenu && !sessionSelectMenu.hidden && !sessionSelectMenu.contains(event.target) && event.target !== sessionSelectButton) {
+          setSessionSelectOpen(false);
         }
-
-        function onUp() {
-          document.removeEventListener("mousemove", onMove);
-          document.removeEventListener("mouseup", onUp);
+        if (saveMenu && !saveMenu.hidden && !saveMenu.contains(event.target) && event.target !== saveSessionButton && !saveSessionButton.contains(event.target)) {
+          setSaveMenuOpen(false);
         }
-
-        document.addEventListener("mousemove", onMove);
-        document.addEventListener("mouseup", onUp);
+        if (importMenu && !importMenu.hidden && !importMenu.contains(event.target) && event.target !== loadSessionButton && !loadSessionButton.contains(event.target)) {
+          setImportMenuOpen(false);
+        }
+        if (!suggestionPopover || !suggestionPopover.classList.contains("open")) return;
+        if (suggestionPopover.contains(event.target)) return;
+        if (activeSuggestionInput === event.target) return;
+        closeSuggestions();
       });
 
       fileInput.addEventListener("change", async function () {
         var file = fileInput.files && fileInput.files[0];
         if (!file) return;
-        var text;
         try {
-          text = await file.text();
-        } catch (error) {
-          setStatus("Could not read file: " + error.message, "error");
-          return;
-        }
-        var tokens;
-        try {
-          tokens = JSON.parse(text);
+          await importTokensJsonFile(file);
         } catch (error) {
           setStatus("Invalid JSON: " + error.message, "error");
-          return;
+        } finally {
+          fileInput.value = "";
         }
-        generateButton.disabled = true;
-        importDashboardButton.disabled = true;
-        parent.postMessage({
-          pluginMessage: { type: "import-tokens", tokens: tokens, options: options() }
-        }, "*");
       });
 
       resetButton.addEventListener("click", function () {
+        if (pendingDefaultLoadTimer) clearTimeout(pendingDefaultLoadTimer);
+        pendingDefaultLoadTimer = setTimeout(function () {
+          var fallback = readUiFallbackDefault();
+          if (fallback) {
+            applySessionPayload(fallback);
+            setStatus("Default setup loaded.", "ok");
+          } else {
+            resetFields();
+            setStatus("Setup reset.", "ok");
+          }
+        }, 220);
         parent.postMessage({ pluginMessage: { type: "load-default" } }, "*");
       });
 
@@ -706,28 +2343,58 @@ var defaults = {
       });
 
       saveSessionButton.addEventListener("click", function () {
+        setSessionSelectOpen(false);
+        setImportMenuOpen(false);
+        setSaveMenuOpen(saveMenu.hidden);
+      });
+
+      saveAsNewSessionButton.addEventListener("click", function () {
+        setSaveMenuOpen(false);
         openSaveModal();
       });
 
+      saveCurrentSessionButton.addEventListener("click", function () {
+        setSaveMenuOpen(false);
+        saveCurrentSessionRecord();
+      });
+
       loadSessionButton.addEventListener("click", function () {
+        setSaveMenuOpen(false);
+        setSessionSelectOpen(false);
+        setImportMenuOpen(importMenu.hidden);
+      });
+
+      importSessionMarkdownButton.addEventListener("click", function () {
+        setImportMenuOpen(false);
         sessionFileInput.click();
       });
 
+      importSessionJsonButton.addEventListener("click", function () {
+        setImportMenuOpen(false);
+        fileInput.click();
+      });
+
+      sessionSelect.addEventListener("change", function () {
+        var session = savedSessions.find(function (item) { return item && item.id === sessionSelect.value; });
+        if (session) loadSavedSession(session);
+      });
+
+      sessionSelectButton.addEventListener("click", function () {
+        setSessionSelectOpen(sessionSelectMenu.hidden);
+      });
+
       setDefaultButton.addEventListener("click", function () {
+        var payload = currentSessionPayload();
+        writeUiFallbackDefault(payload);
         showFeedback("Done", "Current setup saved as default.");
-        parent.postMessage({ pluginMessage: { type: "save-default", payload: currentSessionPayload() } }, "*");
+        parent.postMessage({ pluginMessage: { type: "save-default", payload: payload } }, "*");
       });
 
       sessionFileInput.addEventListener("change", async function () {
         var file = sessionFileInput.files && sessionFileInput.files[0];
         if (!file) return;
         try {
-          var markdown = await file.text();
-          var payload = parseSessionMarkdown(markdown);
-          applySessionPayload(payload);
-          setStatus("Session markdown loaded: " + file.name, "ok");
-        } catch (error) {
-          setStatus("Invalid session markdown: " + (error && error.message ? error.message : String(error)), "error");
+          await handleSessionImportFile(file);
         } finally {
           sessionFileInput.value = "";
         }
@@ -755,30 +2422,29 @@ var defaults = {
 
       generateButton.addEventListener("click", function () {
         generateButton.disabled = true;
-        importDashboardButton.disabled = true;
+        if (importDashboardButton) importDashboardButton.disabled = true;
         parent.postMessage({
           pluginMessage: { type: "setup-tokens", setup: buildSetup(), options: options() }
         }, "*");
       });
 
       window.onmessage = function (event) {
-        var message = event.data.pluginMessage;
+        var data = event && event.data ? event.data : null;
+        var message = data && data.pluginMessage ? data.pluginMessage : data;
         if (!message) return;
         if (message.type === "window-size") {
-          currentWindowWidth = message.width;
-          currentWindowHeight = message.height;
-          widthInput.value = message.width;
-          heightInput.value = message.height;
+          currentWindowWidth = Math.max(minWindowWidth, Math.round(Number(message.width) || currentWindowWidth));
+          currentWindowHeight = Math.max(minWindowHeight, Math.round(Number(message.height) || currentWindowHeight));
         }
         if (message.type === "import-started") setStatus("Generating...");
         if (message.type === "import-complete") {
           generateButton.disabled = false;
-          importDashboardButton.disabled = false;
+          if (importDashboardButton) importDashboardButton.disabled = false;
           setStatus(message.summary, "ok");
         }
         if (message.type === "import-error") {
           generateButton.disabled = false;
-          importDashboardButton.disabled = false;
+          if (importDashboardButton) importDashboardButton.disabled = false;
           setStatus(message.error, "error");
         }
         if (message.type === "save-default-complete") {
@@ -788,22 +2454,71 @@ var defaults = {
           setStatus(message.error || "Could not save default.", "error");
         }
         if (message.type === "load-default-complete") {
+          if (pendingDefaultLoadTimer) clearTimeout(pendingDefaultLoadTimer);
           if (message.payload && typeof message.payload === "object") {
             applySessionPayload(message.payload);
             setStatus("Default setup loaded.", "ok");
           } else {
-            resetFields();
-            setStatus("Setup reset.", "ok");
+            var fallbackPayload = readUiFallbackDefault();
+            if (fallbackPayload) {
+              applySessionPayload(fallbackPayload);
+              setStatus("Default setup loaded.", "ok");
+            } else {
+              resetFields();
+              setStatus("Setup reset.", "ok");
+            }
           }
         }
         if (message.type === "load-default-error") {
+          if (pendingDefaultLoadTimer) clearTimeout(pendingDefaultLoadTimer);
+          var fallbackPayload = readUiFallbackDefault();
+          if (fallbackPayload) {
+            applySessionPayload(fallbackPayload);
+            setStatus("Default setup loaded.", "ok");
+            return;
+          }
           resetFields();
           setStatus(message.error || "Could not load default; reset to built-in setup.", "error");
         }
+        if (message.type === "load-sessions-complete") {
+          setSavedSessions(message.sessions || []);
+        }
+        if (message.type === "load-sessions-error") {
+          setSavedSessions(readUiFallbackSessions());
+          setStatus(message.error || "Could not load saved sessions.", "error");
+        }
+        if (message.type === "save-session-complete") {
+          setSavedSessions(message.sessions || savedSessions);
+        }
+        if (message.type === "save-session-error") {
+          setStatus(message.error || "Could not save session.", "error");
+        }
+        if (message.type === "delete-session-complete") {
+          setSavedSessions(message.sessions || savedSessions);
+        }
+        if (message.type === "delete-session-error") {
+          setStatus(message.error || "Could not delete session.", "error");
+        }
+        if (message.type === "available-fonts") {
+          applyAvailableFonts(message);
+        }
+        if (message.type === "available-fonts-error") {
+          setStatus(message.error || "Could not load available fonts.", "error");
+        }
       };
 
+      setIcon(addBrandPackButton, "add");
+      setSaveMenuOpen(false);
+      setIcon(loadSessionButton.querySelector(".button-icon"), "import");
+      setImportMenuOpen(false);
+      renderHintTipIcons();
       resetFields();
+      setSavedSessions(readUiFallbackSessions());
       setActiveTokenTab("color");
+      setMode("Light", false);
       setSemanticMappingCollapsed(false);
+      var initialFallbackDefault = readUiFallbackDefault();
+      if (initialFallbackDefault) applySessionPayload(initialFallbackDefault);
+      parent.postMessage({ pluginMessage: { type: "load-fonts" } }, "*");
+      parent.postMessage({ pluginMessage: { type: "load-sessions" } }, "*");
       parent.postMessage({ pluginMessage: { type: "load-default" } }, "*");
-      resizeWindow(760, 760);

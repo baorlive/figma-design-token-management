@@ -534,25 +534,6 @@ function toTokenValue(value, paletteName, refType) {
   return toNumberValue(value);
 }
 
-function toTextColorTokenValue(value, paletteName, themeName, semanticColorMap) {
-  if (typeof value === "string") {
-    if (isReference(value)) return value;
-    if (looksLikeTokenName(value)) {
-      const normalized = normalizeReferenceName(value, "color");
-      const semanticShortName = normalized.indexOf("color.") === 0 ? normalized.slice("color.".length) : normalized;
-      const semanticThemeRef = "{" + themeName + "." + normalizeSemanticName("color", semanticShortName) + "}";
-
-      const semanticMap = semanticColorMap || {};
-      const hasSemantic = Object.prototype.hasOwnProperty.call(semanticMap, semanticShortName)
-        || Object.prototype.hasOwnProperty.call(semanticMap, normalized);
-      if (hasSemantic) return semanticThemeRef;
-
-      const foundationRef = semanticMap[semanticShortName] || semanticMap[normalized] || normalized;
-      return "{" + paletteName + "." + normalizeReferenceName(foundationRef, "color") + "}";
-    }
-  }
-  return toDtcgColorValue(value);
-}
 
 function normalizeReferenceName(value, refType) {
   const cleanValue = cleanTokenPath(value);
@@ -635,6 +616,24 @@ function toLineHeightPercent(value, fontSize) {
   const numeric = toNumberValue(value);
   if (numeric > 0 && numeric <= 4) return Math.round(numeric * 10000) / 100;
   return numeric || 100;
+}
+
+function toLetterSpacingPercent(value, fontSize) {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed.endsWith("%")) {
+      const percent = parseFloat(trimmed);
+      return Number.isNaN(percent) ? 0 : percent;
+    }
+    if (trimmed.endsWith("px")) {
+      const px = parseFloat(trimmed);
+      const size = Number(fontSize);
+      if (!Number.isNaN(px) && size > 0) return Math.round((px / size) * 100 * 100) / 100;
+      return Number.isNaN(px) ? 0 : px;
+    }
+  }
+
+  return toNumberValue(value);
 }
 
 function toDtcgColorValue(value) {
@@ -942,7 +941,9 @@ async function upsertTextStyle(group, context, summary) {
   bindTextStyleVariable(style, "fontFamily", group.fields.fontFamily, context);
   bindTextStyleVariable(style, "fontSize", group.fields.fontSize, context);
   bindTextStyleVariable(style, "fontWeight", group.fields.fontWeight, context);
-  bindTextStyleVariable(style, "letterSpacing", group.fields.letterSpacing, context);
+  // Note: We do not bind the letterSpacing variable to the text style because Figma currently
+  // forces the letterSpacing unit to PIXELS when a variable is bound, overriding the PERCENT unit.
+  // By skipping the binding, the text style successfully retains its PERCENT unit and percentage value.
 
   style.setPluginData(PLUGIN_DATA_KEY, group.ref);
 }
@@ -1011,7 +1012,7 @@ function resolveTextStyleValues(group, context) {
     fontWeight: Number(resolveConcreteValue(group.fields.fontWeight, context) || 400),
     fontSize,
     lineHeight: toLineHeightPercent(rawLineHeight || 100, fontSize),
-    letterSpacing: Number(resolveConcreteValue(group.fields.letterSpacing, context) || 0),
+    letterSpacing: toLetterSpacingPercent(resolveConcreteValue(group.fields.letterSpacing, context) || 0, fontSize),
     color: group.fields.color ? resolveConcreteColor(group.fields.color, context) : null,
     colorAlpha: group.fields.color ? resolveAlpha(group.fields.color, context) : 1,
     textCase: toFigmaTextCase(resolveConcreteValue(group.fields.textCase, context))
@@ -1109,7 +1110,10 @@ function toFigmaVariableType(type) {
 function getVariableScopes(figmaType, token, context) {
   const path = token.dotPath || "";
   const isThemeToken = context && token.collectionName === context.themeCollectionName;
-  if (!isThemeToken) return [];
+
+  if (!isThemeToken) {
+    return [];
+  }
 
   if (figmaType === "COLOR") {
     if (path.startsWith("text.") || path.includes(".text.") || path.includes("text.")) return ["TEXT_FILL"];
@@ -1131,8 +1135,11 @@ function getVariableScopes(figmaType, token, context) {
     if (path.startsWith("weight.") || path.startsWith("font.weight.") || path.includes("fontWeight")) return ["FONT_WEIGHT"];
     if (path.startsWith("lineHeight.") || path.startsWith("font.lineHeight.") || path.includes("lineHeight")) return ["LINE_HEIGHT"];
     if (path.startsWith("letterSpacing.") || path.startsWith("font.letterSpacing.") || path.includes("letterSpacing")) return ["LETTER_SPACING"];
+    if (path.startsWith("spacing.")) {
+      return ["GAP"];
+    }
     if (path.startsWith("space.") || path.includes(".space.") || path.includes("gap")) {
-      return isThemeToken ? ["GAP"] : [];
+      return ["GAP"];
     }
     if (path.includes("radius")) return ["CORNER_RADIUS"];
     if (path.includes("opacity")) return ["OPACITY"];
