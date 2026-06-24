@@ -85,7 +85,7 @@
         border-radius: var(--radius-md);
         min-height: 38px;
         padding: 8px 10px;
-        color: var(--text-primary);
+        color: #ffffff !important;
         background: var(--bg-panel-2);
         font: inherit;
         transition: border-color 120ms cubic-bezier(0.4, 0, 0.2, 1), background-color 120ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -511,7 +511,7 @@
       .custom-color-picker {
         position: fixed;
         z-index: 1000;
-        width: 240px;
+        width: 260px;
         background: #2C2C2C;
         border: 1px solid #444;
         border-radius: 8px;
@@ -532,11 +532,12 @@
       .cp-brand-name-input {
         flex: 1;
         height: 24px;
+        min-height: 0 !important;
         padding: 2px 6px;
         background: #1E1E1E;
         border: 1px solid #444;
         border-radius: 4px;
-        color: #fff;
+        color: #ffffff !important;
         font-size: 11px;
         outline: none;
       }
@@ -692,12 +693,12 @@
       .cp-inputs-row {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
       }
 
       .cp-format-select {
-        width: 64px;
-        min-height: 0;
+        width: 52px;
+        min-height: 0 !important;
         height: 24px;
         line-height: 22px;
         background-color: #333;
@@ -715,25 +716,29 @@
         background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%228%22%20height%3D%226%22%20viewBox%3D%220%200%208%206%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%3Cpath%20d%3D%22M1%201.5L4%204.5L7%201.5%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%221.2%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E");
         background-repeat: no-repeat;
         background-position: right 6px center;
+        background-size: 8px 6px;
       }
 
       .cp-channels {
         flex: 1;
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 3px;
       }
 
       .cp-channel-input {
-        width: 100%;
+        flex: 1;
+        min-width: 0;
         height: 24px;
+        min-height: 0 !important;
         background: #333;
         border: 1px solid #555;
         border-radius: 4px;
         color: #ffffff !important;
         font-size: 11px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         text-align: center;
-        padding: 0;
+        padding: 0 2px;
         box-sizing: border-box;
         outline: none;
       }
@@ -2629,16 +2634,16 @@ var defaults = {
         if (format === "HEX") {
           html = '<input type="text" class="cp-channel-input cp-hex-input" value="' + cpState.hex + '" style="font-family: monospace; text-transform: uppercase;" aria-label="HEX code" />';
         } else if (format === "RGB") {
-          html = '<input type="number" class="cp-channel-input cp-r-input" min="0" max="255" value="' + cpState.r + '" aria-label="Red" title="Red" />' +
-                 '<input type="number" class="cp-channel-input cp-g-input" min="0" max="255" value="' + cpState.g + '" aria-label="Green" title="Green" />' +
-                 '<input type="number" class="cp-channel-input cp-b-input" min="0" max="255" value="' + cpState.b + '" aria-label="Blue" title="Blue" />' +
-                 '<input type="number" class="cp-channel-input cp-a-input" min="0" max="100" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />';
+          html = '<input type="text" class="cp-channel-input cp-r-input" value="' + cpState.r + '" aria-label="Red" title="Red" />' +
+                 '<input type="text" class="cp-channel-input cp-g-input" value="' + cpState.g + '" aria-label="Green" title="Green" />' +
+                 '<input type="text" class="cp-channel-input cp-b-input" value="' + cpState.b + '" aria-label="Blue" title="Blue" />' +
+                 '<input type="text" class="cp-channel-input cp-a-input" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />';
         } else if (format === "HSL") {
           var hsl = rgbToHsl(cpState.r, cpState.g, cpState.b);
-          html = '<input type="number" class="cp-channel-input cp-h-input" min="0" max="360" value="' + hsl.h + '" aria-label="Hue" title="Hue" />' +
-                 '<input type="number" class="cp-channel-input cp-s-input" min="0" max="100" value="' + hsl.s + '" aria-label="Saturation" title="Saturation" />' +
-                 '<input type="number" class="cp-channel-input cp-l-input" min="0" max="100" value="' + hsl.l + '" aria-label="Lightness" title="Lightness" />' +
-                 '<input type="number" class="cp-channel-input cp-a-input" min="0" max="100" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />' +
+          html = '<input type="text" class="cp-channel-input cp-h-input" value="' + hsl.h + '" aria-label="Hue" title="Hue" />' +
+                 '<input type="text" class="cp-channel-input cp-s-input" value="' + hsl.s + '" aria-label="Saturation" title="Saturation" />' +
+                 '<input type="text" class="cp-channel-input cp-l-input" value="' + hsl.l + '" aria-label="Lightness" title="Lightness" />' +
+                 '<input type="text" class="cp-channel-input cp-a-input" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />' +
                  '<span class="cp-percent-symbol">%</span>';
         }
         cpChannelsContainer.innerHTML = html;
@@ -2766,7 +2771,7 @@ var defaults = {
         var rect = config.anchor.getBoundingClientRect();
         var left = rect.left + window.scrollX;
         var top = rect.bottom + window.scrollY + 6;
-        var cpWidth = 240;
+        var cpWidth = 260;
         if (left + cpWidth > window.innerWidth - 12) {
           left = window.innerWidth - cpWidth - 12;
         }

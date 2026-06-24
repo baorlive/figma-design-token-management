@@ -308,16 +308,16 @@ var defaults = {
         if (format === "HEX") {
           html = '<input type="text" class="cp-channel-input cp-hex-input" value="' + cpState.hex + '" style="font-family: monospace; text-transform: uppercase;" aria-label="HEX code" />';
         } else if (format === "RGB") {
-          html = '<input type="number" class="cp-channel-input cp-r-input" min="0" max="255" value="' + cpState.r + '" aria-label="Red" title="Red" />' +
-                 '<input type="number" class="cp-channel-input cp-g-input" min="0" max="255" value="' + cpState.g + '" aria-label="Green" title="Green" />' +
-                 '<input type="number" class="cp-channel-input cp-b-input" min="0" max="255" value="' + cpState.b + '" aria-label="Blue" title="Blue" />' +
-                 '<input type="number" class="cp-channel-input cp-a-input" min="0" max="100" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />';
+          html = '<input type="text" class="cp-channel-input cp-r-input" value="' + cpState.r + '" aria-label="Red" title="Red" />' +
+                 '<input type="text" class="cp-channel-input cp-g-input" value="' + cpState.g + '" aria-label="Green" title="Green" />' +
+                 '<input type="text" class="cp-channel-input cp-b-input" value="' + cpState.b + '" aria-label="Blue" title="Blue" />' +
+                 '<input type="text" class="cp-channel-input cp-a-input" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />';
         } else if (format === "HSL") {
           var hsl = rgbToHsl(cpState.r, cpState.g, cpState.b);
-          html = '<input type="number" class="cp-channel-input cp-h-input" min="0" max="360" value="' + hsl.h + '" aria-label="Hue" title="Hue" />' +
-                 '<input type="number" class="cp-channel-input cp-s-input" min="0" max="100" value="' + hsl.s + '" aria-label="Saturation" title="Saturation" />' +
-                 '<input type="number" class="cp-channel-input cp-l-input" min="0" max="100" value="' + hsl.l + '" aria-label="Lightness" title="Lightness" />' +
-                 '<input type="number" class="cp-channel-input cp-a-input" min="0" max="100" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />' +
+          html = '<input type="text" class="cp-channel-input cp-h-input" value="' + hsl.h + '" aria-label="Hue" title="Hue" />' +
+                 '<input type="text" class="cp-channel-input cp-s-input" value="' + hsl.s + '" aria-label="Saturation" title="Saturation" />' +
+                 '<input type="text" class="cp-channel-input cp-l-input" value="' + hsl.l + '" aria-label="Lightness" title="Lightness" />' +
+                 '<input type="text" class="cp-channel-input cp-a-input" value="' + Math.round(cpState.alpha * 100) + '" aria-label="Alpha" title="Alpha" />' +
                  '<span class="cp-percent-symbol">%</span>';
         }
         cpChannelsContainer.innerHTML = html;
@@ -445,7 +445,7 @@ var defaults = {
         var rect = config.anchor.getBoundingClientRect();
         var left = rect.left + window.scrollX;
         var top = rect.bottom + window.scrollY + 6;
-        var cpWidth = 240;
+        var cpWidth = 260;
         if (left + cpWidth > window.innerWidth - 12) {
           left = window.innerWidth - cpWidth - 12;
         }
