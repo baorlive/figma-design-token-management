@@ -1,6 +1,28 @@
-# Design System Token Importer
+# Figma Plugin: Token-Driven DS Creation
 
-Figma plugin for setting up design tokens and generating Figma Variables and Styles.
+![Figma Plugin: Token-Driven DS Creation](./README-IMG.png)
+
+Take full control of your design tokens with a scalable, 3-layer architecture. Build a consistent, token-driven system from Figma design to code implementation.
+
+## Overview
+
+### Foundations Layer
+
+Define the core hex and raw values for your design system.
+
+### Semantic Layer
+
+Map foundational values to create context-aware aliases that drive component visuals and light/dark themes.
+
+### Component Layer
+
+Coming soon: bind semantic tokens to specific UI properties for absolute visual consistency.
+
+### Export & Management
+
+Export your token taxonomy as `.md` files for seamless codebase integration, empowering AI agents to consistently build your design system where tokens are the primary driver.
+
+This plugin helps teams set up design tokens and generate Figma Variables and Styles from a token-first workflow.
 
 ## Load in Figma
 
