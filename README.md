@@ -47,7 +47,7 @@ The plugin starts with defaults copied from the app's color, text, and spacing t
 - Uses local paint and text style APIs to update existing styles by name instead of duplicating them.
 - Uses `figma.clientStorage` for plugin window size persistence because browser `localStorage` is unavailable in Figma plugin UI data URLs.
 - Supports `Set as default` to store the current setup/options in `figma.clientStorage`; `Reset` loads this saved default when available.
-- Supports saved sessions in `figma.clientStorage` and automatically triggers a local browser download of the session's `.md` file whenever a session is created or updated, ensuring configurations are safely stored on your local disk. Use the Session dropdown to load a saved setup, `Save session` to add the current setup to the saved list, `Sessions` to manage saved sessions, `Import .md` to import a Markdown session, and `Export .md` to download the current setup.
+- Supports saved sessions in `figma.clientStorage`, with saves managed by the plugin backend instead of forcing an automatic `.md` download when a session is created or updated. The last active saved session is restored when the plugin reopens. Use the Session dropdown to load a saved setup, `Save session` to add the current setup to the saved list, `Sessions` to manage saved sessions, `Import .md` to import a Markdown session, and `Export .md` to manually download the current setup when needed.
 
 ## Input Sections
 
@@ -63,7 +63,7 @@ The plugin starts with defaults copied from the app's color, text, and spacing t
 - `Semantic: Radius`: creates `Theme/radius/*` aliases to Foundation radius variables.
 - `Semantic: Opacity`: creates `Theme/opacity/*` aliases to Foundation opacity variables.
 - `Semantic: Shadow`: creates `Theme/shadow/*` string variables and Figma effect styles from CSS-like shadow values. Use `shadow.sm`, `shadow.md`, and `shadow.lg` for cards, popovers, modals, and menus.
-- `Semantic: Text Styles`: creates `Theme/text/*` composite variables and Figma text styles. Each text style maps directly to Foundation values for color, family, size, weight, line-height, letter-spacing, and text case.
+- `Semantic: Text Styles`: creates `Theme/text/*` composite variables and Figma text styles. Each text style maps directly to Foundation values for family, size, weight, line-height, letter-spacing, and text case.
 - Styles are generated only from the Theme collection. Foundation variables are not turned into Figma styles.
 
 ## Spacing Naming Guideline
@@ -179,7 +179,6 @@ Use size tokens for fixed component dimensions, not spacing between things:
     },
     "text": {
       "body.m": {
-        "color": "color.text.default",
         "fontFamily": "font.family.sans",
         "fontSize": "font.size.14",
         "fontWeight": "font.weight.regular",

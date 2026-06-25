@@ -3,6 +3,7 @@ figma.showUI(__html__, { width: 1080, height: 960, themeColors: true });
 const PLUGIN_DATA_KEY = "tool-designsystem-token-id";
 const DEFAULT_SETUP_STORAGE_KEY = "tokenPluginDefaultSetup";
 const SESSIONS_STORAGE_KEY = "tokenPluginSavedSessions";
+const ACTIVE_SESSION_STORAGE_KEY = "tokenPluginActiveSessionId";
 const VARIABLE_TYPES = {
   color: "COLOR",
   number: "FLOAT",
@@ -55,8 +56,15 @@ const messageHandlers = {
   },
   "load-sessions": async () => {
     try {
-      const sessions = await figma.clientStorage.getAsync(SESSIONS_STORAGE_KEY);
-      figma.ui.postMessage({ type: "load-sessions-complete", sessions: Array.isArray(sessions) ? sessions : [] });
+      const [sessions, activeSessionId] = await Promise.all([
+        figma.clientStorage.getAsync(SESSIONS_STORAGE_KEY),
+        figma.clientStorage.getAsync(ACTIVE_SESSION_STORAGE_KEY)
+      ]);
+      figma.ui.postMessage({
+        type: "load-sessions-complete",
+        sessions: Array.isArray(sessions) ? sessions : [],
+        activeSessionId: typeof activeSessionId === "string" ? activeSessionId : ""
+      });
     } catch (error) {
       const errorMessage = error && error.message ? error.message : String(error);
       figma.ui.postMessage({ type: "load-sessions-error", error: errorMessage });
@@ -110,19 +118,37 @@ const messageHandlers = {
       const existing = await figma.clientStorage.getAsync(SESSIONS_STORAGE_KEY);
       const sessions = Array.isArray(existing) ? existing.filter((item) => item && item.id !== session.id) : [];
       sessions.unshift(session);
-      await figma.clientStorage.setAsync(SESSIONS_STORAGE_KEY, sessions);
-      figma.ui.postMessage({ type: "save-session-complete", sessions });
+      await Promise.all([
+        figma.clientStorage.setAsync(SESSIONS_STORAGE_KEY, sessions),
+        figma.clientStorage.setAsync(ACTIVE_SESSION_STORAGE_KEY, session.id)
+      ]);
+      figma.ui.postMessage({ type: "save-session-complete", sessions, activeSessionId: session.id });
     } catch (error) {
       const errorMessage = error && error.message ? error.message : String(error);
       figma.ui.postMessage({ type: "save-session-error", error: errorMessage });
     }
   },
+  "set-active-session": async (message) => {
+    try {
+      const activeSessionId = message && typeof message.id === "string" ? message.id : "";
+      await figma.clientStorage.setAsync(ACTIVE_SESSION_STORAGE_KEY, activeSessionId);
+    } catch (error) {}
+  },
   "delete-session": async (message) => {
     try {
-      const existing = await figma.clientStorage.getAsync(SESSIONS_STORAGE_KEY);
+      const [existing, activeSessionId] = await Promise.all([
+        figma.clientStorage.getAsync(SESSIONS_STORAGE_KEY),
+        figma.clientStorage.getAsync(ACTIVE_SESSION_STORAGE_KEY)
+      ]);
       const sessions = Array.isArray(existing) ? existing.filter((item) => item && item.id !== message.id) : [];
-      await figma.clientStorage.setAsync(SESSIONS_STORAGE_KEY, sessions);
-      figma.ui.postMessage({ type: "delete-session-complete", sessions });
+      const nextActiveSessionId = activeSessionId === message.id
+        ? ""
+        : (typeof activeSessionId === "string" ? activeSessionId : "");
+      await Promise.all([
+        figma.clientStorage.setAsync(SESSIONS_STORAGE_KEY, sessions),
+        figma.clientStorage.setAsync(ACTIVE_SESSION_STORAGE_KEY, nextActiveSessionId)
+      ]);
+      figma.ui.postMessage({ type: "delete-session-complete", sessions, activeSessionId: nextActiveSessionId });
     } catch (error) {
       const errorMessage = error && error.message ? error.message : String(error);
       figma.ui.postMessage({ type: "delete-session-error", error: errorMessage });
@@ -928,16 +954,6 @@ async function upsertTextStyle(group, context, summary) {
   applyTextStyleProperty(style, "lineHeight", { unit: "PERCENT", value: resolved.lineHeight }, group.ref, context);
   applyTextStyleProperty(style, "letterSpacing", { unit: "PERCENT", value: resolved.letterSpacing }, group.ref, context);
   applyTextStyleProperty(style, "textCase", resolved.textCase, group.ref, context);
-  if (resolved.color) {
-    applyTextStyleProperty(style, "fills", [{
-      type: "SOLID",
-      visible: true,
-      opacity: resolved.colorAlpha,
-      color: resolved.color
-    }], group.ref, context);
-  }
-
-  bindTextPaintVariable(style, group.fields.color, context);
   bindTextStyleVariable(style, "fontFamily", group.fields.fontFamily, context);
   bindTextStyleVariable(style, "fontSize", group.fields.fontSize, context);
   bindTextStyleVariable(style, "fontWeight", group.fields.fontWeight, context);
@@ -982,7 +998,7 @@ function upsertEffectStyle(token, context, summary) {
 
 function collectTextStyleGroups(tokens) {
   const groups = new Map();
-  const textFieldPattern = /^(.*)\.(color|fontFamily|fontSize|fontWeight|lineHeight|letterSpacing|textCase)$/;
+  const textFieldPattern = /^(.*)\.(fontFamily|fontSize|fontWeight|lineHeight|letterSpacing|textCase)$/;
 
   tokens.forEach((token) => {
     const match = token.dotPath.match(textFieldPattern);
@@ -1013,8 +1029,6 @@ function resolveTextStyleValues(group, context) {
     fontSize,
     lineHeight: toLineHeightPercent(rawLineHeight || 100, fontSize),
     letterSpacing: toLetterSpacingPercent(resolveConcreteValue(group.fields.letterSpacing, context) || 0, fontSize),
-    color: group.fields.color ? resolveConcreteColor(group.fields.color, context) : null,
-    colorAlpha: group.fields.color ? resolveAlpha(group.fields.color, context) : 1,
     textCase: toFigmaTextCase(resolveConcreteValue(group.fields.textCase, context))
   };
 }
@@ -1058,19 +1072,6 @@ function bindTextStyleVariable(style, property, token, context) {
     style.setBoundVariable(property, record.variable);
   } catch (error) {
     context.warnings.push(`Could not bind ${token.ref} to text style ${style.name}: ${error.message}`);
-  }
-}
-
-function bindTextPaintVariable(style, token, context) {
-  if (!token || !style.fills || !style.fills.length) return;
-  const record = resolvePreferredBindingRecord(token, context);
-  if (!record) return;
-
-  try {
-    const basePaint = clonePaint(style.fills[0]);
-    style.fills = [figma.variables.setBoundVariableForPaint(basePaint, "color", record.variable)];
-  } catch (error) {
-    context.warnings.push(`Could not bind ${token.ref} to text style fill ${style.name}: ${error.message}`);
   }
 }
 

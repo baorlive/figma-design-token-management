@@ -63,7 +63,6 @@ Semantic naming:
 
 Text style groups are composite token groups ending with:
 
-- `.color`
 - `.fontFamily`
 - `.fontSize`
 - `.fontWeight`
