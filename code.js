@@ -111,12 +111,16 @@ const messageHandlers = {
   },
   "save-session": async (message) => {
     try {
-      const session = message.session;
-      if (!session || typeof session !== "object" || !session.id || !session.markdown) {
+      const session = compactSessionForStorage(message.session);
+      if (!session) {
         throw new Error("Invalid session payload.");
       }
       const existing = await figma.clientStorage.getAsync(SESSIONS_STORAGE_KEY);
-      const sessions = Array.isArray(existing) ? existing.filter((item) => item && item.id !== session.id) : [];
+      const sessions = Array.isArray(existing)
+        ? existing
+            .map((item) => compactSessionForStorage(item))
+            .filter((item) => item && item.id !== session.id)
+        : [];
       sessions.unshift(session);
       await Promise.all([
         figma.clientStorage.setAsync(SESSIONS_STORAGE_KEY, sessions),
@@ -163,6 +167,40 @@ const messageHandlers = {
     await runImport(message, tokens);
   }
 };
+
+function compactSessionForStorage(session) {
+  if (!session || typeof session !== "object" || !session.id) return null;
+  const payload = session.payload && typeof session.payload === "object" ? session.payload : null;
+  const markdown = typeof session.markdown === "string" ? session.markdown : "";
+  if (!payload && !markdown) return null;
+
+  const name = String(session.name || "Session").trim() || "Session";
+  const fileName = String(session.fileName || "").trim() || slugifyFileName(name) + ".md";
+  const savedAt = String(session.savedAt || new Date().toISOString());
+
+  const compact = {
+    id: String(session.id),
+    name,
+    fileName,
+    savedAt
+  };
+
+  if (payload) {
+    compact.payload = payload;
+  } else {
+    compact.markdown = markdown;
+  }
+
+  return compact;
+}
+
+function slugifyFileName(value) {
+  return String(value || "session")
+    .toLowerCase()
+    .replace(/[^a-z0-9._-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "") || "session";
+}
 
 figma.ui.onmessage = async (message) => {
   const payload = message && message.pluginMessage ? message.pluginMessage : message;
@@ -677,8 +715,12 @@ function toDtcgColorValue(value) {
 }
 
 function colorAlpha(value) {
+  if (value && typeof value === "object" && typeof value.alpha === "number") return clamp01(value.alpha);
   const match = String(value || "").match(/rgba?\(\s*[\d.]+\s*,\s*[\d.]+\s*,\s*[\d.]+(?:\s*,\s*([\d.]+))?\s*\)/i);
-  return match && match[1] !== undefined ? clamp01(Number(match[1])) : 1;
+  if (match && match[1] !== undefined) return clamp01(Number(match[1]));
+  const hex = String(value || "").trim().replace(/^#/, "");
+  if (/^[0-9a-f]{8}$/i.test(hex)) return clamp01(parseInt(hex.slice(6, 8), 16) / 255);
+  return 1;
 }
 
 function colorHex(value, color) {
@@ -826,7 +868,7 @@ function ensureModes(collection, modeNames) {
   return modeIdByName;
 }
 
-async function setVariableValues(collections, context) {
+async function setVariableValues(collections, context, summary) {
   for (const collectionData of collections) {
     for (const token of collectionData.tokens) {
       const record = context.variableByRef.get(token.ref);
@@ -860,7 +902,7 @@ function resolveVariableValue(token, context, modeName) {
     return figma.variables.createVariableAlias(target.variable);
   }
 
-  if (token.type === "color") return toFigmaColor(value);
+  if (token.type === "color") return toFigmaVariableColor(value);
   if (token.type === "number") {
     const numeric = typeof value === "number" ? value : parseFloat(String(value).replace(",", ".")) || 0;
     if (token.dotPath && token.dotPath.indexOf("opacity.") === 0) {
@@ -1188,7 +1230,7 @@ function resolveConcreteColor(token, context, modeName) {
 function resolveAlpha(token, context, modeName) {
   const value = resolveConcreteValue(token, context, new Set(), modeName);
   if (value && typeof value === "object" && typeof value.alpha === "number") return value.alpha;
-  return 1;
+  return colorAlpha(value);
 }
 
 function isModeValueMap(value) {
@@ -1235,6 +1277,16 @@ function toFigmaColor(value) {
   }
 
   return { r: 0, g: 0, b: 0 };
+}
+
+function toFigmaVariableColor(value) {
+  const color = toFigmaColor(value);
+  return {
+    r: color.r,
+    g: color.g,
+    b: color.b,
+    a: colorAlpha(value)
+  };
 }
 
 function parseShadowEffects(value) {
@@ -1326,7 +1378,7 @@ function fontStyleCandidates(weight) {
     200: ["ExtraLight", "Extra Light", "Ultra Light", "Light", "Book", "Regular"],
     300: ["Light", "Book", "Roman", "Regular", "Normal"],
     400: ["Regular", "Normal", "Book", "Roman"],
-    500: ["Medium", "Demi", "Regular", "Normal"],
+    500: ["Medium", "Demi", "Book", "Regular", "Normal"],
     600: ["SemiBold", "Semi Bold", "Semibold", "DemiBold", "Demi Bold", "Medium", "Bold", "Regular"],
     700: ["Bold", "DemiBold", "Demi Bold", "SemiBold", "Semibold", "Regular"],
     800: ["ExtraBold", "Extra Bold", "Ultra Bold", "Bold", "Regular"],

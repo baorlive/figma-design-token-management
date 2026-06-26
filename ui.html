@@ -1906,6 +1906,38 @@
           grid-template-columns: repeat(2, minmax(0, 1fr));
         }
       }
+
+      /* ── Status bar ─────────────────────────────────────────── */
+      .status {
+        display: none;
+        font-size: 12px;
+        line-height: 1.4;
+        padding: 2px 8px;
+        border-radius: 4px;
+        max-width: 320px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        background: transparent;
+        color: var(--figma-color-text-secondary, #888);
+      }
+      .status:not(:empty) { display: inline-block; }
+      .status.ok {
+        background: color-mix(in srgb, var(--figma-color-bg-success, #16a34a) 12%, transparent);
+        color: var(--figma-color-text-success, #15803d);
+      }
+      .status.error {
+        background: color-mix(in srgb, var(--figma-color-bg-danger, #dc2626) 12%, transparent);
+        color: var(--figma-color-text-danger, #dc2626);
+      }
+
+      /* ── Save modal inline error hint ──────────────────────── */
+      .save-modal-hint {
+        font-size: 11px;
+        color: var(--figma-color-text-danger, #dc2626);
+        min-height: 14px;
+        margin-top: 4px;
+      }
     </style>
   </head>
   <body>
@@ -1921,6 +1953,7 @@
               <button id="reset">Reset</button>
               <button id="cancel">Close</button>
               <button id="generate" class="primary">Generate</button>
+              <span id="status" class="status" role="status" aria-live="polite" aria-atomic="true"></span>
             </div>
           </div>
           <div class="header-control-row">
@@ -2224,8 +2257,8 @@ Keep refs to `size.*` foundation tokens.</span>
           <div class="column-body">
             <div id="foundationRadius" class="table"></div>
           </div>
-          <div class="column-actions" hidden>
-            <button id="addFoundationRadius" class="button-secondary" hidden>Add foundation radius</button>
+          <div class="column-actions">
+            <button id="addFoundationRadius" class="button-secondary">Add foundation radius</button>
           </div>
         </section>
 
@@ -2248,8 +2281,8 @@ Keep refs to `radius.*` foundation tokens.</span>
           <div class="column-body">
             <div id="semanticRadius" class="table"></div>
           </div>
-          <div class="column-actions" hidden>
-            <button id="addSemanticRadius" class="button-secondary" hidden>Add semantic radius</button>
+          <div class="column-actions">
+            <button id="addSemanticRadius" class="button-secondary">Add semantic radius</button>
           </div>
         </section>
 
@@ -2394,6 +2427,7 @@ Values use CSS shadow syntax and generate Figma effect styles.</span>
       <div class="modal" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
         <h2 id="saveModalTitle" class="modal-title">Save Session</h2>
         <label>Session name <input id="saveModalName" type="text" placeholder="e.g. App v1" /></label>
+        <p id="saveModalHint" class="save-modal-hint"></p>
         <div class="row">
           <button id="saveModalConfirm" type="button">Save</button>
           <button id="saveModalCancel" type="button">Cancel</button>
@@ -2417,7 +2451,7 @@ Values use CSS shadow syntax and generate Figma effect styles.</span>
 var defaults = {
         foundationSpacing: [["space.0", 0], ["space.2", 2], ["space.4", 4], ["space.6", 6], ["space.8", 8], ["space.12", 12], ["space.16", 16], ["space.20", 20], ["space.24", 24], ["space.32", 32], ["space.40", 40], ["space.48", 48], ["space.56", 56], ["space.64", 64], ["space.72", 72], ["space.80", 80]],
         foundationSize: [["size.0", 0], ["size.16", 16], ["size.20", 20], ["size.24", 24], ["size.32", 32], ["size.36", 36], ["size.40", 40], ["size.44", 44], ["size.48", 48], ["size.56", 56], ["size.64", 64], ["size.240", 240], ["size.280", 280], ["size.320", 320], ["size.400", 400], ["size.480", 480], ["size.560", 560], ["size.640", 640], ["size.800", 800], ["size.960", 960]],
-        foundationRadius: [["radius.sm", 4], ["radius.md", 8], ["radius.lg", 16]],
+        foundationRadius: [["radius.0", 0], ["radius.4", 4], ["radius.8", 8], ["radius.16", 16], ["radius.32", 32], ["radius.9999", 9999]],
         foundationOpacity: [["opacity.0", 0], ["opacity.8", 0.08], ["opacity.12", 0.12], ["opacity.16", 0.16], ["opacity.38", 0.38], ["opacity.60", 0.6], ["opacity.80", 0.8], ["opacity.100", 1]],
         text: {
           family: [["font.family.sans", "Inter"], ["font.family.serif", "Georgia"], ["font.family.mono", "JetBrains Mono"]],
@@ -2463,7 +2497,7 @@ var defaults = {
           ["layout.header.height", "size.64"], ["layout.sidebar.width", "size.240"], ["layout.drawer.width", "size.320"]
         ],
         semanticRadius: [
-          ["sm", "radius.sm"], ["md", "radius.md"], ["lg", "radius.lg"]
+          ["none", "radius.0"], ["sm", "radius.4"], ["md", "radius.8"], ["lg", "radius.16"], ["xl", "radius.32"], ["full", "radius.9999"]
         ],
         semanticOpacity: [
           ["state.hover", "opacity.8"], ["state.focus", "opacity.12"], ["state.pressed", "opacity.12"], ["state.dragged", "opacity.16"], ["state.disabled", "opacity.38"], ["overlay.scrim", "opacity.60"], ["content.subtle", "opacity.80"], ["content.default", "opacity.100"]
@@ -2538,6 +2572,7 @@ var defaults = {
       var importSessionMarkdownButton = document.getElementById("importSessionMarkdown");
       var importSessionJsonButton = document.getElementById("importSessionJson");
       var setDefaultButton = document.getElementById("setDefault");
+      var themeNameInput = document.getElementById("themeName");
       var sortSemanticTextButton = document.getElementById("sortSemanticText");
       var toggleSemanticMappingButton = document.getElementById("toggleSemanticMapping");
       var feedbackModalBackdrop = document.getElementById("feedbackModalBackdrop");
@@ -2601,6 +2636,85 @@ var defaults = {
 
       var cpActiveTarget = null;
       var cpCallbacks = {};
+
+      function fixedRadiusFoundationMap(source, includeDefaults) {
+        var values = source && typeof source === "object" ? source : {};
+        var out = {};
+        if (includeDefaults !== false) {
+          defaults.foundationRadius.forEach(function (row) {
+            out[row[0]] = row[1];
+          });
+        }
+        Object.keys(values).forEach(function (name) {
+          var normalizedName = cleanTokenPath(name);
+          if (!normalizedName) return;
+          if (Object.prototype.hasOwnProperty.call(out, normalizedName)) {
+            out[normalizedName] = Number(values[name] || 0);
+            return;
+          }
+          out[normalizedName] = Number(values[name] || 0);
+        });
+        return out;
+      }
+
+      function normalizeRadiusReferenceValue(value) {
+        var normalized = cleanTokenPath(String(value || "").replace(/[{}]/g, ""));
+        var legacyRefMap = {
+          "radius.sm": "radius.4",
+          "radius.md": "radius.8",
+          "radius.lg": "radius.16",
+          "radius.xl": "radius.32",
+          "radius.full": "radius.9999",
+          "radius.pill": "radius.9999",
+          "radius.round": "radius.9999"
+        };
+        var canonicalMatch = normalized.match(/(?:^|\.)radius\.(0|4|8|16|32|9999)$/);
+        if (canonicalMatch) return "radius." + canonicalMatch[1];
+        var legacyMatch = normalized.match(/(?:^|\.)radius\.(sm|md|lg|xl|full|pill|round)$/);
+        if (legacyMatch) return legacyRefMap["radius." + legacyMatch[1]] || "";
+        if (/^(0|4|8|16|32|9999)$/.test(normalized)) return "radius." + normalized;
+        return "";
+      }
+
+      function fixedSemanticRadiusMap(source, includeDefaults) {
+        var values = source && typeof source === "object" ? source : {};
+        var aliasesByName = {
+          none: ["none", "control.none", "zero"],
+          sm: ["sm", "control.sm"],
+          md: ["md", "control.md"],
+          lg: ["lg", "control.lg"],
+          xl: ["xl", "control.xl"],
+          full: ["full", "control.full", "pill", "round"]
+        };
+        var out = {};
+        if (includeDefaults !== false) {
+          defaults.semanticRadius.forEach(function (row) {
+            var canonicalName = row[0];
+            var fallbackRef = row[1];
+            var resolved = "";
+            (aliasesByName[canonicalName] || [canonicalName]).some(function (candidate) {
+              if (!Object.prototype.hasOwnProperty.call(values, candidate)) return false;
+              resolved = normalizeRadiusReferenceValue(values[candidate]);
+              return !!resolved;
+            });
+            out[canonicalName] = resolved || fallbackRef;
+          });
+        }
+        var canonicalAliases = {};
+        Object.keys(aliasesByName).forEach(function (canonicalName) {
+          canonicalAliases[canonicalName] = true;
+          (aliasesByName[canonicalName] || []).forEach(function (alias) {
+            canonicalAliases[alias] = true;
+          });
+        });
+        Object.keys(values).forEach(function (name) {
+          var normalizedName = cleanTokenPath(name);
+          if (!normalizedName || (includeDefaults !== false && canonicalAliases[normalizedName])) return;
+          var normalizedValue = normalizeRadiusReferenceValue(values[name]);
+          out[normalizedName] = normalizedValue || values[name];
+        });
+        return out;
+      }
 
       function hsvToRgb(h, s, v) {
         s /= 100; v /= 100;
@@ -3251,6 +3365,7 @@ var defaults = {
           var heading = document.createElement("h3");
           heading.className = "subsection-title semantic-group-title";
           heading.textContent = groupName;
+          heading.setAttribute("data-token-group", groupName);
           containers.semanticColors.appendChild(heading);
           keys.forEach(function (key) {
             addSemanticColorPair(containers.semanticColors, key, values[key]);
@@ -3291,6 +3406,7 @@ var defaults = {
           var heading = document.createElement("h3");
           heading.className = "subsection-title semantic-group-title";
           heading.textContent = groupName + " Spacing";
+          heading.setAttribute("data-token-group", groupName);
           containers.semanticSpacing.appendChild(heading);
           keys.forEach(function (key) {
             addPair(containers.semanticSpacing, "cols-2", key, values[key], "text", "spaceRefs");
@@ -3334,6 +3450,7 @@ var defaults = {
           var heading = document.createElement("h3");
           heading.className = "subsection-title semantic-group-title";
           heading.textContent = groupName + " Sizes";
+          heading.setAttribute("data-token-group", groupName);
           containers.semanticSize.appendChild(heading);
           keys.forEach(function (key) {
             addPair(containers.semanticSize, "cols-2", key, values[key], "text", "sizeRefs");
@@ -3689,13 +3806,167 @@ var defaults = {
         return button;
       }
 
+      function groupedTokenConfig(container) {
+        if (container === containers.semanticColors) {
+          return {
+            groups: ["Text", "Background", "Border", "Action", "Focus", "Status", "Other"],
+            label: function (groupName) { return groupName; },
+            groupForName: function (name) {
+              if (name.indexOf("text.") === 0) return "Text";
+              if (name.indexOf("bg.") === 0) return "Background";
+              if (name.indexOf("border.") === 0) return "Border";
+              if (name.indexOf("action.") === 0) return "Action";
+              if (name.indexOf("focus.") === 0) return "Focus";
+              if (name.indexOf("status.") === 0) return "Status";
+              return "Other";
+            }
+          };
+        }
+        if (container === containers.semanticSpacing) {
+          return {
+            groups: ["Inline", "Stack", "Inset", "Layout", "Control", "Other"],
+            label: function (groupName) { return groupName + " Spacing"; },
+            groupForName: function (name) {
+              if (name.indexOf("inline.") === 0) return "Inline";
+              if (name.indexOf("stack.") === 0) return "Stack";
+              if (name.indexOf("inset.") === 0) return "Inset";
+              if (name.indexOf("layout.") === 0) return "Layout";
+              if (name.indexOf("control.") === 0) return "Control";
+              return "Other";
+            }
+          };
+        }
+        if (container === containers.semanticSize) {
+          return {
+            groups: ["Control", "Icon", "Touch", "Avatar", "Dialog", "Layout", "Other"],
+            label: function (groupName) { return groupName + " Sizes"; },
+            groupForName: function (name) {
+              if (name.indexOf("control.") === 0) return "Control";
+              if (name.indexOf("icon.") === 0) return "Icon";
+              if (name.indexOf("touch.") === 0) return "Touch";
+              if (name.indexOf("avatar.") === 0) return "Avatar";
+              if (name.indexOf("dialog.") === 0) return "Dialog";
+              if (name.indexOf("layout.") === 0) return "Layout";
+              return "Other";
+            }
+          };
+        }
+        if (container === containers.semanticRadius) {
+          return {
+            groups: ["Core", "Control", "Surface", "Other"],
+            label: function (groupName) { return groupName + " Radius"; },
+            groupForName: function (name) {
+              if (/^(none|sm|md|lg|xl|full|pill|round)$/.test(name)) return "Core";
+              if (name.indexOf("control.") === 0) return "Control";
+              if (name.indexOf("surface.") === 0 || name.indexOf("card.") === 0 || name.indexOf("dialog.") === 0) return "Surface";
+              return "Other";
+            }
+          };
+        }
+        if (container === containers.semanticOpacity) {
+          return {
+            groups: ["State", "Overlay", "Content", "Other"],
+            label: function (groupName) { return groupName + " Opacity"; },
+            groupForName: function (name) {
+              if (name.indexOf("state.") === 0) return "State";
+              if (name.indexOf("overlay.") === 0) return "Overlay";
+              if (name.indexOf("content.") === 0) return "Content";
+              return "Other";
+            }
+          };
+        }
+        if (container === containers.semanticShadow) {
+          return {
+            groups: ["Elevation", "Component", "Other"],
+            label: function (groupName) { return groupName + " Shadow"; },
+            groupForName: function (name) {
+              if (/^(xs|sm|md|lg|xl|2xl)$/.test(name)) return "Elevation";
+              if (/^(card|menu|dialog|modal|popover|sheet|dropdown|tooltip|control)\./.test(name)) return "Component";
+              return "Other";
+            }
+          };
+        }
+        return null;
+      }
+
+      function rowTokenName(row) {
+        var inputEl = row.querySelector("input[data-field-role=\"name\"]") || row.querySelector("input[data-text-field=\"name\"]");
+        return inputEl && inputEl.value ? inputEl.value.trim().toLowerCase() : "";
+      }
+
+      function findGroupHeading(container, groupName, config) {
+        var label = config.label(groupName);
+        var headings = container.querySelectorAll(".semantic-group-title");
+        for (var i = 0; i < headings.length; i += 1) {
+          if (headings[i].getAttribute("data-token-group") === groupName || headings[i].textContent === label) {
+            headings[i].setAttribute("data-token-group", groupName);
+            return headings[i];
+          }
+        }
+        return null;
+      }
+
+      function ensureGroupHeading(container, groupName, config) {
+        var existing = findGroupHeading(container, groupName, config);
+        if (existing) return existing;
+        var heading = document.createElement("h3");
+        heading.className = "subsection-title semantic-group-title";
+        heading.textContent = config.label(groupName);
+        heading.setAttribute("data-token-group", groupName);
+
+        var groupIndex = config.groups.indexOf(groupName);
+        var insertBefore = null;
+        Array.prototype.some.call(container.querySelectorAll(".semantic-group-title"), function (candidate) {
+          var candidateGroup = candidate.getAttribute("data-token-group");
+          var candidateIndex = config.groups.indexOf(candidateGroup);
+          if (candidateIndex > groupIndex) {
+            insertBefore = candidate;
+            return true;
+          }
+          return false;
+        });
+        container.insertBefore(heading, insertBefore);
+        return heading;
+      }
+
+      function insertRowIntoGroupedContainer(container, row) {
+        var config = groupedTokenConfig(container);
+        if (!config || !row || !row.classList || !row.classList.contains("token-row")) return;
+        var groupName = config.groupForName(rowTokenName(row));
+        var heading = ensureGroupHeading(container, groupName, config);
+        var nextHeading = null;
+        var cursor = heading.nextSibling;
+        while (cursor) {
+          if (cursor.classList && cursor.classList.contains("semantic-group-title")) {
+            nextHeading = cursor;
+            break;
+          }
+          cursor = cursor.nextSibling;
+        }
+        container.insertBefore(row, nextHeading);
+      }
+
+      function bindRowGrouping(container, row, nameInput) {
+        if (!groupedTokenConfig(container) || !nameInput) return;
+        nameInput.addEventListener("input", function () {
+          window.clearTimeout(row._tokenGroupingTimer);
+          row._tokenGroupingTimer = window.setTimeout(function () {
+            insertRowIntoGroupedContainer(container, row);
+          }, 0);
+        });
+      }
+
       function addPair(container, className, name, value, valueType, list) {
         var row = document.createElement("div");
         row.className = "token-row " + className;
-        row.appendChild(field("token", setFieldRole(input(name || "", "text", null, "token name"), "name")));
+        var nameInput = setFieldRole(input(name || "", "text", null, "token name"), "name");
+        row.appendChild(field("token", nameInput));
         row.appendChild(field(list ? "ref" : "value", setFieldRole(input(value === undefined ? "" : value, valueType || "text", list, list ? "reference" : "value"), list ? "ref" : "value")));
         addRemove(row);
         container.appendChild(row);
+        bindRowGrouping(container, row, nameInput);
+        insertRowIntoGroupedContainer(container, row);
+        return row;
       }
 
       function getFoundationColorHex(ref) {
@@ -3726,6 +3997,9 @@ var defaults = {
         row.appendChild(field("ref", valInput));
         addRemove(row);
         container.appendChild(row);
+        bindRowGrouping(container, row, nameInput);
+        insertRowIntoGroupedContainer(container, row);
+        return row;
       }
 
       function updateAllSemanticColorSwatches() {
@@ -4203,7 +4477,8 @@ var defaults = {
         if (data.length >= 8 && String(data[1] || "").trim().indexOf("color.") === 0) {
           data = [data[0], data[2], data[3], data[4], data[5], data[6], data[7]];
         }
-        row.appendChild(field("token", setTextFieldRole(input(data[0], "text", null, "text token"), "name")));
+        var nameInput = setTextFieldRole(input(data[0], "text", null, "text token"), "name");
+        row.appendChild(field("token", nameInput));
         row.appendChild(field("ref", setTextFieldRole(input(data[1], "text", "fontFamilyRefs", "family ref"), "fontFamily")));
         row.appendChild(field("ref", setTextFieldRole(input(data[2], "text", "fontSizeRefs", "size token ref"), "fontSize")));
         row.appendChild(field("ref", setTextFieldRole(input(data[3], "text", "fontWeightRefs", "weight ref"), "fontWeight")));
@@ -4228,6 +4503,10 @@ var defaults = {
         actions.appendChild(createRemoveButton(row));
         row.appendChild(actions);
         containers.semanticText.appendChild(row);
+        nameInput.addEventListener("change", function () {
+          sortSemanticTextRows();
+        });
+        return row;
       }
 
       function extractFontSizeValue(rawRef) {
@@ -4376,6 +4655,7 @@ var defaults = {
 
       function buildSetup() {
         storeCurrentSemanticColorMode();
+        var semanticRadius = fixedSemanticRadiusMap(readPairs(containers.semanticRadius, false), false);
         var semanticColor = {};
         var semanticColorNames = {};
         Object.keys(semanticColorModes.Light || {}).forEach(function (name) { semanticColorNames[name] = true; });
@@ -4396,7 +4676,7 @@ var defaults = {
             color: readPairs(containers.foundationColors, false),
             spacing: readPairs(containers.foundationSpacing, true),
             size: readPairs(containers.foundationSize, true),
-            radius: readPairs(containers.foundationRadius, true),
+            radius: fixedRadiusFoundationMap(readPairs(containers.foundationRadius, true), false),
             opacity: readPairs(containers.foundationOpacity, true),
             text: {
               family: readPairs(containers.fontFamily, false),
@@ -4411,7 +4691,7 @@ var defaults = {
             color: semanticColor,
             spacing: readPairs(containers.semanticSpacing, false),
             size: readPairs(containers.semanticSize, false),
-            radius: readPairs(containers.semanticRadius, false),
+            radius: semanticRadius,
             opacity: readPairs(containers.semanticOpacity, false),
             shadow: readPairs(containers.semanticShadow, false),
             text: readTextStyles()
@@ -4435,6 +4715,12 @@ var defaults = {
         var foundation = setup.foundation || {};
         var semantic = setup.semantic || {};
         var text = foundation.text || {};
+        var hasSavedFoundationColor = Object.prototype.hasOwnProperty.call(foundation, "color");
+        var hasSavedFoundationSpacing = Object.prototype.hasOwnProperty.call(foundation, "spacing");
+        var hasSavedFoundationSize = Object.prototype.hasOwnProperty.call(foundation, "size");
+        var hasSavedFoundationRadius = Object.prototype.hasOwnProperty.call(foundation, "radius");
+        var hasSavedFoundationOpacity = Object.prototype.hasOwnProperty.call(foundation, "opacity");
+        var hasSavedFoundationText = Object.prototype.hasOwnProperty.call(foundation, "text");
         var hasSavedSemanticColor = Object.prototype.hasOwnProperty.call(semantic, "color");
         var hasSavedSemanticSpacing = Object.prototype.hasOwnProperty.call(semantic, "spacing");
         var hasSavedSemanticSize = Object.prototype.hasOwnProperty.call(semantic, "size");
@@ -4442,6 +4728,14 @@ var defaults = {
         var hasSavedSemanticOpacity = Object.prototype.hasOwnProperty.call(semantic, "opacity");
         var hasSavedSemanticShadow = Object.prototype.hasOwnProperty.call(semantic, "shadow");
         var hasSavedSemanticText = Object.prototype.hasOwnProperty.call(semantic, "text");
+        var hasSavedTextFamily = hasSavedFoundationText && Object.prototype.hasOwnProperty.call(text, "family");
+        var hasSavedTextSize = hasSavedFoundationText && Object.prototype.hasOwnProperty.call(text, "size");
+        var hasSavedTextWeight = hasSavedFoundationText && Object.prototype.hasOwnProperty.call(text, "weight");
+        var hasSavedTextLineHeight = hasSavedFoundationText && Object.prototype.hasOwnProperty.call(text, "lineHeight");
+        var hasSavedTextLetterSpacing = hasSavedFoundationText && Object.prototype.hasOwnProperty.call(text, "letterSpacing");
+        var hasSavedTextTransform = hasSavedFoundationText && Object.prototype.hasOwnProperty.call(text, "textTransform");
+        foundation.radius = fixedRadiusFoundationMap(foundation.radius, !hasSavedFoundationRadius);
+        semantic.radius = fixedSemanticRadiusMap(semantic.radius, !hasSavedSemanticRadius);
         var deprecatedSizeKeys = { "font.size.11": true, "font.size.13": true };
 
         function normalizeLineHeightRef(ref, fontSizeRef) {
@@ -4462,12 +4756,12 @@ var defaults = {
         currentMainColorName = "brand";
         selectedBrandPackName = "brand";
 
-        var foundationColor = foundation.color || {};
+        var foundationColor = hasSavedFoundationColor ? (foundation.color || {}) : {};
         var colorEntries = Object.keys(foundationColor).map(function (key) { return [key, foundationColor[key]]; });
         containers.brandColors.innerHTML = "";
         containers.neutralColors.innerHTML = "";
         containers.statusColors.innerHTML = "";
-        if (colorEntries.length) {
+        if (hasSavedFoundationColor || colorEntries.length) {
           var seenColors = {};
           colorEntries.forEach(function (row) {
             var tokenName = normalizeColorTokenName(row[0]);
@@ -4484,13 +4778,24 @@ var defaults = {
               addFoundationColorRow(containers.brandColors, tokenName, seenColors[tokenName], "color");
             }
           });
+          writeFoundationColorStore(seenColors);
         } else {
           seedDefaultFoundationColors();
         }
-        ensureNeutralRows();
-        syncFoundationColorsStore();
-        selectedBrandPackName = firstBrandPackName(readFoundationColorStore());
-        setSelectedBrandPack(selectedBrandPackName);
+        if (!hasSavedFoundationColor) ensureNeutralRows();
+        if (!hasSavedFoundationColor) syncFoundationColorsStore();
+        var canonicalFoundationColors = readFoundationColorStore();
+        selectedBrandPackName = firstBrandPackName(canonicalFoundationColors);
+        if (hasSavedFoundationColor) {
+          currentMainColorName = selectedBrandPackName;
+          mainColorNameInput.value = selectedBrandPackName;
+          if (canonicalFoundationColors[selectedBrandPackName + ".500"]) {
+            mainColorValueInput.value = canonicalFoundationColors[selectedBrandPackName + ".500"];
+          }
+          renderBrandPackTabs();
+        } else {
+          setSelectedBrandPack(selectedBrandPackName);
+        }
 
         function fillPairGroup(container, groupValues, fallbackRows, valueType, listId, useExactSavedValues) {
           var values = groupValues && typeof groupValues === "object" ? Object.assign({}, groupValues) : {};
@@ -4518,10 +4823,10 @@ var defaults = {
           }
         }
 
-        fillPairGroup(containers.foundationSpacing, foundation.spacing, defaults.foundationSpacing, "number");
-        fillPairGroup(containers.foundationSize, foundation.size, defaults.foundationSize, "number");
-        fillPairGroup(containers.foundationRadius, foundation.radius, defaults.foundationRadius, "number");
-        fillPairGroup(containers.foundationOpacity, foundation.opacity, defaults.foundationOpacity, "number");
+        fillPairGroup(containers.foundationSpacing, foundation.spacing, defaults.foundationSpacing, "number", null, hasSavedFoundationSpacing);
+        fillPairGroup(containers.foundationSize, foundation.size, defaults.foundationSize, "number", null, hasSavedFoundationSize);
+        fillPairGroup(containers.foundationRadius, foundation.radius, defaults.foundationRadius, "number", null, hasSavedFoundationRadius);
+        fillPairGroup(containers.foundationOpacity, foundation.opacity, defaults.foundationOpacity, "number", null, hasSavedFoundationOpacity);
         semanticColorModes = normalizeSemanticColorModes(semantic.color, !hasSavedSemanticColor);
         renderSemanticColorMode(getCurrentMode());
         fillPairGroup(containers.semanticSpacing, semantic.spacing, defaults.semanticSpacing, "text", "spaceRefs", hasSavedSemanticSpacing);
@@ -4529,20 +4834,23 @@ var defaults = {
         fillPairGroup(containers.semanticRadius, semantic.radius, defaults.semanticRadius, "text", "radiusRefs", hasSavedSemanticRadius);
         fillPairGroup(containers.semanticOpacity, semantic.opacity, defaults.semanticOpacity, "text", "opacityRefs", hasSavedSemanticOpacity);
         fillPairGroup(containers.semanticShadow, semantic.shadow, defaults.semanticShadow, "text", null, hasSavedSemanticShadow);
-        function fillTextGroup(container, groupValues, fallbackRows, valueType) {
+        function fillTextGroup(container, groupValues, fallbackRows, valueType, useExactSavedValues) {
           var values = groupValues && typeof groupValues === "object" ? Object.assign({}, groupValues) : {};
           if (container === containers.fontSize) {
             Object.keys(deprecatedSizeKeys).forEach(function (key) { delete values[key]; });
           }
-          var orderedKeys = [];
-          (fallbackRows || []).forEach(function (row) {
-            var key = row[0];
-            if (!(key in values)) values[key] = row[1];
-            orderedKeys.push(key);
-          });
-          Object.keys(values).forEach(function (key) {
-            if (orderedKeys.indexOf(key) === -1) orderedKeys.push(key);
-          });
+          var orderedKeys = Object.keys(values);
+          if (!useExactSavedValues) {
+            orderedKeys = [];
+            (fallbackRows || []).forEach(function (row) {
+              var key = row[0];
+              if (!(key in values)) values[key] = row[1];
+              orderedKeys.push(key);
+            });
+            Object.keys(values).forEach(function (key) {
+              if (orderedKeys.indexOf(key) === -1) orderedKeys.push(key);
+            });
+          }
           orderedKeys.forEach(function (key) {
             if (container === containers.fontFamily) {
               addFontFamilyPair(container, key, values[key]);
@@ -4552,12 +4860,12 @@ var defaults = {
           });
         }
 
-        fillTextGroup(containers.fontFamily, text.family, defaults.text.family);
-        fillTextGroup(containers.fontSize, text.size, defaults.text.size, "number");
-        fillTextGroup(containers.fontWeight, text.weight, defaults.text.weight, "number");
-        fillTextGroup(containers.fontLineHeight, text.lineHeight, defaults.text.lineHeight, "text");
-        fillTextGroup(containers.fontLetterSpacing, text.letterSpacing, defaults.text.letterSpacing, "number");
-        fillTextGroup(containers.fontTextTransform, text.textTransform, defaults.text.textTransform, "text");
+        fillTextGroup(containers.fontFamily, text.family, defaults.text.family, null, hasSavedTextFamily);
+        fillTextGroup(containers.fontSize, text.size, defaults.text.size, "number", hasSavedTextSize);
+        fillTextGroup(containers.fontWeight, text.weight, defaults.text.weight, "number", hasSavedTextWeight);
+        fillTextGroup(containers.fontLineHeight, text.lineHeight, defaults.text.lineHeight, "text", hasSavedTextLineHeight);
+        fillTextGroup(containers.fontLetterSpacing, text.letterSpacing, defaults.text.letterSpacing, "number", hasSavedTextLetterSpacing);
+        fillTextGroup(containers.fontTextTransform, text.textTransform, defaults.text.textTransform, "text", hasSavedTextTransform);
 
         var loadedTextStyles = hasSavedSemanticText && semantic.text && typeof semantic.text === "object"
           ? semantic.text
@@ -4592,7 +4900,7 @@ var defaults = {
         document.getElementById("overwrite").checked = opts.overwrite !== false;
         var paletteInput = document.getElementById("paletteName");
         if (paletteInput) paletteInput.value = "Foundation";
-        document.getElementById("themeName").value = opts.themeName || "Theme";
+        setThemeNameValue(resolvedThemeName(opts.themeName || "Theme"));
         setSelectedGenerationModes(opts.modeNames || (opts.modeName ? [opts.modeName] : ["Light", "Dark"]));
         setMode(opts.modeName || "Light", false);
 
@@ -4606,6 +4914,15 @@ var defaults = {
           .replace(/[^a-z0-9._-]+/g, "-")
           .replace(/-+/g, "-")
           .replace(/^-|-$/g, "") || "session";
+      }
+
+      function cleanTokenPath(value) {
+        return String(value || "")
+          .trim()
+          .replace(/[^a-zA-Z0-9_.-]+/g, ".")
+          .replace(/\.+/g, ".")
+          .replace(/^\./, "")
+          .replace(/\.$/, "");
       }
 
       function buildSessionMarkdown(name, payload) {
@@ -4642,6 +4959,39 @@ var defaults = {
         try {
           window.localStorage.setItem(uiSessionsStorageKey, JSON.stringify(savedSessions));
         } catch (error) {}
+      }
+
+      function setThemeNameValue(value) {
+        if (!themeNameInput) return;
+        themeNameInput.value = String(value || "").trim() || "Theme";
+      }
+
+      function selectedSessionRecord() {
+        return savedSessions.find(function (session) { return session && session.id === selectedSavedSessionId; }) || null;
+      }
+
+      function resolvedThemeName(fallback) {
+        var selectedSession = selectedSessionRecord();
+        var candidate = "";
+        if (selectedSession && String(selectedSession.name || "").trim()) {
+          candidate = String(selectedSession.name || "").trim();
+        } else {
+          candidate = String(fallback || (themeNameInput ? themeNameInput.value : "") || "Theme").trim() || "Theme";
+        }
+        candidate = candidate
+          .replace(/[{}]/g, "")
+          .replace(/[\/\\]+/g, "-")
+          .replace(/\s+/g, " ")
+          .trim() || "Theme";
+        if (candidate.toLowerCase() === "foundation") return "Foundation Theme";
+        return candidate;
+      }
+
+      function applyThemeNameToPayload(payload, themeName) {
+        if (!payload || typeof payload !== "object") return payload;
+        payload.options = payload.options && typeof payload.options === "object" ? payload.options : {};
+        payload.options.themeName = String(themeName || "").trim() || resolvedThemeName();
+        return payload;
       }
 
       function setSavedSessions(sessions) {
@@ -4706,9 +5056,11 @@ var defaults = {
           selectedSavedSessionId = previousValue;
           var selectedSession = savedSessions.find(function (session) { return session.id === previousValue; });
           if (sessionSelectButton && selectedSession) sessionSelectButton.textContent = selectedSession.name || "Session";
+          setThemeNameValue(selectedSession && selectedSession.name ? selectedSession.name : "Theme");
         } else {
           sessionSelect.value = "";
           selectedSavedSessionId = "";
+          setThemeNameValue("Theme");
         }
         updateSessionOptionState();
       }
@@ -4805,6 +5157,7 @@ var defaults = {
         if (sessionSelectButton) sessionSelectButton.textContent = session.name || "Session";
         updateSessionOptionState();
         applySessionPayload(session.payload || parseSessionMarkdown(session.markdown));
+        setThemeNameValue(session.name || "Theme");
         if (options.persistActiveSession !== false) {
           parent.postMessage({ pluginMessage: { type: "set-active-session", id: selectedSavedSessionId } }, "*");
         }
@@ -4856,6 +5209,7 @@ var defaults = {
 
       function createSessionRecord(name, payload, markdown) {
         var sessionName = String(name || "Session").trim() || "Session";
+        payload = applyThemeNameToPayload(payload, sessionName);
         return {
           id: sessionId(),
           name: sessionName,
@@ -4867,7 +5221,7 @@ var defaults = {
       }
 
       function currentSessionName() {
-        var selectedSession = savedSessions.find(function (session) { return session && session.id === selectedSavedSessionId; });
+        var selectedSession = selectedSessionRecord();
         return (selectedSession && selectedSession.name) || "Session";
       }
 
@@ -4894,30 +5248,38 @@ var defaults = {
         pendingSessionSave = {
           id: record.id,
           previousSelectedSessionId: selectedSavedSessionId,
+          recordName: record.name || "Session",
           successMessage: successMessage || ""
         };
         selectedSavedSessionId = record.id;
+        var fallbackSessions = savedSessions.filter(function (item) { return item && item.id !== record.id; });
+        fallbackSessions.unshift(record);
+        setSavedSessions(fallbackSessions);
         if (successMessage) setStatus("Saving session to plugin storage: " + record.name + "...", "");
         parent.postMessage({ pluginMessage: { type: "save-session", session: record } }, "*");
       }
 
       function saveCurrentSessionRecord() {
-        var selectedSession = savedSessions.find(function (session) { return session && session.id === selectedSavedSessionId; });
-        if (!selectedSession) {
-          openSaveModal();
-          setStatus("Choose a saved session or use Save as new.", "error");
-          return;
+        try {
+          var selectedSession = selectedSessionRecord();
+          if (!selectedSession) {
+            openSaveModal();
+            setStatus("Choose a saved session or use Save as new.", "error");
+            return;
+          }
+          var payload = applyThemeNameToPayload(currentSessionPayload(), selectedSession.name);
+          var record = {
+            id: selectedSession.id,
+            name: selectedSession.name,
+            fileName: selectedSession.fileName || slugifyFileName(selectedSession.name) + ".md",
+            savedAt: new Date().toISOString(),
+            payload: payload,
+            markdown: buildSessionMarkdown(selectedSession.name, payload)
+          };
+          saveSessionRecord(record, "Session updated in plugin storage: " + record.name);
+        } catch (error) {
+          setStatus("Could not save session: " + (error && error.message ? error.message : String(error)), "error");
         }
-        var payload = currentSessionPayload();
-        var record = {
-          id: selectedSession.id,
-          name: selectedSession.name,
-          fileName: selectedSession.fileName || slugifyFileName(selectedSession.name) + ".md",
-          savedAt: new Date().toISOString(),
-          payload: payload,
-          markdown: buildSessionMarkdown(selectedSession.name, payload)
-        };
-        saveSessionRecord(record, "Session updated in plugin storage: " + record.name);
       }
 
       function deleteSavedSession(id) {
@@ -4939,16 +5301,33 @@ var defaults = {
       }
 
       function commitSaveSession() {
-        var name = String(saveModalNameInput.value || "").trim();
-        if (!name) {
-          setStatus("Session name is required.", "error");
-          saveModalNameInput.focus();
-          return;
+        var hintEl = document.getElementById("saveModalHint");
+        if (hintEl) hintEl.textContent = "";
+        try {
+          var name = String(saveModalNameInput.value || "").trim();
+          if (!name) {
+            if (hintEl) {
+              hintEl.textContent = "Session name is required.";
+            }
+            saveModalNameInput.focus();
+            saveModalNameInput.classList.add("input-error");
+            setTimeout(function () {
+              if (saveModalNameInput) saveModalNameInput.classList.remove("input-error");
+            }, 1200);
+            return;
+          }
+          var payload = currentSessionPayload();
+          var record = createSessionRecord(name, payload);
+          saveSessionRecord(record, "Session saved: " + record.name);
+          closeSaveModal();
+        } catch (error) {
+          var msg = "Could not save session: " + (error && error.message ? error.message : String(error));
+          if (hintEl) {
+            hintEl.textContent = msg;
+          } else {
+            setStatus(msg, "error");
+          }
         }
-        var payload = currentSessionPayload();
-        var record = createSessionRecord(name, payload);
-        saveSessionRecord(record, "Session saved in plugin storage: " + record.name);
-        closeSaveModal();
       }
 
       function fillDatalist(id, values) {
@@ -4999,11 +5378,11 @@ var defaults = {
       function refreshLists() {
         var foundationColorRefs = prefixedPairs(containers.foundationColors, "color.");
         fillDatalist("colorRefs", foundationColorRefs);
-        fillDatalist("spaceRefs", prefixedPairs(containers.semanticSpacing, "space."));
-        fillDatalist("sizeRefs", prefixedPairs(containers.semanticSize, "size."));
-        fillDatalist("radiusRefs", prefixedPairs(containers.semanticRadius, "radius."));
-        fillDatalist("opacityRefs", prefixedPairs(containers.semanticOpacity, "opacity."));
-        fillDatalist("shadowRefs", prefixedPairs(containers.semanticShadow, "shadow."));
+        fillDatalist("spaceRefs", prefixedPairs(containers.foundationSpacing, "space."));
+        fillDatalist("sizeRefs", prefixedPairs(containers.foundationSize, "size."));
+        fillDatalist("radiusRefs", prefixedPairs(containers.foundationRadius, "radius."));
+        fillDatalist("opacityRefs", prefixedPairs(containers.foundationOpacity, "opacity."));
+        fillDatalist("shadowRefs", []);
         fillDatalist("fontFamilyNames", availableFontFamilies);
         fillDatalist("fontFamilyRefs", prefixedPairs(containers.fontFamily, "font.family.", "family."));
         fillDatalist("fontSizeRefs", prefixedPairs(containers.fontSize, "font.size.", "size."));
@@ -5021,7 +5400,7 @@ var defaults = {
           styles: document.getElementById("styles").checked,
           overwrite: document.getElementById("overwrite").checked,
           paletteName: "Foundation",
-          themeName: document.getElementById("themeName").value.trim() || "Theme",
+          themeName: resolvedThemeName(),
           modeNames: getSelectedGenerationModes(),
           modeName: (modeInput && modeInput.value ? modeInput.value.trim() : "Light") || "Light"
         };
@@ -5146,7 +5525,7 @@ var defaults = {
       document.getElementById("addSemanticColor").addEventListener("click", function () { addSemanticColorPair(containers.semanticColors, "", "color.brand.500"); refreshLists(); });
       document.getElementById("addSemanticSpacing").addEventListener("click", function () { addPair(containers.semanticSpacing, "cols-2", "", "space.16", "text", "spaceRefs"); refreshLists(); });
       document.getElementById("addSemanticSize").addEventListener("click", function () { addPair(containers.semanticSize, "cols-2", "", "size.40", "text", "sizeRefs"); refreshLists(); });
-      document.getElementById("addSemanticRadius").addEventListener("click", function () { addPair(containers.semanticRadius, "cols-2", "", "radius.md", "text", "radiusRefs"); refreshLists(); });
+      document.getElementById("addSemanticRadius").addEventListener("click", function () { addPair(containers.semanticRadius, "cols-2", "", "radius.8", "text", "radiusRefs"); refreshLists(); });
       document.getElementById("addSemanticOpacity").addEventListener("click", function () { addPair(containers.semanticOpacity, "cols-2", "", "opacity.12", "text", "opacityRefs"); refreshLists(); });
       document.getElementById("addSemanticShadow").addEventListener("click", function () { addPair(containers.semanticShadow, "cols-2", "", "0px 4px 12px 0px rgba(18, 21, 27, 0.12)", "text"); refreshLists(); });
       document.getElementById("addSemanticText").addEventListener("click", function () { addTextStyle(); refreshLists(); });
@@ -5261,6 +5640,11 @@ var defaults = {
       saveSessionButton.addEventListener("click", function () {
         setSessionSelectOpen(false);
         setImportMenuOpen(false);
+        if (!selectedSavedSessionId) {
+          setSaveMenuOpen(false);
+          openSaveModal();
+          return;
+        }
         setSaveMenuOpen(saveMenu.hidden);
       });
 
@@ -5337,11 +5721,19 @@ var defaults = {
       });
 
       generateButton.addEventListener("click", function () {
-        generateButton.disabled = true;
-        if (importDashboardButton) importDashboardButton.disabled = true;
-        parent.postMessage({
-          pluginMessage: { type: "setup-tokens", setup: buildSetup(), options: options() }
-        }, "*");
+        try {
+          var setupPayload = buildSetup();
+          var optionPayload = options();
+          generateButton.disabled = true;
+          if (importDashboardButton) importDashboardButton.disabled = true;
+          parent.postMessage({
+            pluginMessage: { type: "setup-tokens", setup: setupPayload, options: optionPayload }
+          }, "*");
+        } catch (error) {
+          generateButton.disabled = false;
+          if (importDashboardButton) importDashboardButton.disabled = false;
+          setStatus(error && error.message ? error.message : String(error), "error");
+        }
       });
 
       window.onmessage = function (event) {
@@ -5433,8 +5825,10 @@ var defaults = {
         }
         if (message.type === "save-session-complete") {
           setSavedSessions(message.sessions || savedSessions);
-          if (pendingSessionSave && pendingSessionSave.successMessage) {
-            setStatus(pendingSessionSave.successMessage, "ok");
+          if (pendingSessionSave) {
+            var saveCompleteMessage = pendingSessionSave.successMessage || ("Session saved: " + (pendingSessionSave.recordName || "Session"));
+            setStatus(saveCompleteMessage, "ok");
+            showFeedback("Done", saveCompleteMessage);
           }
           pendingSessionSave = null;
         }

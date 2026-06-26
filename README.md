@@ -152,9 +152,12 @@ Use size tokens for fixed component dimensions, not spacing between things:
       "size.560": 560
     },
     "radius": {
-      "radius.sm": 4,
-      "radius.md": 8,
-      "radius.lg": 16
+      "radius.0": 0,
+      "radius.4": 4,
+      "radius.8": 8,
+      "radius.16": 16,
+      "radius.32": 32,
+      "radius.9999": 9999
     },
     "opacity": {
       "opacity.12": 0.12,
@@ -186,9 +189,12 @@ Use size tokens for fixed component dimensions, not spacing between things:
       "dialog.width.md": "size.560"
     },
     "radius": {
-      "control.sm": "radius.sm",
-      "control.md": "radius.md",
-      "control.lg": "radius.lg"
+      "none": "radius.0",
+      "sm": "radius.4",
+      "md": "radius.8",
+      "lg": "radius.16",
+      "xl": "radius.32",
+      "full": "radius.9999"
     },
     "opacity": {
       "state.hover": "opacity.8",
