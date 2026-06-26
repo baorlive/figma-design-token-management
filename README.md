@@ -4,10 +4,6 @@
 
 Design System Token Importer is a Figma development plugin for building local Variables and local Styles from a token-driven setup. It supports foundation primitives, semantic aliases, text styles, shadow styles, session management, and token import workflows so a design system can stay structured from setup through implementation.
 
-## Main Contributor
-
-**Bao Le** is the main contributor and primary maintainer of this project.
-
 ## License
 
 This repository is available for **personal use only**. See [LICENSE](./LICENSE) for the full terms.
