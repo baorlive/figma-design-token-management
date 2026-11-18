@@ -1,0 +1,19 @@
+# Operating system and editor files
+.DS_Store
+._*
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Local dependencies and reports
+node_modules/
+coverage/
+*.log
+
+# Local credentials; commit only sanitized examples
+.env
+.env.*
+!.env.example
+*.pem
+*.key

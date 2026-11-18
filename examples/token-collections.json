@@ -1,0 +1,54 @@
+{
+  "Foundation": {
+    "$collection": {
+      "modes": [
+        "Value"
+      ]
+    },
+    "color": {
+      "neutral": {
+        "0": {
+          "$type": "color",
+          "$value": "#FFFFFF"
+        },
+        "1000": {
+          "$type": "color",
+          "$value": "#121212"
+        }
+      }
+    },
+    "space": {
+      "8": {
+        "$type": "number",
+        "$value": 8
+      }
+    }
+  },
+  "Theme": {
+    "$collection": {
+      "modes": [
+        "Light",
+        "Dark"
+      ]
+    },
+    "color": {
+      "bg": {
+        "canvas": {
+          "$type": "color",
+          "$value": {
+            "Light": "{Foundation.color.neutral.0}",
+            "Dark": "{Foundation.color.neutral.1000}"
+          }
+        }
+      }
+    },
+    "space": {
+      "inset": {
+        "sm": {
+          "$type": "number",
+          "$value": "{Foundation.space.8}"
+        }
+      }
+    }
+  }
+}
